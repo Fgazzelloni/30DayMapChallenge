@@ -9,7 +9,7 @@ This is my #30DayMapChallenge repository fork of [Topi Tjukanov official repo](h
 ## Themes 📆
 
 | **Day** |**Date** | **Theme** | **Details** | my Maps 
-| :---: || :---: || :---: || :---: || :---: 
+| :---: | :---: | :---: | :---: | :---: 
 | 1 | `01-11-2021`| **Points** | A map with points. | ![png](/day1_points/w44_runners.png)                                                                                                                                                     
 | 2 | `02-11-2021` | **Lines** | A map with lines. | ![png](dayx_x/x.png)                                                                                                                                                    
 | 3 | `03-11-2021` | **Polygons** | A map with polygons. | ![png](dayx_x/x.png)                                                                                                                                                    
