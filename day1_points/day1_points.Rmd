@@ -1,0 +1,359 @@
+---
+title: "day1_points"
+author: "FG"
+date: "1 November 2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r libraries, message=FALSE, warning=FALSE, paged.print=FALSE}
+library(tidyverse)
+
+library(tidyquant)
+library(ggpattern)
+
+library(extrafont)
+loadfonts()
+library(showtext)
+font_add_google("Shadows Into Light","shadow_into_light")
+font_add_google("Schoolbell", "bell")
+showtext_opts(dpi = 320)
+showtext_auto(enable = T)
+#font_families()
+```
+
+```{r data, message=FALSE, warning=FALSE, paged.print=FALSE}
+ultra_rankings <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-10-26/ultra_rankings.csv')
+race <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-10-26/race.csv')
+```
+
+
+- Make one dataset using the key primary variable "race_year_id" as a link between the two datasets
+- select the variables needed for making the map
+
+there are some missing values, we deal with those later on the making
+
+Country to fix:
+
+- Hong Kong, China  ~"China"
+- FL, United States	~ "US"		
+- LA, United States			
+- PA, United States			
+- United States
+- Myoko, Japan      ~ "Japan"
+- United Kingdom	  ~ "UK"
+
+
+```{r}
+race%>%
+  inner_join(ultra_rankings ,by="race_year_id") %>% 
+  mutate(year=lubridate::year(date))%>% #count(year)
+  mutate(participation=tolower(participation))%>%count(age,gender)
+```
+
+
+```{r map_df}
+map_df <- race%>%
+  inner_join(ultra_rankings ,by="race_year_id")%>%
+  mutate(year=lubridate::year(date))%>%
+  #select(city,country,gender,year,runner)%>%
+  filter(!is.na(country),!is.na(rank)) %>%
+  mutate(country=case_when(country=="Hong Kong, China"~"China",
+                           country=="FL, United States"~"USA",
+                           country=="LA, United States"~"USA",
+                           country=="PA, United States"~"USA",
+                           country=="United States"~"USA",
+                           country=="United Kingdom"~"UK",
+                           country=="Myoko, Japan"~"Japan",
+                           TRUE~country)) 
+```
+
+Let's see the cities:
+```{r}
+map_df <- map_df %>% #count(year)
+  arrange(city)%>%
+  mutate(city=tolower(city))%>%
+  mutate(city=gsub("\\d","",city),
+         city=gsub("\\?",NA,city),
+         city=gsub("-","",city)) 
+```
+
+drop the missing values
+```{r}
+map_df<- map_df%>%drop_na()
+```
+
+```{r}
+ranks <- map_df%>%
+  filter(rank=="1")%>%
+  filter(gender=="W")%>%
+  count(country,nationality,distance,time_in_seconds,year)%>%
+  dplyr::select(-n)%>%
+  arrange(-distance,time_in_seconds) %>%#count(distance)
+  slice(1:10)
+```
+
+```{r my_map_text}
+cou_yr_m <- c("Finland_2018","France_2019","Spain_2019","Indonesia_2019","USA_2018")
+country_m<- c("Finland","France","Spain","Indonesia","USA")
+latitude_m<- c(60.192059, 46.7111, 40.416775,-6.200000,40.981613)
+longitude_m<-c(24.945831,1.7191,-3.703790,106.816666,-73.691925)
+
+
+cou_yr_w<-c("UK_2016","Nepal_2018","Greece_2016","Poland_2017","Italy_2018","USA_2017")
+country_w<- c("UK","Nepal","Greece","Poland","Italy","USA")
+latitude_w<- c(43.844264,27.700769,39.366669,50.012100,42.349998,40.981613)
+longitude_w<- c(-21.086052,85.300140,22.933332,20.985842,14.166667,-73.691925)
+
+my_map_text_w<- data.frame(cou_yr_w,country_w,latitude_w,longitude_w)
+
+my_map_text_m<- data.frame(cou_yr_m,country_m,latitude_m,longitude_m)
+```
+
+
+
+load the libraries form the map
+```{r map_libraries, message=FALSE, warning=FALSE, paged.print=FALSE}
+library(maps)
+library(rnaturalearth)
+library(sp)
+library(sf)
+```
+
+First step for the geo codes and geometry
+
+- geocode() {ggmap} finds latitude and longitude for the cities (See ?register_google)
+- ne_countries() {rnaturalearth} for world country polygons
+- sf() {sf} for **simple feature** list column
+- map_data() {ggplot2} for a data frame of map data (require("maps"))
+
+
+Dataset is downloaded from:--------207 matches -----
+[kaggle dataset](https://www.kaggle.com/max-mind/world-cities-database?select=worldcitiespop.csv)
+
+[geonames](https://www.geonames.org/export/web-services.html) can be another fount for geocodes
+
+```{r data_kaggle, eval=FALSE, include=FALSE}
+
+city_geo<- map_df%>%count(city)%>%select(-n)%>%pull
+# data set is downloaded from:--------
+# https://www.kaggle.com/max-mind/world-cities-database?select=worldcitiespop.csv
+# worldcitiespop <- read_csv("/Users/federica/Documents/R/R_general_resourses/Maps/worldcitiespop.csv")
+
+# it takes few minutes
+#worldcitiespop_match <- worldcitiespop%>%
+#  mutate(city=tolower(AccentCity))%>%
+#  count(city,Latitude,Longitude)%>%
+#  filter(city%in%city_geo) #198 matches --->  207 matches with accent city
+
+# saveRDS(worldcitiespop_match,here::here("w44/worldcitiespop_match.rds"))
+worldcitiespop_match<-readRDS(here::here("w44/worldcitiespop_match.rds"))
+
+#worldcitiespop_match%>%count(city)
+```
+
+Load the data form {rnaturalearth} with `geometry` and join {maps} with `map_data()`for the lat and lon
+
+```{r}
+# world data full 
+world_full <- rnaturalearth::ne_countries(scale = "medium", returnclass = "sf")
+world_data <- filter(world_full, continent != "Antarctica")
+
+# world lat&long
+world<-map_data(map = "world") #%>%count(subregion)
+# states lat&long
+states <- map_data("state") # let's see if we use it
+
+world_geodata<- world %>%
+  full_join(world_data, by = c("region"="name"))%>%
+  select(long,lat,group,order,region,region_wb) #%>%count(region)
+
+# my df with geocodes
+map_geodata <- map_df%>%
+  left_join(worldcitiespop_match,by="city")%>%
+  janitor::clean_names()
+```
+
+
+
+- geom_polygon() for the world borders
+- geom_polygon() for the US borders
+- geom_path() for delimiting world regions
+
+
+```{r map_geodata_dot}
+map_geodata_dot <- map_geodata %>% 
+  arrange(time_in_seconds)%>%
+  mutate(participation=tolower(participation))%>%
+  mutate(elevation=elevation_gain+elevation_loss,.after=elevation_gain)%>%
+  select(-elevation_gain,-elevation_loss) %>%
+  select(country,latitude,longitude,gender,participation,rank)%>%
+  mutate(country_code = countrycode(country, 
+            origin = 'country.name', 
+            destination = 'iso2c'),
+         country_code=tolower(country_code))
+```
+
+
+We do not use these features:
+
+- geom_polygon(data=world_geodata,aes(x=long,y=lat,group=group),fill="lightslategray") + 
+- geom_polygon(data = states,aes(x = long, y = lat, group = group),fill=NA,color="#000000",size=0.3)+
+- geom_path(data=world,aes(x=long,y=lat,group=group),size=0.1,color="darkslateblue") +
+
+```{r colors}
+pal_gender<- c("deepskyblue4","mediumvioletred")
+```
+
+```{r}
+my_map_text_w
+```
+
+West world
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+world_west<-  ggplot() +
+  
+  geom_point(data = states,aes(x = long, y = lat),color="darkslateblue",shape=".") +
+  geom_point(data=world,aes(x=long,y=lat,group=group),shape=".",color="darkslateblue") +
+  
+  # now we need to add our data 
+  geom_point(data=map_geodata_dot,
+             mapping=aes(x=longitude,y=latitude,color=factor(gender)),
+             alpha=0.7,stroke=1,size=1,shape = 21,fill=NA) +
+  geom_point(data=map_geodata_dot,
+             mapping=aes(x=longitude,y=latitude),
+             alpha=0.7,shape=".",color="yellow3",show.legend = T) +
+  geom_point(data=map_geodata,
+             mapping=aes(x=longitude,y=latitude),alpha=0.7,shape=".",color="yellow3") +
+  geom_text(data=my_map_text_m,mapping=aes(x=longitude_m, y=latitude_m,label=cou_yr_m),
+            family="shadow_into_light",color="gold",hjust=-0.5) +
+  
+  coord_map("ortho", orientation = c(3.849945, -103.525750, 0)) +
+  
+  guides(color = guide_legend(override.aes = list(size = 5)))+
+  scale_color_manual(values = pal_gender,labels=c("Male","Female")) +
+  labs(x="",y="",color="Gender") +
+  theme_void() +
+  theme(text = element_text(family="shadow_into_light",color="gold"),
+        plot.background = element_rect(fill = "midnightblue", colour = "midnightblue"),
+        panel.background = element_rect(color="midnightblue",fill="midnightblue"),
+        axis.line = element_blank(),
+        axis.text.x = element_blank(),
+        panel.grid = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = c(0.2,0.5),
+        legend.text = element_text(family="shadow_into_light"),
+        legend.title = element_text(family="shadow_into_light"))
+
+
+world_west
+```
+
+
+East World 
+```{r world_east_plot}
+world_east<-  ggplot() +
+  
+  geom_point(data = states,aes(x = long, y = lat),color="darkslateblue",shape=".") +
+  geom_point(data=world,aes(x=long,y=lat,group=group),shape=".",color="darkslateblue") +
+  
+  # now we need to add our data 
+  geom_point(data=map_geodata_dot,
+             mapping=aes(x=longitude,y=latitude,color=gender),
+             alpha=0.7,stroke=1,size=1,shape = 21,fill=NA,show.legend = F) +
+  geom_point(data=map_geodata_dot,
+             mapping=aes(x=longitude,y=latitude),alpha=0.7,shape=".",color="yellow3") +
+  geom_point(data=map_geodata,
+             mapping=aes(x=longitude,y=latitude),alpha=0.7,shape=".",color="yellow3") +
+  
+  geom_text(data=my_map_text_w,mapping=aes(x=longitude_w, y=latitude_w,label=cou_yr_w),
+            family="shadow_into_light",color="gold",hjust=-0.2) +
+  
+  coord_map("ortho", orientation = c(19.982182, 46.595135, 0)) +
+  
+  scale_color_manual(values = pal_gender) +
+  labs(x="",y="",color="") +
+  theme_void() +
+  theme(text = element_text(family="shadow_into_light",color="gold"),
+        plot.background = element_rect(fill = "midnightblue", colour = "midnightblue"),
+        panel.background = element_rect(color="midnightblue",fill="midnightblue"),
+        axis.line = element_blank(),
+        axis.text.x = element_blank(),
+        panel.grid = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "none")
+
+ world_east 
+```
+
+
+
+```{r frame_the_plot, message=FALSE, warning=FALSE, paged.print=FALSE}
+library(patchwork)
+library(cowplot)
+
+main_plot <- (world_west + world_east)# +
+  #theme_update(plot.background = element_rect(fill = "midnightblue", colour = "midnightblue"),
+  #             panel.background = element_rect(fill = "midnightblue", colour = "midnightblue"),
+  #             plot.margin = margin(0,0,0,0,unit = "pt"))
+```
+
+
+
+```{r annotate_the_plot}
+# load the libraries for final touches
+library(ggpubr)
+
+# ggarrange from {ggpubr} frames the plot to make side annotations
+graphics <- ggpubr::ggarrange(main_plot)
+
+final_plot <- ggpubr::annotate_figure(graphics,
+                              top = text_grob("Global State of Ultra Running 2012-2021",
+                                              color = c("gold"), face = "bold", size = 32,
+                                              family="shadow_into_light",vjust = 0.8),
+                              bottom = text_grob("DataSource: BjnNowak-Github Repo, RunRepeat.com-TidyTuesday week44\n30DayMapChallenge day1 - Infographics: Federica Gazzelloni",
+                                                 color = "gold",family="shadow_into_light",
+                                                 hjust = 0.5, vjust = 0.5, x = 0.5, 
+                                                 face = "bold.italic", size = 14))
+
+final_plot <- final_plot +
+  annotate(geom = "text", label = "Top 6 Countries with faster Female runners at distances between 164 and 173 km",
+         x = 0.5, y = 0.9,colour = "gold",size = 4,family = "shadow_into_light",fontface = "bold")+
+  annotate(geom = "text", label = "Ranking number one faster",
+         x = 0.91, y = 0.12,colour = "gold",size = 4,family = "shadow_into_light",fontface = "bold")
+```
+
+
+
+
+```{r}
+library(cowplot)
+library(ggimage)
+library(magick)
+
+# add the images for the legend keys
+imgrunners <- image_read("/Users/federica/Documents/R/R_general_resourses/TidyTuesday/TidyTuesday/w44/runner.png")
+
+
+# ggdraw from {cowplot} draw the plot for setting the background colors of the side annotations
+final <- cowplot::ggdraw(final_plot) +
+  draw_image(imgrunners, x = 0.9, y = -0.45,width = 0.06) +
+  theme(plot.background = element_rect(fill = "midnightblue", colour = "midnightblue"))
+```
+
+
+```{r save_plot}
+# save final plot
+ragg::agg_png(here::here("/Users/federica/Documents/R/R_general_resourses/TidyTuesday/TidyTuesday/w44/w44_runners.png"),
+              res = 320, width = 12, height = 8, units = "in")
+final
+dev.off()
+```
+
+
+
+
