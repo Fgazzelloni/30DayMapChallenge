@@ -1,0 +1,92 @@
+---
+title: "day2-lines"
+author: "FG"
+date: "2 November 2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r libraries}
+library(maps)
+library(tidyverse)
+
+library(extrafont)
+loadfonts()
+library(showtext)
+font_add_google("Schoolbell", "bell")
+showtext_opts(dpi = 320)
+showtext_auto(enable = T)
+```
+
+```{r color_and_spatial}
+# set the colors
+# source: https://www.rdocumentation.org/packages/colorspace/versions/2.0-2/topics/rainbow_hcl
+wheel <- function(col, radius = 1, ...)
+  pie(rep(1, length(col)), col = col, radius = radius, ...)
+wheel(rainbow(96))
+
+# load the map data
+france_map <- map_data("france")
+```
+
+
+```{r map_plot}
+france_plot<- ggplot() +
+  geom_line(data =france_map,aes(x=long,y=lat,group=region,
+                                 color=factor(region)),show.legend = F,size=0.2)+
+  scale_color_manual(values = rainbow(96))+
+  labs(title="Regions of France",
+       #subtitle = "#30DayMapChallenge Day 2 - lines",
+       caption = "Datasource: maps R-package - Dataviz: Federica Gazzelloni\n#30DayMapChallenge Day 2 - lines")+
+  ggthemes::theme_map()+
+  theme(text = element_text(family = "bell"),
+        plot.title = element_text(size=40,family="bell",face="bold",vjust=-0.5,hjust=0.2),
+        #plot.subtitle = element_text(vjust=1,size=15,vjust=-10),
+        plot.caption = element_text(hjust=0.5,size=10,vjust=1),
+        plot.background = element_rect(color ="grey80",fill="grey80"),
+        plot.margin = margin(0,15,5,15,unit = "pt"))
+```
+
+
+```{r png}
+# save final plot
+ragg::agg_png(here::here("/Users/federica/Documents/R/R_general_resourses/30DayMapChallenge/day2_lines/lines.png"),
+              res = 320, width = 6, height = 6, units = "in")
+france_plot
+dev.off()
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
