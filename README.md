@@ -26,15 +26,15 @@ This is my #30DayMapChallenge repository fork of [Topi Tjukanov official repo](h
 ![png](day4_hexagons/hexagons.png)                                                                                                                                                        
 ## Day 5 
 05-11-2021 | **Data challenge 1: OpenStreetMap**| OpenStreetMap is **the** source for geospatial data. Use OSM to map something that is interesting to you. You can access the data e.g. from [GeoFabrik](https://www.geofabrik.de/data/download.html) or some of [these](https://learnosm.org/en/osm-data/getting-data/) sources. Remember to credit '© OpenStreetMap contributors'
-![png](dayx_x/x.png)   
+![png](day5_osm/osmdata.png)   
 
 ## Day 6 
 06-11-2021 | **Red**| A map with red colour or a map about something red. 
-![png](dayx_x/x.png)                
+![png](day6_red/drought_red.png)                
 
 ## Day 7 
 07-11-2021 | **Green**| A map with green colour or a map about something green
-![png](dayx_x/x.png)  
+![png](day7_green/green.png)  
 
 ## Day 8 
 08-11-2021 | **Blue** | A map with blue colour or a map about something blue
