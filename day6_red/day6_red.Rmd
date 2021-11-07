@@ -1,0 +1,139 @@
+---
+title: "day6-red"
+author: "FG"
+date: "11/6/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r data}
+library(tidyverse)
+
+tuesdata <- tidytuesdayR::tt_load(2021, week = 30)
+
+drought <- tuesdata$drought
+
+
+intensity_impacts<- c("D0"="Abnormally Dry",
+                      "D1"="Moderate Drought",
+                      "D2"="Severe Drought",
+                      "D3"= "Extreme Drought",
+                      "D4"="Exceptional Drought")
+
+drought_short <- drought %>%
+  dplyr::select(-map_date,-stat_fmt) %>%
+  filter(!drought_lvl=="None",!area_pct==0)
+```
+
+
+```{r map_libraries}
+library(sf)
+library(raster)
+library(spData)
+library(spDataLarge)
+
+library(maps)
+library(viridis)
+library(ggthemes)
+```
+
+
+```{r geo_codes}
+library(zipcodeR)
+zipcodeR::download_zip_data()
+
+geo_codes<- zipcodeR::search_state(drought_short$state_abb)%>%
+  dplyr::select(major_city,county,state,lat,lng,
+                population,population_density,
+                land_area_in_sqmi,water_area_in_sqmi,
+                housing_units,occupied_housing_units,
+                median_home_value,median_household_income) %>%
+  drop_na()
+
+
+my_geo_codes_df<-geo_codes%>%
+  dplyr::select(state,lat,lng)
+```
+
+```{r data_wrangling}
+drought_short_map <- drought_short %>%
+  arrange(valid_start)%>%
+  mutate(year=lubridate::year(valid_start),
+         month=lubridate::month(valid_start))%>%
+  filter(str_detect(valid_start,"2021")) %>%
+  #filter(month==c(1,2,3)) %>%
+  group_by(month,state_abb,drought_lvl) %>%
+  summarize(med_area_pct=round(median(area_pct),2))%>%
+  ungroup() %>%
+  filter(!med_area_pct==0) %>%
+  left_join(my_geo_codes_df,by=c("state_abb"="state")) %>%
+  mutate(month = month.name[month])
+
+
+my_df <- drought_short_map%>%count(month,sort=T)%>%
+  dplyr::select(-n)%>%
+  mutate(month_id=row_number())%>%
+  inner_join(drought_short_map,by="month")
+```
+
+```{r fonts_colors}
+library(extrafont)
+loadfonts()
+fonts()
+
+droughts_family <- "Roboto Condensed"
+
+library(gganimate)
+library(cartography)
+
+red.pal<-c("red", "orangered", "firebrick1", "brown3", "firebrick")
+```
+
+
+```{r map_plot}
+ggplot() +
+  geom_point(data=subset(my_df,lat>25&lat<50),
+             aes(x=lng,y=lat,color=factor(drought_lvl)),
+             alpha=0.5,size=.4) +
+  geom_polygon(data=us_county_map,aes(x=long,y=lat,group = group),
+               fill=NA,color = "darkred",size=0.2) +
+  geom_polygon(data=us_state_map,aes(x=long,y=lat,group = group),
+               fill=NA,color = "red",size=0.4) +
+  scale_color_manual(labels = intensity_impacts,
+                     values=red.pal) +
+  ggthemes::theme_map() +
+  theme(legend.position = "none",
+        legend.title = element_text(family = droughts_family),
+        legend.text = element_text(size=8,family =droughts_family),
+        legend.background = element_blank(),
+        legend.box.background = element_blank(),
+        legend.key = element_blank(),
+        strip.background = element_blank(),
+        strip.text = element_text(family = droughts_family),
+        plot.title =element_text(size=25,face="bold",family =droughts_family,color="black"),
+        plot.subtitle =element_text(size=12,face="bold",family =droughts_family),
+        plot.caption =element_text(size=9,family =droughts_family,hjust = 0),
+        plot.caption.position = "panel",
+        plot.title.position = "panel") +
+
+# gganimate specific bits:
+       labs(title="US Drought variation - Month: {frame_time}",
+       subtitle="",
+       caption="US Drought map: available values by County - Jan to July 2021\n
+       #30DayMapChallenge day6-red - graphic: Federica Gazzelloni")+
+
+        transition_time(month_id) +
+          ease_aes('linear')
+```
+
+
+
+```{r save_gift}
+# Save at gif:
+anim_save("drought_red.gif")
+```
+
+
