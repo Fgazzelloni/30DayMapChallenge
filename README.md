@@ -17,13 +17,13 @@ This is my #30DayMapChallenge repository fork of [Topi Tjukanov official repo](h
 ![png](/day1_points/w44_runners.png)                                                                                                                                                     
 # Day 2 
 02-11-2021 | **Lines** | A map with lines
-![png](dayx_x/x.png)                                                                                                                                                  
+![png](day2_lines/lines.png)                                                                                                                                                  
 ## Day 3 
 03-11-2021 | **Polygons** | A map with polygons
-![png](dayx_x/x.png)                                                                                                                                                    
+![png](day3_polygons/polygons.png)                                                                                                                                                    
 ## Day 4 
 04-11-2021 | **Hexagons** | A map with hexagons
-![png](dayx_x/x.png)                                                                                                                                                        
+![png](day4_hexagons/hexagons.png)                                                                                                                                                        
 ## Day 5 
 05-11-2021 | **Data challenge 1: OpenStreetMap**| OpenStreetMap is **the** source for geospatial data. Use OSM to map something that is interesting to you. You can access the data e.g. from [GeoFabrik](https://www.geofabrik.de/data/download.html) or some of [these](https://learnosm.org/en/osm-data/getting-data/) sources. Remember to credit '© OpenStreetMap contributors'
 ![png](dayx_x/x.png)   
