@@ -1,0 +1,103 @@
+---
+title: "Day3 Polygons"
+author: "FG"
+date: "11/3/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This is the reference for identifying ISO3 codes:
+[ISO3 reference](https://it.wikipedia.org/wiki/ISO_3166-1_alpha-3)
+
+
+## Isole Åland
+Le Isole Åland appartenevano alle province che l'Impero svedese dovette cedere all'Impero russo col Trattato di Fredrikshamn nel settembre 1809, e vennero a far parte del semi-autonomo Granducato di Finlandia.
+
+
+We need "wrld_simpl" for the shapefiles:
+```{r eda}
+library(tidyverse)
+library(maptools)
+data(wrld_simpl)
+unique(wrld_simpl$ISO3)
+plot(wrld_simpl %>% subset(., ISO3 %in% c("ALA")))
+```
+
+
+```{r set_data}
+ala<- wrld_simpl$ISO3[wrld_simpl$ISO3=="ALA"]
+shape_df <- fortify(wrld_simpl, region = 'ISO3')
+
+shape_df%>%
+  filter(id=="ALA")%>%count(group)
+
+shape_short<- shape_df%>%
+  filter(id=="ALA")%>%
+  mutate(group_names=case_when(group=="ALA.1"~"Åland",
+                               group=="ALA.2"~"Lemland",
+                               group=="ALA.3"~"Eckero",
+                               group=="ALA.4"~"Lumparland",
+                               group=="ALA.5"~"Vardo"))
+```
+
+
+made with ggplot2:
+```{r polygon_plot}
+library(extrafont)
+loadfonts()
+fonts()
+family<- "Arial Rounded MT Bold"
+
+
+
+ala_pol_map <- ggplot() +
+  geom_polygon(data =shape_short , aes(x = long, y = lat, group = group_names, 
+               fill = group_names), color = 'black') +
+  geom_point(aes(x=19.944444, y=60.098611),color="darkred",size=4)+
+  
+  
+  ggtitle(label = " ")+
+  scale_fill_viridis_d()+
+  guides(fill=guide_legend(title.position ="top"))+
+  labs(fill="",
+       captions="\n#30DayMapChallenge Day3 Polygons\n\nDatasource: wrld_simpl {maptools} - Infographics: Federica Gazzelloni\n")+
+  ggthemes::theme_map()+
+  theme(text = element_text(family=family),
+        #legend.position = c(0.1,0.9),
+        legend.text = element_text(family=family,size=14),
+        legend.direction = "vertical",
+        legend.background = element_blank(),
+        legend.key = element_rect(size=3),
+        plot.caption = element_text(hjust=0.5,vjust=2,size=11,colour = "black",family=family),
+        plot.title = element_text(size=34,vjust=1),
+        plot.title.position = "panel",
+        plot.background = element_rect(fill=NA, color=NA, size=20)
+        )
+
+
+# final touches
+library(cowplot)
+library(magick)
+
+image<- magick::image_read(here::here("day3_polygons/capitol.png"))
+
+final <- cowplot::ggdraw(ala_pol_map)+
+  draw_image(image,x = 0.8, y = 0.38,width = 0.1)+
+  draw_label(label="Mariehamn",x=0.3,y=0.2, fontfamily = family) +
+  draw_label(label="Polygons - Åland Islands",x=0.3,y=0.95, fontfamily = family,size=40) +
+  draw_line(x = c(0.345, 0.467),y = c(0.2, 0.343),color = "darkred", size = 0.5)
+
+# save final plot
+ragg::agg_png(here::here("/day3_polygons/polygons.png"),
+              res = 320, width = 12, height = 8.5, units = "in")
+final
+dev.off()
+```
+
+
+
+
+
