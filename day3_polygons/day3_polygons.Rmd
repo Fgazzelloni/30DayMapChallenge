@@ -18,11 +18,11 @@ Le Isole Åland appartenevano alle province che l'Impero svedese dovette cedere 
 
 
 We need "wrld_simpl" for the shapefiles:
-```{r eda}
+```{r eda, message=FALSE, warning=FALSE, paged.print=FALSE}
 library(tidyverse)
 library(maptools)
 data(wrld_simpl)
-unique(wrld_simpl$ISO3)
+#unique(wrld_simpl$ISO3)
 plot(wrld_simpl %>% subset(., ISO3 %in% c("ALA")))
 ```
 
@@ -66,7 +66,6 @@ ala_pol_map <- ggplot() +
        captions="\n#30DayMapChallenge Day3 Polygons\n\nDatasource: wrld_simpl {maptools} - Infographics: Federica Gazzelloni\n")+
   ggthemes::theme_map()+
   theme(text = element_text(family=family),
-        #legend.position = c(0.1,0.9),
         legend.text = element_text(family=family,size=14),
         legend.direction = "vertical",
         legend.background = element_blank(),
@@ -88,11 +87,11 @@ final <- cowplot::ggdraw(ala_pol_map)+
   draw_image(image,x = 0.8, y = 0.38,width = 0.1)+
   draw_label(label="Mariehamn",x=0.3,y=0.2, fontfamily = family) +
   draw_label(label="Polygons - Åland Islands",x=0.3,y=0.95, fontfamily = family,size=40) +
-  draw_line(x = c(0.345, 0.467),y = c(0.2, 0.343),color = "darkred", size = 0.5)
+  draw_line(x = c(0.345, 0.467),y = c(0.2, 0.385),color = "darkred", size = 0.5)
 
 # save final plot
-ragg::agg_png(here::here("/day3_polygons/polygons.png"),
-              res = 320, width = 12, height = 8.5, units = "in")
+ragg::agg_png("/Users/federica/Documents/R/R_general_resources/30DayMapChallenge/day3_polygons/polygons.png",
+              res = 320, width = 12, height = 8, units = "in")
 final
 dev.off()
 ```
