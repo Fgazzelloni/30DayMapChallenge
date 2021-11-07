@@ -1,0 +1,128 @@
+---
+title: "day4-Hexagons"
+author: "FG"
+date: "4 November 2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r libraries}
+library(tidyverse)
+
+library(sf)
+library(raster)
+
+
+library(spData)
+library(spDataLarge) 
+
+library(tmap)    # for static and interactive maps
+library(leaflet) # for interactive maps
+```
+
+```{r data}
+my_df <- spData::boston.c
+```
+
+
+```{r base_map}
+leaflet() %>%
+  addProviderTiles(providers$CartoDB.Positron) %>%
+  setView(lng = -71.0589, lat = 42.3601, zoom = 12)
+```
+
+save the leaflet map as .png
+
+```{r map_plot}
+library(RColorBrewer)
+library(rcartocolor)
+
+
+library(ggimage)
+bck_color <- "#FEFCEF"
+
+image<- "/Users/federica/Documents/R/R_general_resources/30DayMapChallenge/day4_hexagons/boston_city.png"
+
+main_plot<-my_df %>%
+  ggplot(aes(x=LON,y=LAT,group=CHAS,FILL=TRACT))+
+  geom_path(color="grey70",size=0.2)+
+  geom_hex(color="grey60",size=0.2,bins=60,alpha=0.8)+
+  geom_point(data=my_df,aes(x=LON,y=LAT,group=LSTAT),shape=".",color="gold",alpha=0.7)+
+  scico::scale_fill_scico(palette = "bilbao")+
+  ggthemes::theme_map()
+
+g<-ggimage::ggbackground(main_plot, image, alpha=.7)
+g
+```
+
+
+```{r area_section}
+data(us.cities)
+
+ ma<-us.cities%>%filter(country.etc=="MA")
+ range(ma$lat)
+ range(ma$long)
+
+boston<-us.cities%>%filter(str_detect(name,"Boston"))
+capitals <- subset(us.cities, capital == 2)
+
+
+ma_section<- ggplot(data=capitals,aes(long, lat)) +
+  borders("state", xlim = c(-71.5, -70.08), ylim = c(41.55 ,42.5), fill = hcl.colors(286, "BrwnYl")) +
+  geom_hex(data=my_df,mapping=aes(x=LON,y=LAT,group=RAD),bins=90,show.legend = F)+
+  geom_point(boston, mapping=aes(long, lat),color="red") +
+  geom_point(data=my_df,aes(x=LON,y=LAT,group=LSTAT),shape=".",color="gold",alpha=0.4)+
+  rcartocolor::scale_fill_carto_c(type = "diverging", palette = "Fall", direction = -1)+
+  coord_quickmap()+
+  theme_nothing()+
+  theme(plot.background = element_rect(fill="grey80",color="grey80"),
+        panel.background = element_rect(fill="grey80",color="grey80"))
+
+ma_section<-ma_section+
+  theme_gray()+
+  theme(axis.text = element_blank(),
+        axis.ticks = element_blank(),
+        axis.title = element_blank(),
+        plot.background = element_rect(fill="grey95",color="grey80"),
+        panel.grid.major.x = element_blank())
+
+# save final plot
+ragg::agg_png(here::here("~/Documents/R/R_general_resources/30DayMapChallenge/day4_hexagons/ma_section.png"),
+              res = 320, width = 12, height = 8.5, units = "in")
+ma_section
+dev.off()
+```
+
+
+
+```{r final_touches}
+library(extrafont)
+loadfonts()
+fonts()
+family<- "Scooby Doo"
+# final touches
+library(cowplot)
+library(magick)
+
+image_ma_section<- magick::image_read("~/Documents/R/R_general_resources/30DayMapChallenge/day4_hexagons/ma_section.png")
+
+image_boston_sym <- magick::image_read("~/Documents/R/R_general_resources/30DayMapChallenge/day4_hexagons/boston_symbol.png")
+
+final <- cowplot::ggdraw(g)+
+  draw_image(image_ma_section,x = 0.05, y = -0.41,width = 0.15)+
+  draw_image(image_boston_sym,x = 0.008, y = 0.42,width = 0.08)+
+  draw_label(label="Datasource: {spData} Boston.c\nInfographic: Federica Gazzelloni",x=0.5,y=0.05, fontfamily = family) +
+  draw_label(label="Boston city lower status population\npercentage values",x=0.45,y=0.93, fontfamily = family,size=30)
+
+# save final plot
+ragg::agg_png("~/Documents/R/R_general_resources/30DayMapChallenge/day4_hexagons/hexagons.png",
+              res = 320, width = 12, height = 8.5, units = "in")
+final
+dev.off()
+```
+
+
+
