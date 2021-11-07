@@ -1,0 +1,445 @@
+---
+title: "Day5-osmdata"
+author: "FG"
+date: "11/5/2021"
+output: html_document
+---
+
+#TidyTuesday week45 & #30DayMapChallenge day5
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This time we need to make a map using **OSM which is Open Street Map**, also there is a package {osmdata} that can be used for retrieving data and recursive searching with special functions.
+
+
+```{r libraries, message=FALSE, warning=FALSE, paged.print=FALSE}
+library(tidyverse)
+library(purrr)
+library(spData)
+library(spDataLarge)
+
+library(osmdata)
+
+library(sf)
+library(raster)
+```
+
+Let's choose a data set from the thousands available in these two packages:
+
+ - {spData}
+ - {spDataLarge}
+ 
+ 
+The **"census_de"** dataset from {spDataLarge} contains the building blocks for a location analysis. Names of the dataset are in German, but we can easily translate them into English.
+
+```{r}
+spDataLarge::census_de%>%
+  names
+```
+ 
+ 
+```{r}
+census_de%>%count(Einwohner) # population in German
+```
+ 
+ 
+```{r df_names}
+my_df<-census_de
+names(my_df)<- c("grid_id","x","y",
+                 "population","women","mean_age",
+                 "under_18","ab65","foreigners",
+                 "house_hold_size","vacancy_rate",
+                 "residential_bew",
+                 "residential_whg")
+```
+
+
+
+```{r table, message=FALSE, warning=FALSE, paged.print=FALSE}
+my_table <- my_df%>% #count(women)
+  dplyr::select(population,women,mean_age,house_hold_size)%>%
+  mutate_all(list(~ifelse(.%in% c(-1,-9),NA,.)))%>%
+  drop_na()%>%
+  mutate(class=population,.before = population) %>%
+  count(class)%>%
+  mutate(population=case_when(class=="1"~"3-250",
+                              class=="2"~"250-500",
+                              class=="3"~"500-2000",
+                              class=="4"~"2000-4000",
+                              class=="5"~"4000-8000",
+                              class=="6"~">8000"),
+         women=case_when(class=="1"~"0-40",
+                         class=="2"~"40-47",
+                         class=="3"~"47-53",
+                         class=="4"~"53-60",
+                         class=="5"~">60"),
+        mean_age=case_when(class=="1"~"0-40",
+                         class=="2"~"40-42",
+                         class=="3"~"42-44",
+                         class=="4"~"44-47",
+                         class=="5"~">47"),
+        householdsize=case_when(class=="1"~"1-2",
+                         class=="2"~"2-2.5",
+                         class=="3"~"2.5-3",
+                         class=="4"~"3-3.5",
+                         class=="5"~">3.5"))%>%
+  count(class,population,women,mean_age,householdsize) %>%
+  dplyr::select(-n)
+
+my_table[is.na(my_table)]<-""         
+  
+my_table_gt <- gt::gt(my_table)  
+my_table_gt
+```
+This data set provides the coordinates (x and y) for representing spatial data, and some other variables such as:
+
+- population
+- women
+- mean age
+- house hold size
+
+which we will be using for making our map. The values of the variables are all **made of dummy variables**. 
+
+The preprocessing part is very important for setting up a dataset which is appropriate for mapping, and making further analysis passing through the EDA (exploratory data analysis) stage up to modeling.
+
+
+This [source](https://geocompr.robinlovelace.net/location.html#tab:census-desc) provides a case study using this data set and OSM data retrival.
+
+First step is to set the `input` data with assigning `NA` values to the observation that are outside of the boundaries, in our case are (-1 and -9), so that we will have some white spaces.
+
+```{r input_data}
+input_tidy <- my_df%>% 
+  dplyr::select(x,y,population,women,mean_age,house_hold_size)%>%
+  mutate_all(list(~ifelse(.%in% c(-1,-9),NA,.)))
+
+input_tidy%>%drop_na()
+```
+
+
+
+Now that **the data set is preprocessed** and ready to use we attempt a retrieval of selected features to map with Open Street Map features.
+
+
+The {osmdata} package is a package for importing OpenStreetMap (OSM) data into R and for making transformation of selected data as required.
+
+Some important functions are: 
+
+- getbb()             Get bounding box
+- opq()               Build an Overpass query
+- add_osm_feature()   Add a feature
+- osmdata_sf()        Return an object in sf format
+
+The `bbox` argument is important as it defines the bounding box with coordinates. It requires 4 points, 2 for latitude and 2 for longitude, as max and min values of the polygon.
+
+
+An **object of class osmdata**, is an object with OSM components such as:
+
+- points
+- lines
+- polygons
+
+
+```{r eval=FALSE, include=FALSE}
+osmdata::getbb()
+purrr::map()
+```
+ 
+
+In the case of `census_de` data we have x and y as a list of coordinates, we could check their range, or select some city names among those included in the map such as:
+
+- Berlin
+
+This information is different from the "shops" dataset in {spDataLarge}, because is just for "Berlin", it is a **Object of class 'osmdata'**.
+
+Steps:
+
+1. set a desired location
+2. check which types of data to add in the map (as lines/circles/points)
+3. apply the search
+
+```{r step1}
+# 1. 
+location <- "Berlin"
+```
+
+```{r}
+# osmdata::
+```
+
+
+
+```{r step2, eval=FALSE, include=FALSE}
+# 2.
+# length(available_features()) # 223
+available_features()[60:120]
+
+
+available_features()[available_features()=="water"]
+```
+
+```{r eval=FALSE, include=FALSE}
+feature <- "water"
+available_tags(feature)
+
+sel_tag<- c("basin","canal","ditch","wastewater","pond","river")
+```
+
+
+
+```{r eval=FALSE, include=FALSE}
+head(available_tags("boundary")) # "amenity"
+head(available_tags("pub")) 
+```
+
+For example :
+
+    add_osm_feature(key = "...", value = "...")
+   
+    add_osm_feature(key = "amenity", value = "pub")
+
+
+Let's try and select "pub" as a key feature, we found 5 points to add in the map, no lines and one polygon.
+
+```{r}
+location<- "Berlin"
+
+pub_osm = getbb(location)%>%
+            opq() %>%
+            add_osm_feature(key = "pub")%>%
+            add_osm_feature(key = "water")%>%
+            osmdata_sf()
+```
+It doesn't work for some reasons ("GDAL Error 1: No PROJ.4 translation for source SRS, coordinate transformation initialization has failed.
+"). We need to find an alternative, which is **leaflet** !!
+
+```{r geom_sf, eval=FALSE, include=FALSE}
+# ggplot() +
+#   geom_sf(data = pub_osm$osm_points,
+#           inherit.aes = FALSE,
+#           color = "midnightblue",
+#           size = .4,
+#           alpha = .8) 
+```
+
+```{r eval=FALSE, include=FALSE}
+available_features()[150:223]
+available_features()[available_features()=="internet_access"]
+available_tags("water")
+```
+
+
+```{r EDA_map}
+input_tidy%>%#filter(!is.na(women))%>%
+  ggplot()+
+  stat_summary_hex(aes(x,y,z=population))
+```
+
+
+
+Convert xy into coordinates in a geometry
+```{r}
+my_sf_df <- st_as_sf(input_tidy, coords = c("x", "y"), crs = 31493) 
+# CRS (coordinates reference system) used found on https://www.spatialreference.org/ref/?search=Germany&srtext=Search
+
+#input_tidy%>%dim;my_sf_df%>%dim
+#coord_xy<- input_tidy[1:2]
+
+#add xy coords
+my_sf_df$X <- input_tidy$x
+my_sf_df$Y <- input_tidy$y
+
+
+my_sf_df_short<- my_sf_df[c(1,5:7)]
+
+my_sf_df_short <- my_sf_df_short%>%filter(!is.na(population))
+
+st_coordinates(my_sf_df_short)
+
+```
+
+
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+location<- "Berlin"
+
+internet_access_osm = getbb(location)%>%
+            opq() %>%
+            add_osm_feature(key = "internet_access")
+
+residential_osm = getbb(location)%>%
+             opq() %>%
+             add_osm_feature(key = "residential")
+
+water_osm = getbb(location)%>%
+             opq() %>%
+             add_osm_feature(key = "water")
+
+
+Location_internet_access <- osmdata_sf(internet_access_osm)
+# saveRDS(Location_internet_access,"Location_internet_access.rds")
+Location_internet_access <- readRDS("Location_internet_access.rds")
+
+
+Location_residential <- osmdata_sf(residential_osm)
+#saveRDS(Location_residential,"Location_residential.rds")
+Location_residential <- readRDS("Location_military.rds")
+
+Location_water <- osmdata_sf(water_osm)
+#saveRDS(Location_water,"Location_water.rds")
+Location_water <- readRDS("Location_water.rds")
+
+
+# step 04 - extract amenity points/
+points_internet_access <- Location_internet_access$osm_points
+points_residential<- Location_residential$osm_points
+points_water<- Location_water$osm_points
+
+# step 05 - extract from the amenity points, node ID and geometry (lat,  lng)
+points_geo_internet_access <- data.frame(Location_internet_access$osm_points$osm_id,
+                                         Location_internet_access$osm_points$geometry)
+
+points_geo_residential <- data.frame(Location_residential$osm_points$osm_id,
+                                     Location_residential$osm_points$geometry)
+
+points_geo_water <- data.frame(Location_water$osm_points$osm_id,
+                              Location_water$osm_points$geometry)
+
+# step 06 - rename first column node ID as osm_id
+names(points_geo_internet_access)[1]<- "osm_id"
+names(points_geo_residential)[1]<- "osm_id"
+names(points_geo_water)[1]<- "osm_id"
+
+# step 07 - merge data frames
+points_internet_access <- merge.data.frame(points_internet_access, points_geo_internet_access)
+points_residential <- merge.data.frame(points_residential, points_geo_residential)
+points_water <- merge.data.frame(points_water, points_geo_water)
+
+
+# retrieve coordinates in matrix form
+coord_internet_access <- data.frame(st_coordinates(points_internet_access$geometry))
+points_internet_access$X <- coord_internet_access$X
+points_internet_access$Y <- coord_internet_access$Y
+
+coord_residential <- data.frame(st_coordinates(points_residential$geometry))
+points_residential$X <- list(coord_residential$X)
+points_residential$Y <- list(coord_residential$Y)
+
+coord_water <- data.frame(st_coordinates(points_water$geometry))
+points_water$X <- list(coord_water$X)
+points_water$Y <- list(coord_water$Y)
+
+
+library(leaflet)
+leaflet() %>%
+  addTiles() %>%
+  setView(lat=52.517317, lng=13.412364, zoom = 14) %>%
+  addProviderTiles(providers$Stamen.Toner)  %>% 
+  addProviderTiles(providers$Stamen.TonerLines,
+    options = providerTileOptions(opacity = 0.35)) %>%
+  addProviderTiles(providers$Stamen.TonerLabels) %>%
+  
+  # set a box with open street map
+  addRectangles(lat1=52.52007,
+    lng1=13.38709,
+    lng2=13.39707,
+    lat2=52.51631,
+    fillColor = "transparent") %>%
+ addCircleMarkers(data = points_internet_access,
+                   lat = ~Y,
+                   lng = ~X,
+                   radius = 0.5,
+                   popup = ~internet_access,
+                   color = "yellow3") %>%
+
+  addPolygons(data = points_residential,
+                   lat = ~unlist(Y),
+                   lng = ~unlist(X),
+                   group = geometry,
+                   color = "pink4",
+                   popup = ~rsidential,
+                   fillColor = NA,
+                   fillOpacity = 0.2,
+              weight = 1.5 ) 
+ #>%
+ #
+ #addPolygons(data = points_water,
+ #                 lat = ~unlist(Y),
+ #                 lng = ~unlist(X),
+ #                 group = geometry,
+ #                 color = "midnightblue",
+ #                 popup = ~ access,
+ #                 fillColor = NA,
+ #                 fillOpacity = 0.2,
+ #            weight = 1.5
+ #            )
+```
+
+
+```{r}
+# %>%
+#   addLogo(img, url = "https://www.r-project.org/logo/")
+```
+
+
+
+```{r}
+library(devtools)
+install_github("wch/webshot")
+
+## load packages
+library(htmlwidgets)
+library(webshot)
+
+
+## save html to png
+saveWidget(map, "temp.html", selfcontained = FALSE)
+webshot("temp.html", file = "Rplot.png", cliprect = "viewport")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Or we can set a bbox with the coordinates for a section of the map.
+
+```{r}
+#shops_osm = getbb(viewbox=)%>%
+
+       berl_shops<- opq(bbox=c(13.3610,52.5189,13.4154,52.5062)) %>%
+        add_osm_feature(key = "shop")%>%
+        osmdata_sf()
+```
+
+
+## spDataLarge data ----
+Let's say for example that we want to populate our map with shops. We can download the shops dataset, made ready from {spDataLarge} and ? How do we used {osmdata}?
+ 
+let's see how to apply these "shpos" data to a map. This is made of **simple features** and some named variables: 
+
+- osm_id
+- shop
+- geometry
+
+```{r shops}
+spDataLarge::shops
+```
+
+Also, other data available from the same package such as: "metro_names".
+```{r}
+spDataLarge::metro_names
+```
+ 
+ 
+ 
+ 

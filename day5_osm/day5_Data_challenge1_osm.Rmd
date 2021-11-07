@@ -1,0 +1,132 @@
+---
+title: "day5_Data challenge 1: OpenStreetMap"
+author: "FG"
+date: "5 November 2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+source: https://parametricsforarchitecture.wordpress.com/2020/07/21/urban-design-masterplanning-desktop-analysis-automation-through-rstudio-and-shiny/
+
+
+```{r libraries}
+library(sf)
+library(osmdata)
+library(leaflet)
+```
+
+
+```{r tags}
+available_tags("water")
+```
+
+```{r data}
+location <- "Berlin"
+
+berlin_osm <- getbb(location)%>%
+  opq()%>%
+  add_osm_feature("water")%>%
+  osmdata_sf()
+
+
+berlin_water <- berlin_osm$osm_points
+
+berlin_water%>%head
+```
+
+
+```{r geometry}
+berlin_geo <- data.frame(berlin_water$osm_id, 
+                         berlin_water$geometry)
+
+names(berlin_geo)[1]<- "osm_id"
+```
+
+
+```{r geo_data}
+berlin_data <- merge.data.frame(berlin_water, berlin_geo)
+
+coord <- data.frame(st_coordinates(berlin_data$geometry))
+berlin_data$X <- coord$X
+berlin_data$Y <- coord$Y
+```
+
+
+
+```{r berlin_logo}
+library(magick)
+img <- magick::image_read("~/Documents/R/R_general_resources/30DayMapChallenge/day5_osm/logo.png")
+```
+
+
+```{r map_plot}
+map <- leaflet() %>%
+  addTiles() %>%
+  setView(lat=52.517317, lng=13.412364, zoom = 14) %>%
+  
+  addProviderTiles(providers$Stamen.Toner)  %>%
+  addProviderTiles(providers$Stamen.TonerLines,
+                   options = providerTileOptions(opacity = 0.35)) %>%
+  addProviderTiles(providers$Stamen.TonerLabels)%>%
+  
+  addCircleMarkers(data = berlin_data,
+                   lat = ~Y,
+                   lng = ~X,
+                   radius = 2.5,
+                   popup = ~water,
+                   color = "midnightblue") %>%
+  addCircleMarkers(data = berlin_data,
+                   lat = ~Y,
+                   lng = ~X,
+                   radius = 0.05,
+                   popup = ~water,
+                   color = "cyan")
+```
+
+save the plot as .png
+
+```{r base_plot}
+library(extrafont)
+library(showtext)
+font_add_google("Schoolbell", "bell")
+showtext_opts(dpi = 320)
+showtext_auto(enable = T)
+
+
+
+plot <- ggplot()+
+  geom_blank()+
+  xlim(0,1932) + ylim(0,1326)+
+  theme_void()+
+  theme(plot.background = element_rect(color = "grey14",fill=NA, size=3))
+```
+
+```{r final_touches}
+library(cowplot)
+library(magick)
+
+image_map<- magick::image_read("~/Documents/R/R_general_resources/30DayMapChallenge/day5_osm/map.png")
+
+
+final <- cowplot::ggdraw(plot)+
+  draw_image(image_map,x = 0.02, y = 0,width =0.95)+
+  draw_label(label="Datasource: {osmdata} #30DayMapChallenge Day5 - map: Federica Gazzelloni",x=0.5,y=0.03,
+             fontfamily = "bell") +
+  draw_label(label="BERLIN WATER",x=0.45,y=0.92,size=50,fontfamily = "bell",fontface="bold")
+
+```
+
+
+
+```{r save_png}
+# save final plot
+ragg::agg_png("~/Documents/R/R_general_resources/30DayMapChallenge/day5_osm/osmdata.png",
+              res = 320, width = 11, height = 8, units = "in")
+final
+dev.off()
+```
+
+
