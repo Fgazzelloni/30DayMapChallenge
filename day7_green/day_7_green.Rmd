@@ -1,0 +1,148 @@
+---
+title: "day7_green"
+author: "FG"
+date: "7 November 2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+https://osdatahub.os.uk/downloads/open#CODEPO
+https://datatricks.co.uk/london-map-in-3-easy-steps
+https://data.police.uk/data/statistical-data/
+
+```{r}
+library(tidyverse)
+library(spData)
+library(sf)
+library(rgeos)
+library(sp)
+# x <- c("ggmap", "rgdal", "rgeos", "maptools", "dplyr", "tidyr", "tmap")
+#  # install.packages(x) # warning: uncommenting this may take a number of minutes
+# lapply(x, library, character.only = TRUE) # load the required packages
+```
+
+```{r}
+spData::cycle_hire_osm
+spData::lnd
+```
+
+
+```{r}
+coord_lnd_cycl <- data.frame(st_coordinates(cycle_hire_osm$geometry))
+
+cycle_hire_osm <- as.data.frame(cycle_hire_osm)
+
+
+cycle_hire_osm$X <- coord_lnd_cycl$X
+cycle_hire_osm$Y <- coord_lnd_cycl$Y
+```
+
+```{r}
+cycle_hire_osm
+```
+
+```{r}
+spData::lnd
+```
+
+```{r}
+plot(lnd)
+```
+
+```{r}
+london_data <- lnd
+
+lnd_geo <- data.frame(london_data$GSS_CODE,london_data$HECTARES,london_data$geometry)
+
+names(lnd_geo)[1]<- "GSS_CODE"
+
+coord_london <- data.frame(st_coordinates(lnd_geo$geometry))
+
+lnd_geo_coord<- merge.data.frame(lnd_geo,coord_london)
+```
+
+```{r}
+lnd_geo_coord%>%count(L3)
+```
+
+
+
+
+
+LONDON MAP!!!!!!
+
+```{r}
+ggplot() +
+  geom_polygon(data=lnd_geo_coord,
+               aes(x = X, y = Y,group=L3, fill = L3), 
+               colour = "black")+
+  labs(x = "Longitude", y = "Latitude", 
+       title = "Map of Greater London with the borough boundaries")
+```
+
+
+```{r}
+cycle_hire_osm
+```
+
+
+```{r}
+library(extrafont)
+library(showtext)
+fonts()
+loadfonts()
+font.families.google()
+font_add_google("Mr Dafoe", "MrDafoe")
+showtext_opts(dpi = 320)
+showtext_auto(enable = T)
+```
+
+
+
+
+```{r}
+lnd_center<- lnd_geo_coord%>%filter(X>c(-0.3) & X<0.0,
+                                    Y>51.4 & Y<51.6)
+
+cycle_hire_osm%>%count(name)
+
+final <-ggplot()+
+     geom_polygon(data=lnd_geo_coord,
+               aes(x = X, y = Y,group=L3, fill = L3), 
+               colour = "black")+
+     geom_point(data=cycle_hire_osm, mapping=aes(x=X,y=Y),
+                color = 'gold', size=0.2, alpha=0.5)+ 
+  coord_map()+
+  scale_fill_gradient(low = "honeydew2",high = "darkgreen")+
+  labs(x = "Longitude", y = "Latitude", 
+       title = "Map of Greater London with cycle hire",
+       subtitle = "with the borough boundaries",
+       caption = "Datasource: #TidyTuesday week45 - {spData} package \n Infographics: Federica Gazzelloni")+
+  cowplot::theme_map()+
+  theme(panel.grid.major = element_blank(),
+        axis.title.x=element_blank(), 
+        axis.text.y=element_blank(), 
+        plot.background = element_rect(color="midnightblue",fill="midnightblue"),
+        panel.background=element_rect(color="midnightblue",fill="midnightblue"),
+        plot.title=element_text(color="honeydew2",size=33,family="Arial"),
+        plot.subtitle=element_text(color="honeydew2",size=24,family="Arial"),
+        plot.caption = element_text(family="Arial",color="honeydew2"),
+        legend.position = "none")
+
+```
+
+
+
+```{r}
+# save final plot
+ragg::agg_png("~/Documents/R/R_general_resources/30DayMapChallenge/day7_green/green.png",
+              res = 320, width = 11, height = 8, units = "in")
+final
+dev.off()
+```
+
+
+
