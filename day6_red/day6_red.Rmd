@@ -81,8 +81,8 @@ my_df <- drought_short_map%>%count(month,sort=T)%>%
 
 ```{r fonts_colors}
 library(extrafont)
-loadfonts()
-fonts()
+#loadfonts()
+#fonts()
 
 droughts_family <- "Roboto Condensed"
 
@@ -94,14 +94,20 @@ red.pal<-c("red", "orangered", "firebrick1", "brown3", "firebrick")
 
 
 ```{r map_plot}
+us_county_map <- map_data("county")
+us_state_map <- map_data("state")
+
 ggplot() +
   geom_point(data=subset(my_df,lat>25&lat<50),
              aes(x=lng,y=lat,color=factor(drought_lvl)),
              alpha=0.5,size=.4) +
+  
   geom_polygon(data=us_county_map,aes(x=long,y=lat,group = group),
                fill=NA,color = "darkred",size=0.2) +
+  
   geom_polygon(data=us_state_map,aes(x=long,y=lat,group = group),
                fill=NA,color = "red",size=0.4) +
+  
   scale_color_manual(labels = intensity_impacts,
                      values=red.pal) +
   ggthemes::theme_map() +
@@ -120,13 +126,13 @@ ggplot() +
         plot.title.position = "panel") +
 
 # gganimate specific bits:
-       labs(title="US Drought variation - Month: {frame_time}",
+       labs(title="US Drought variation - Month: {closest_state}",
        subtitle="",
        caption="US Drought map: available values by County - Jan to July 2021\n
        #30DayMapChallenge day6-red - graphic: Federica Gazzelloni")+
-
-        transition_time(month_id) +
-          ease_aes('linear')
+        transition_states(month) +
+        ease_aes('linear')
+        
 ```
 
 
