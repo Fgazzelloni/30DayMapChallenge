@@ -1,0 +1,224 @@
+---
+title: "day8 - blue"
+author: "FG"
+date: "11/8/2021"
+output: html_document
+---
+
+
+This is day 8 - blue for #30DayMapChallenge.
+I am looking at the [ggplot2-book](https://ggplot2-book.org/maps.html) map chapter.
+In this case I'd like to understand how to make modification of a .tif image positioning it inside a ggplot.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+```
+
+Load the {ozmaps} for the geometry of Australia.
+
+```{r}
+library(ozmaps)
+library(sf)
+
+oz_states <- ozmaps::ozmap_states
+oz_states
+
+st_crs(oz_states) = st_crs(4283)
+
+oz_states%>%
+ggplot()+
+  geom_sf()+
+  coord_sf()
+```
+
+```{r}
+tmap::tm_shape(oz_states) +
+    tmap::tm_polygons() 
+```
+
+
+Then, select the raster images from source.
+
+See which raster images are available with loading the {bomrang} package and using the syntax below.
+
+Once you have found the file name, you can obtain the file searching on google tab with this string:
+"ftp://ftp.bom.gov.au/anon/gen/gms/" with the final name of the file
+
+
+For example google this, it might take a little while: ftp://ftp.bom.gov.au/anon/gen/gms/IDE00422.202001072100.tif
+
+It pops up a window asking you to identify as a "guest", (it might probably saying that it couldn't conncet you, but then split all the pictures. You need to search for the desired piture, if it didn't prompt with the one you were searching for, mind it is  .tif type of file and you might need to choose a picture from your current year, such as 2021 - as the pictures from 2020 are not available anymore.)
+
+```{r}
+
+# sf::gdal_read() 
+# bomrang::get_available_imagery()
+
+# with - bomrang - find the avalable images
+files <- bomrang::get_available_imagery() %>%
+  stringr::str_subset("202001072100") 
+
+# use curl_download() to obtain a single file, and purrr to 
+# vectorise this operation
+purrr::walk2(
+  .x = paste0("ftp://ftp.bom.gov.au/anon/gen/gms/", files),
+  .y = file.path("raster", files),
+  .f = ~ download.file(url = .x, destfile = .y)
+)
+```
+
+Set the path of the image that you have downloaded and saved inside a "raster" folder in you project subfolder.
+
+```{r}
+img_vis  <- file.path("/Users/federica/Documents/R/R_general_resources/30DayMapChallenge/day8_blue/raster", "IDE00422.202111072100.tiff")
+img_inf <- file.path("/Users/federica/Documents/R/R_general_resources/30DayMapChallenge/day8_blue/raster", "IDE00421.202111072100.tiff")
+```
+
+Read the picture with {stars}, it releases information about the picture but we miss the coordinates??
+
+```{r}
+library(stars)
+sat_vis <- read_stars(img_vis, RasterIO = list(nBufXSize = 600, nBufYSize = 600))
+sat_inf <- read_stars(img_inf, RasterIO = list(nBufXSize = 600, nBufYSize = 600))
+```
+
+
+A ggplot can be made with the image using a `geom_stars()`
+
+```{r}
+blue_world <- ggplot() + 
+  geom_stars(data = sat_vis) + 
+  coord_equal()
+
+blue_world
+```
+
+The image can be easily modified:
+
+```{r}
+final <- blue_world +
+  labs(title="Globe Observer",
+       subtitle="Sat View of Australia\n#30DayMapChalleng Day 8 - Blue",
+       caption="Datasource:Australian Bureau of Meterorology (BOM)\nInfographic: Federica Gazzelloni")+
+  ggthemes::theme_map()+
+  theme(legend.position = "none",
+        plot.background = element_rect(color="#1a1c3d",fill="#1a1c3d"),
+        plot.title = element_text(color="#9a9ddb",size=35),
+        plot.subtitle = element_text(color="#9a9ddb",size=15),
+        plot.caption = element_text(color="#9a9ddb",size=12))
+```
+
+
+```{r}
+# save final plot
+ragg::agg_png("~/Documents/R/R_general_resources/30DayMapChallenge/day8_blue/blue.png",
+              res = 320, width = 11, height = 8, units = "in")
+final
+dev.off()
+```
+
+
+```{r}
+st_crs(sat_vis) = st_crs(4283)
+st_crs(oz_states)=st_crs(4283)
+oz_states <- st_transform(oz_states, crs = st_crs(sat_vis))
+```
+
+```{r}
+ggplot() + 
+  geom_stars(data = sat_vis, show.legend = FALSE) +
+  #geom_sf(data = oz_states, fill = NA, color = "green") + 
+  coord_sf() + 
+  theme_void() + 
+  scale_fill_gradient(low = "black", high = "white")
+```
+
+
+```{r}
+ggplot() + 
+  geom_stars(data = sat_vis, show.legend = FALSE) +
+  facet_wrap(vars(band)) + 
+  coord_equal() + 
+  scale_fill_gradient(low = "#0b2e66", high = "#b4c4de")
+```
+
+Then we go back to ozmaps::ozmap_states for some data adjustments.
+The CRS (Coordinate Reference System) need to be checked.
+
+```{r}
+oz_states <- ozmaps::ozmap_states %>% filter(NAME != "Other Territories")
+oz_votes <- rmapshaper::ms_simplify(ozmaps::abs_ced)
+st_crs(oz_votes)
+
+# this waht releases my El Capitan :(
+# GDAL Error 1: No PROJ.4 translation for source SRS, coordinate transformation initialization has failed.
+
+st_crs(oz_votes) = st_crs(4283)
+
+
+# st_crs(oz_votes) == st_crs(4283)   -  # [1] FALSE ????
+ggplot(oz_votes) + geom_sf()
+
+ ggplot(oz_votes) + geom_sf() + coord_sf(crs = st_crs(3112))
+ 
+ 
+ st_crs(oz_states)= st_crs(4283)
+
+
+
+ggplot(oz_states) + geom_sf() + coord_sf(crs = st_crs(3112))
+```
+
+
+
+```{r}
+st_bbox(oz_states) # coordinates of the box
+st_cast(oz_states, "POLYGON")
+
+# as an example we can extrapolate the geometry for one specified location
+vic_geo<- oz_states %>% 
+  filter(NAME == "Victoria") %>% 
+  pull(geometry) 
+
+st_cast(vic_geo, "POLYGON")
+which.max(st_area(vic_geo))
+
+st_crs(sat_vis)= st_crs(4283)
+
+oz_states <- st_transform(oz_states, crs = st_crs(sat_vis))
+
+
+st_transform(oz_states)
+```
+
+
+```{r}
+sat_vis[1,1]
+```
+
+
+```{r}
+oz_states <- st_transform(oz_states, crs = st_crs(sat_vis))
+sat_vis <- st_transform(sat_vis, crs = st_crs(sat_vis))
+
+ggplot() + 
+  geom_stars(data = sat_vis, show.legend = FALSE) +
+  geom_sf(data = oz_states, fill = NA, color = "white") + 
+  coord_sf() + 
+  ggthemes::theme_map()  
+  #scale_fill_gradient(low = "black", high = "white")
+```
+
+
+
+
+
+
+
+
+
+
