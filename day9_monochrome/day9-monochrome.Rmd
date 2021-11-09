@@ -1,0 +1,69 @@
+---
+title: "day9 - monochrome"
+author: "FG"
+date: "9 November 2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+```{r libraries}
+library(tidyverse)
+library(sf)
+library(spData)
+spData::world
+```
+
+
+```{r plot_and_save}
+# save final plot
+ragg::agg_png(here::here("/Users/federica/Documents/R/R_general_resources/30DayMapChallenge/day9_monochrome/monochrome.png"),
+              res = 320, width = 6, height = 6, units = "in")
+
+
+world_europe = world[world$continent == "Europe", ]
+italy = world[world$name_long == "Italy", ]
+plot(st_geometry(italy), expandBB = c(0, 0.2, 0.1, 1), col = "gray", lwd = 3)
+plot(world_europe[0], add = TRUE)
+dev.off()
+```
+```{r final_touches}
+library(cowplot)
+library(magick)
+
+
+mono_it <- image_read("/Users/federica/Documents/R/R_general_resources/30DayMapChallenge/day9_monochrome/monochrome.png")
+
+library(showtext)
+library(extrafont)
+sysfonts::font_info_google("Josefin Sans")
+#fonts()
+#loadfonts()
+font_add_google("Josefin Sans","josefin")
+showtext_opts(dpi = 320)
+showtext_auto(enable = T)
+
+
+empty<-ggplot()+geom_blank()+xlim(0,50)+ylim(0,50)+theme_void()
+
+g <- grid::circleGrob(gp = grid::gpar(fill = NA,color="black"))
+
+
+final <- ggdraw()+
+  draw_plot(empty)+
+  draw_image(mono_it, x = 0, y = 0,width = 1)+
+  draw_text("Monochrome Italy",x=0.5,y=0.91,angle=0,family="josefin")+
+  draw_text("Datasource: spData::world\nInfographics: Federica Gazzelloni",x=0.5,y=0.15,family="josefin",size=9)+
+  draw_grob(g, scale = 1)
+
+
+ragg::agg_png(here::here("/Users/federica/Documents/R/R_general_resources/30DayMapChallenge/day9_monochrome/monochrome.png"),
+              res = 320, width = 6, height = 6, units = "in")
+final
+dev.off()
+```
+
