@@ -42,7 +42,7 @@ This is my #30DayMapChallenge repository fork of [Topi Tjukanov official repo](h
 
 ## Day 9 
 09-11-2021 | **Monochrome** | A monochromic image is composed of one color (or values of one color). So for example black and white maps are valid here. [See some inspiration from the great monochrome mapping competition](https://somethingaboutmaps.wordpress.com/monocarto-2019-winners/) (although those masterpieces took a bit more than a day to make, probably)
-![png](dayx_x/x.png)     
+![png](day9_monochrome/monochrome.png)     
 
 ## Day 10 
 10-11-2021 | **Raster** | Nothing stops you from doing almost all of the maps with raster data. But this day is dedicated to those lovely pixels
