@@ -1,0 +1,193 @@
+---
+title: "create a Raster (day 10)"
+author: "FG"
+date: "11/6/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(afriadmin)
+library(afrihealthsites)
+library(afrilearndata)
+library(tmap)
+```
+
+```{r}
+afriadmin::afcountries
+#afriadmin::afcountrynames(afcountries$name)
+
+countries<- afriadmin::afcountries$name
+
+afrilearndata::africapitals
+afrilearndata::afrihighway
+afrilearndata::afripop2000
+afrilearndata::afripop2020  
+afrilearndata::africountries
+afriadmin::sf_af_gadm0
+afrihealthsites::sf_healthsites_af
+```
+
+```{r my_old_mac?, eval=FALSE, include=FALSE}
+dev.off()
+library(raster)
+library(sf)
+library(stars)
+
+afr <- raster(afripop2000)
+afr_star<- stars::st_as_stars(afripop2000)
+afr_sf=st_as_sf(afr_star)
+afr_st <- sf::st_transform(afr_sf, crs = st_crs(4326))
+st_crs(afr_st)==st_crs(4326)
+afr_raster<- stars::st_rasterize(afr_st)
+```
+
+```{r thisisformymac}
+sf::st_crs(africountries)=st_crs(4326)
+sf::st_crs(afrihighway)=st_crs(4326)
+sf::st_crs(africapitals)=st_crs(4326)
+```
+
+
+
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+tmap_mode("plot")
+
+pop_00 <- tmap::tm_shape(africountries) +
+  tm_polygons(col = "#42ecf5") +
+  
+  tm_shape(afripop2000)+
+  tm_raster(title="Population density",
+            palette = rev(viridisLite::inferno(5)),
+            breaks = c(0,2,20,200,2000,25000)) +
+  
+  tm_shape(afrihighway) +
+  tm_lines(col="#f5b342") +
+  
+  tm_shape(africountries)+
+  tm_borders() +
+  tm_text(text ="iso_a3", 
+          fontface = "bold",
+          col="midnightblue",
+          size = "pop_est",
+          title.size = "",
+          legend.size.show = TRUE,
+          sizes.legend.text = "Pop"
+          ) +
+  
+  tm_shape(africapitals) +
+  tm_symbols(col="midnightblue",scale = 0.2) +
+  
+  tm_layout(title="2000",
+            title.position = c(0.8,0.9),
+            legend.title.size = 1,
+            legend.text.size = 0.5,
+            legend.position = c("left","bottom"),
+            legend.bg.color = NA
+            )
+  
+    
+pop_20 <- tmap::tm_shape(africountries) +
+  tm_polygons(col = "#42ecf5") +
+  
+  tm_shape(afripop2020)+
+  tm_raster(title="Population density",
+            palette = rev(viridisLite::inferno(5)),
+            breaks = c(0,2,20,200,2000,25000)) +
+  
+  tm_shape(afrihighway) +
+  tm_lines(col="#f5b342") +
+  
+  tm_shape(africountries)+
+  tm_borders() +
+   tm_text(text ="iso_a3", 
+          fontface = "bold",
+          col="midnightblue",
+          size = "pop_est",
+          title.size = "",
+          legend.size.show = TRUE,
+          sizes.legend.text = "Pop"
+          ) +
+  
+  tm_shape(africapitals) +
+  tm_symbols(col="midnightblue",scale = 0.2) +
+  
+  tm_layout(title="2020",
+            title.position = c(0.8,0.9),
+            legend.title.size = 1,
+            legend.text.size = 0.5,
+            legend.position = c("left","bottom"),
+            legend.bg.color = NA
+            )  
+  
+my_raster<-tmap_arrange(pop_00,pop_20,ncol = 2)
+```
+
+
+```{r}
+# save final plot
+ragg::agg_png(here::here("day10_raster/raster.png"),
+              res = 320, width = 8, height = 6, units = "in")
+my_raster
+dev.off()
+```
+
+
+```{r}
+library(showtext)
+library(extrafont)
+sysfonts::font_info_google("Josefin Sans")
+#fonts()
+#loadfonts()
+font_add_google("Josefin Sans","josefin")
+showtext_opts(dpi = 320)
+showtext_auto(enable = T)
+```
+
+
+
+
+```{r}
+
+# final touches
+library(cowplot)
+library(magick)
+
+raster_image<- magick::image_read(here::here("day10_raster/raster.png"))
+
+g <- grid::circleGrob(gp = grid::gpar(fill = NA,color="black"))
+
+
+final <- cowplot::ggdraw()+
+  draw_image(raster_image,x = 0.1, y = 0,width = 0.7)+
+  draw_label(label="Africa",x=0.3,y=0.2,fontfamily="josefin",size=40) +
+  draw_label(label="density increased\nin some areas\nmore than others",x=0.52,y=0.35,fontfamily="josefin",size=8) +
+  draw_label(label="Population density transition 2000-2020", x=0.45, y=0.95, size=30, fontfamily="josefin") +
+  
+  draw_line(x = c(0.52, 0.5),y = c(0.38, 0.48),color = "black", size = 0.2)+
+  
+  draw_line(x = c(0.52, 0.6),y = c(0.38, 0.5),color = "black", size = 0.2)+
+  
+  draw_text("Datasource: afrilearndata\n#TidyTuesdat week46 and #30DayMapChallenge day10 Raster\nInfographics: Federica Gazzelloni",x=0.5,y=0.05,family="josefin",size=11)+
+  draw_grob(g, scale = 0.2,x = 0,y = 0.03)
+
+# save final plot
+ragg::agg_png(here::here("day10_raster/raster2.png"),
+              res = 320, width = 12, height = 8, units = "in")
+final
+dev.off()
+```
+
+
+
+
+
+
+
+
+
+
