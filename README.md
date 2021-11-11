@@ -46,11 +46,11 @@ This is my #30DayMapChallenge repository fork of [Topi Tjukanov official repo](h
 
 ## Day 10 
 10-11-2021 | **Raster** | Nothing stops you from doing almost all of the maps with raster data. But this day is dedicated to those lovely pixels
-![png](dayx_x/x.png)     
+![png](day10_raster/raster2.png)     
 
 ## Day 11 
 11-11-2021 | **3D** | The magnificent third dimension! Visualize something in 3D
-![png](dayx_x/x.png)     
+![png](day11_3D/world_3D.png)     
 
 ## Day 12 
 12-11-2021 | **Population** | That is you and me. Or maybe animal population from [Movebank.org](https://www.movebank.org/cms/movebank-main)? Anyhow a classic theme for thematic maps
