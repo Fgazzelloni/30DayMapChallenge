@@ -59,11 +59,14 @@ tm <-tmap::tm_shape(World_sh)+
              col="darkred",
              alpha=0.3,
              title.size = "Pop 1950") +
+  tm_credits("(c) World Pop {tmap} #30DayMapChallenge - Graphics: Federica Gazzelloni", 
+             col = "white",
+             position=c(0.35,0.01))+
   tm_layout(title="World Population 1950 vs 2030",
             title.position = c(0.4,0.1),
-            title.fontfamily = ,
             title.color = "white",
             title.fontface = "bold",
+            
             bg.color ="#185e6e",#  "#202254",
             inner.margins = c(0, .02, .02, .02),
             legend.text.color = "white",
@@ -81,7 +84,7 @@ tm <-tmap::tm_shape(World_sh)+
 
 
 ## save an image ("plot" mode)
-tmap_save(tm, filename = "day12_population/world_map.png")
+tmap_save(tm, filename = "world_map.png")
 ```
 
 
