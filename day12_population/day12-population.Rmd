@@ -1,0 +1,89 @@
+---
+title: "day12-population"
+author: "FG"
+date: "11/12/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+# Rnaturalearth & tmap
+
+library(tidyverse)
+library(sp)
+
+library(tmap)
+library(tmaptools)
+
+# from tmap
+data(metro, land, World)
+class(World) # class sf
+class(land)
+metro%>%data.frame()%>%head
+
+
+# old-style crs object detected (for my R version)
+st_crs(metro)=st_crs(4283)
+st_crs(World)=st_crs(4283)
+st_crs(land)=st_crs(4283)
+
+
+
+World_sh<- World%>%filter(!continent=="Antarctica")
+
+tmap_mode("plot")
+
+tm <-tmap::tm_shape(World_sh)+
+  tm_polygons("economy",
+              title="",
+              palette=(viridisLite::cividis(7))) +
+
+  tm_shape(World_sh) +
+  tm_borders("white", lwd = .5) +
+  tm_text("continent",
+          size = "AREA",
+          col="white") +
+
+  tm_shape(metro)+
+  tm_bubbles("pop2030",
+             col="white",
+             alpha=0.5,
+             title.size = "Pop 2030"
+             ) +
+
+  tm_shape(metro)+
+  tm_bubbles("pop1950",
+             col="darkred",
+             alpha=0.3,
+             title.size = "Pop 1950") +
+  tm_layout(title="World Population 1950 vs 2030",
+            title.position = c(0.4,0.1),
+            title.fontfamily = ,
+            title.color = "white",
+            title.fontface = "bold",
+            bg.color ="#185e6e",#  "#202254",
+            inner.margins = c(0, .02, .02, .02),
+            legend.text.color = "white",
+            legend.title.size = 1,
+            legend.text.size = 0.5,
+            legend.position = c(0.05,0.05),
+            legend.bg.color = NA,
+
+            earth.boundary=T,
+            earth.boundary.color="green",
+            earth.boundary.lwd=3,
+            space.color="midnightblue"
+
+            )
+
+
+## save an image ("plot" mode)
+tmap_save(tm, filename = "day12_population/world_map.png")
+```
+
+
+
+
