@@ -1,0 +1,238 @@
+---
+title: "day13_naturalearth"
+author: "FG"
+date: "11/13/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+The resource I am going to use today are:
+[rforpoliticalscience](https://rforpoliticalscience.com/2020/12/28/add-flags-to-maps-in-r/)
+[us census](https://walker-data.com/census-r/the-united-states-census-and-the-r-programming-language.html)
+
+
+
+
+```{r libraries}
+library(tidyverse)
+library(reshape2)
+library(rnaturalearth)
+library(rvest)
+library(countrycode)
+
+
+library(ggflags)
+
+library(ggimage)
+
+library(ggthemes)
+
+```
+
+
+
+```{r coldata}
+library(readr)
+COLDAT_colonies <- read_csv(here::here("day13_naturalearth/coldat/COLDAT_colonies.csv"))
+col_df <- COLDAT_colonies  #%>%head
+col_df <- data.frame(col_df[1:9])
+col_df%>%names
+```
+
+ Tidy data from wide to long:
+ 
+```{r tidy_coldata}
+long_col <- col_df %>%
+  pivot_longer(cols=c(2:9), names_to="colony",values_to="value")%>%
+  filter(!value==0) 
+
+Encoding(long_col$country) <- "latin1"
+  
+long_col <- long_col%>%
+  mutate(country=tolower(country))
+```
+ 
+
+
+Get natural earth world country polygons:
+```{r polygons_data}
+require(rnaturalearth)
+map <- ne_countries(scale = "medium", returnclass = "sf")
+
+map <- map %>%
+  mutate(country=tolower(name_long))
+
+map%>%select(contains("iso"),country,name_long)%>%head
+``` 
+
+```{r}
+country<- unique(long_col$country)
+
+require(countrycode)
+
+countrycode::codelist%>%head
+
+
+long_col$iso2c<- countrycode::countrycode(long_col$country,
+                         origin = 'country.name', 
+                         destination = 'iso2c')
+
+col_map <- sp::merge(map, long_col, 
+                 by.x = "iso_a2", 
+                 by.y = "iso2c", 
+                 all.x = TRUE)
+
+
+col_map <- col_map%>%
+  separate(colony,into=c("x","colony"))%>%
+  mutate(colony=as.factor(colony))
+
+col_map <- col_map%>%select(-x)
+```
+
+
+
+```{r coordinates}
+library(rvest)
+coord <- read_html("https://developers.google.com/public-data/docs/canonical/countries_csv")
+
+coord_tables <- coord %>% html_table(header = TRUE, fill = TRUE)
+
+coord <- coord_tables[[1]]
+
+col_map <- merge(col_map, coord, by.x= "iso_a2", by.y = "country", all.y = TRUE)
+
+
+col_map <- col_map%>%mutate(country_iso=tolower(iso_a2))
+
+col_map%>%select(latitude,longitude)%>%head
+```
+
+
+```{r palette}
+library(RColorBrewer)
+RColorBrewer::display.brewer.all()
+RColorBrewer::display.brewer.pal(9,"BrBG")
+```
+
+
+```{r select_area}
+
+col_map%>%select(subregion,country_iso)%>%head
+
+```
+
+```{r}
+cs_america<-col_map[which(col_map$subregion=="Central America"|col_map$subregion=="South America"),]
+cs_america%>%select(country_iso)
+cs_america%>%head
+```
+
+
+
+
+```{r}
+library(ggflags)
+
+library(RColorBrewer)
+# RColorBrewer::display.brewer.pal(9,"BrBG")
+cut_colors <- setNames(c(brewer.pal(name = "BrBG", n = 4),
+                         "darkred"),
+                       levels(cs_america$colony_factor))
+
+flags <- cs_america%>% # select(contains("colony"))
+  count(longitude,latitude,colony) 
+
+
+labels <- cs_america%>%
+  count(longitude,latitude,sovereignt,country_iso) 
+
+cs_america %>%
+  filter(!is.na(subregion))%>%
+  ggplot()+
+  geom_sf(aes(fill=gdp_md_est),position="identity") + # gdp_md_est
+  scale_fill_distiller(type = "seq",
+  palette = 2,
+  direction = -1,
+  values = NULL,
+  space = "Lab",
+  na.value = "grey50",
+  guide = "colourbar",
+  aesthetics = "fill")+
+  #scale_fill_manual(values = cut_colors) +
+  
+  ggflags::geom_flag(data=labels,aes(x=longitude,y=latitude,country=factor(sovereignt)),size=4) +
+  ggrepel::geom_text_repel(data=labels,
+                      aes(x=longitude+1,y=latitude+1,label=factor(sovereignt)),
+                      fill="darkorange",max.overlaps = 100,
+             label.padding = unit(1,"pt"))+
+  ggthemes::theme_map()+
+  theme(legend.position = c(-0.1,0.4))
+```
+
+
+```{r}
+library(showtext)
+library(extrafont)
+sysfonts::font_info_google("Josefin Sans")
+#fonts()
+#loadfonts()
+font_add_google("Josefin Sans","josefin")
+showtext_opts(dpi = 320)
+showtext_auto(enable = T)
+```
+
+
+
+
+```{r}
+options(scipen = 999)
+naturalearth <- col_map %>%
+  filter(!is.na(subregion))%>%
+  ggplot()+
+  geom_sf(aes(fill=gdp_md_est),color="#e3bf86",size=0.2,position="identity") + # gdp_md_est
+  scale_fill_distiller(type = "seq",
+                       label = scales::unit_format(unit = "M", scale = 1e-6),
+                       palette = 2,
+                       direction = -1,
+                       values = NULL,
+                       space = "Lab",
+                       na.value = "grey50",
+                       guide = "colourbar",
+                       aesthetics = "fill")+
+  coord_sf(crs = sf::st_crs(5368))+ # https://epsg.io/
+  labs(title = "NATURAL EARTH GDP ESTIMATION",
+       subtitle="rnaturalearth data #30DayMapChallenge",
+       caption = "Data: rnaturalearth - View: EPSG:5368 - Graphics: Federica Gazzelloni",
+       fill="GDP est.")+
+  ggthemes::theme_map()+
+  theme(text = element_text(family = "josefin",face = "bold"),
+        plot.title = element_text(size=25),
+        plot.subtitle = element_text(size=15),
+        plot.caption = element_text(size=12),
+        legend.position = c(0,0),
+        legend.background = element_blank(),
+        legend.title = element_text(vjust=1),
+        plot.background = element_rect(colour = "#7d9ac7",fill="#7d9ac7"),
+        panel.background = element_rect(colour = "#7d9ac7",fill="#7d9ac7")
+        )
+```
+
+```{r}
+# save final plot
+ragg::agg_png(here::here("day13_naturalearth/naturalearth2.png"),
+              res = 320, width = 12, height = 8, units = "in")
+naturalearth
+dev.off()
+```
+
+
+
+
+
+
+
