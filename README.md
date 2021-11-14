@@ -57,7 +57,7 @@ This is my #30DayMapChallenge repository fork of [Topi Tjukanov official repo](h
 ![png](day12_population/world_map.png)     
 
 ## Day13 13-11-2021 | **Data challenge 2: Natural Earth** | Great public domain map dataset for cartography on global and national scales. You can use Natural Earth as a part of your map or as the main source. You can download the data from a few different locations, but probably the easiest access is via [GitHub](https://github.com/nvkelso/natural-earth-vector/tree/master/geojson) or the [Natural Earth homepage](https://www.naturalearthdata.com/)
-![png](dayx_x/x.png)    
+![png](day13_naturalearth/naturalearth2.png)    
 
 ## Day 14 
 14-11-2021 | **Map with a new tool** | As the whole #30DayMapChallenge is much about learning and experimenting, this day is dedicated to exploring new tools. See the list on this repo below or find something interesting yourself!
