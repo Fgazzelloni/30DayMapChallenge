@@ -69,7 +69,7 @@ This is my #30DayMapChallenge repository fork of [Topi Tjukanov official repo](h
 
 ## Day 16 
 16-11-2021 | **Urban/rural** | Map an urban area or rural area. Or something that defines that place
-![png](da16_urban_rural/urban_rural.png)   
+![png](day16_urban_rural/urban_rural.png)   
 
 ## Day 17 
 17-11-2021 | **Land** | Land, landcover, landuse... You choose
