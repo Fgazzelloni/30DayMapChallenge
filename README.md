@@ -65,11 +65,11 @@ This is my #30DayMapChallenge repository fork of [Topi Tjukanov official repo](h
 
 ## Day 15
 15-11-2021 | **Map made without using a computer** | Title speaks for itself. Use pen & paper, [carrots](https://twitter.com/lacxrx/status/1326763865460367361?s=20) or something else
-![png](dayx_x/x.png)     
+![png](day15_nopc/IMG_1518.JPG)     
 
 ## Day 16 
 16-11-2021 | **Urban/rural** | Map an urban area or rural area. Or something that defines that place
-![png](dayx_x/x.png)   
+![png](da16_urban_rural/urban_rural.png)   
 
 ## Day 17 
 17-11-2021 | **Land** | Land, landcover, landuse... You choose
