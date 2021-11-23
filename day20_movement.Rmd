@@ -1,0 +1,102 @@
+---
+title: "day20_movement"
+author: "FG"
+date: "11/21/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Datasource:
+
+1. https://datacatalog.worldbank.org/search?fq=(geographical_extent%2Fcoverage%2Fany(geo:geo%2Fname%20eq%20%27Italy%27))%20and%20(Resources%2Fany(res:res%2Fformat%20eq%20%27TIFF%27))&q=
+2. https://datacatalog.worldbank.org/search/dataset/0038055/Derived-map-of-global-electricity-transmission-and-distribution-lines
+3. https://zenodo.org/record/3538890#.YZulSEbMJo4
+4. https://github.com/carderne/gridfinder
+5. https://rspatial.org/raster/spatial/8-rastermanip.html
+6. https://ec.europa.eu/eurostat/web/gisco/geodata/reference-data/transport-networks
+
+
+```{r library}
+library(raster)
+library(tidyverse)
+```
+
+
+```{r}
+it <- rgeoboundaries::gb_adm0("italy")
+```
+
+
+it: xmin: 6.626621 ymin: 35.49285 xmax: 18.52038 ymax: 47.09178
+
+```{r}
+flights_fortified <- readRDS("~/Documents/R/R_general_resources/30DayMapChallenge/day20_movement/data/flights_fortified.rds")
+
+my_df <-flights_fortified %>%
+   filter(long>=6.626621 & long<=18.52038)%>%
+  filter(lat>=35.49285 & lat<=47.09178) 
+
+my_df%>%count(name)
+```
+
+```{r}
+flights_points <- my_df %>%
+  group_by(group) %>%
+  filter(row_number() == 1 | row_number() == n())
+```
+
+
+
+```{r}
+ragg::agg_png(here::here("R_general_resources/30DayMapChallenge/day20_movement/movement_alitalia.png"),
+              res = 320, width = 12, height = 8, units = "in")
+ggplot()+
+  geom_sf(data = it, fill = NA, color = "#295C9C", size = 0.4) + 
+  geom_path(aes(long, lat, group = id, color = name), 
+            alpha = 0.0, size = 0.0, 
+            data = my_df) +
+  geom_path(aes(long, lat, group = id, color = name), 
+            alpha = 0.2, size = 0.3, color = "#f9ba00", 
+            data = my_df[my_df$name == "Alitalia", ]) +
+  
+  geom_point(data = flights_points[flights_points$name == "Alitalia", ], 
+             aes(long, lat), alpha = 0.8, size = 0.1, colour = "white") +
+  theme(panel.background = element_rect(fill = "#05050f", colour = "#05050f"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.title = element_blank(),
+        axis.text = element_blank(),
+        axis.ticks.length = unit(0, "cm"),
+        legend.position = "none") +
+  coord_sf()
+dev.off()
+```
+
+```{r}
+library(cowplot)
+
+final <- ggdraw()+
+  draw_image(here::here("day20_movement/movement_alitalia.png"),
+             x = 0.01, y = 0,width = 0.98) +
+  draw_label(label="Alitalia flights ",
+             x=0.5,y=0.12,size=25,color="white",fontface = "bold",
+             angle = 0) +
+  draw_text("Data: openflights - #30DayMapChallenge Day20 Movement\nInfographics: Federica Gazzelloni",
+            x=0.5,y=0.05,size=11,color="white")
+  
+```
+
+```{r}
+# save final plot
+ragg::agg_png(here::here("day20_movement/movement2.png"),
+              res = 320, width = 12, height = 8, units = "in")
+final
+dev.off()
+```
+
+
+
+
