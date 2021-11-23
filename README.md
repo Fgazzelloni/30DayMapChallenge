@@ -81,11 +81,11 @@ This is my #30DayMapChallenge repository fork of [Topi Tjukanov official repo](h
 
 ## Day 19 
 19-11-2021 | **Island(s)** | Islands in the water, islands of innovation or something completely different
-![png](dayx_x/x.png)     
+![png](day19_islands/islands.png)     
 
 ## Day 20 
 20-11-2021 | **Movement** | Visualizing movement can be done with a static map or with an animation. I [have written a blog post](https://www.gispo.fi/en/open-software/geogiffery-in-2020-with-qgis-temporal-controller/)recently on how to make animations with QGIS 
-![png](dayx_x/x.png)     
+![png](day20_movement/movement.png)        
 
 ## Day 21 
 21-11-2021 | **Elevation** | Sweet hillshades, beautiful contours, high mountains or low valleys.  DEM, DSM or something else
