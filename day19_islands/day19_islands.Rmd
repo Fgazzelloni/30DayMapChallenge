@@ -1,0 +1,149 @@
+---
+title: "day19_islands"
+author: "FG"
+date: "11/21/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(tidyverse)
+```
+
+
+## Japan
+source: https://cran.r-project.org/web/packages/ggfortify/vignettes/plot_map.html
+
+```{r}
+library(mapdata)
+
+# Check all available geospatial objects:
+# help(package='mapdata')
+ 
+japan<- ggplot2::map_data("japan")
+# Map of Japan:
+map('japan',col="black", lwd=1, mar=rep(0,4) )
+```
+
+```{r}
+japan <- map_data("japan") %>% 
+  select(lon = long, lat, group, id = region)
+head(japan)
+```
+
+
+
+```{r}
+cities <- get('world.cities')
+cities <- cities[cities$country.etc == 'Japan', ]
+head(cities)
+```
+
+
+```{r}
+jp_pop<- cities%>%
+  count(name,pop,lat,long)%>%
+  arrange(-pop)%>%
+  slice(1:10)
+```
+
+
+
+
+```{r}
+full <- japan%>%
+  full_join(jp_pop,by=c("lon"="long","lat"))
+```
+
+
+```{r fonts}
+library(extrafont)
+library(showtext)
+library(cowplot)
+library(ggstream)
+library(colorspace)
+
+
+## Automatically use showtext to render text for future devices
+showtext_auto()
+
+## Tell showtext the resolution of the device,
+## only needed for bitmap graphics. Default is 96
+showtext_opts(dpi = 320)
+
+## Loading Google fonts (https://fonts.google.com/)
+font_add_google("Covered By Your Grace", "grace")
+```
+
+
+```{r}
+
+library(RColorBrewer)
+n <- 47
+qual_col_pals = brewer.pal.info[brewer.pal.info$category == 'qual',]
+col_vector = unlist(mapply(brewer.pal, qual_col_pals$maxcolors, rownames(qual_col_pals)))
+
+library(RColorBrewer)
+final<- ggplot() +
+  geom_point(data = cities, 
+             mapping = aes(x = long, y = lat),
+               colour = 'blue', size = 0.1) +
+  
+  geom_polygon(data=japan,
+               mapping = aes(x = lon,y = lat,group = group,fill=id)) +
+  
+   geom_point(data=full,
+               mapping = aes(x = lon,y = lat, group = group,
+                             size=pop),alpha=0.4,color="black") +
+  
+  geom_text(aes(x = 132, y = 40),label = "Japan",size=20,family="grace") +
+  geom_text(aes(x = 142, y = 45),label = "Hokkaido",size=12,family="grace") +
+  geom_text(aes(x = 142, y = 37),label = "Honshu",size=12,family="grace") +
+  geom_text(aes(x = 132, y = 30),label = "Kyushu",size=12,family="grace") +
+  geom_text(aes(x = 138, y = 33),label = "Shikoku",size=12,family="grace") +
+  geom_text(aes(x = 130, y = 25),label = "Okinawa Island",size=12,family="grace") +
+  
+  ggrepel::geom_text_repel(data = jp_pop, 
+             mapping = aes(x = long, y = lat,label=name),family="grace") +
+  
+  scale_fill_manual(values=col_vector)+
+  scale_size_area(label = scales::comma,max_size=6)+
+  guides(fill=guide_legend(ncol=2,keywidth =  unit(0.1, 'cm')),
+         size=guide_legend(ncol=4)) +
+  
+  labs(title="Japanese Archipelago",
+       subtitle="Japan is the largest island country in East Asia and the fourth largest island country in the world - Wiki",
+       size="Population",fill="Regions",
+       caption = "Datasource: {ggplot2}::map_data - #30DayMapChallenge - Infographics: Federica Gazzelloni")+
+  coord_map() +
+  ggthemes::theme_map()+
+  theme(text = element_text(family="grace",size=12),
+        legend.position = c(-0.3,0.1),
+        legend.background = element_blank(),
+        legend.key.size = unit(0.1, 'cm'),
+        plot.title = element_text(size=25,vjust=-2),
+        plot.subtitle = element_text(vjust=-5),
+        plot.caption = element_text(size=14)
+        )
+
+final
+```
+
+
+```{r}
+# save final plot
+ragg::agg_png(here::here("R_general_resources/30DayMapChallenge/day19_islands/islands.png"),
+              res = 320, width = 12, height = 8, units = "in")
+final
+dev.off()
+```
+
+
+
+
+
+
