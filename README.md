@@ -77,7 +77,7 @@ This is my #30DayMapChallenge repository fork of [Topi Tjukanov official repo](h
 
 ## Day 18 
 18-11-2021 | **Water** | Oceans, lakes, rivers or something completely different
-![png](dayx_x/x.png)     
+![png](day18_water/water.png)     
 
 ## Day 19 
 19-11-2021 | **Island(s)** | Islands in the water, islands of innovation or something completely different
