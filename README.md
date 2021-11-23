@@ -73,7 +73,7 @@ This is my #30DayMapChallenge repository fork of [Topi Tjukanov official repo](h
 
 ## Day 17 
 17-11-2021 | **Land** | Land, landcover, landuse... You choose
-![png](dayx_x/x.png)     
+![png](day17_land/land.png)     
 
 ## Day 18 
 18-11-2021 | **Water** | Oceans, lakes, rivers or something completely different
