@@ -89,43 +89,43 @@ This is my #30DayMapChallenge repository fork of [Topi Tjukanov official repo](h
 
 ## Day 21 
 21-11-2021 | **Elevation** | Sweet hillshades, beautiful contours, high mountains or low valleys.  DEM, DSM or something else
-![png](dayx_x/x.png)     
+![png](day21_elevation.png)     
 
 ## Day 22 
 22-11-2021 | **Boundaries** | Boundaries are all around us. Some of them are visible and some of them are in our heads
-![png](dayx_x/x.png)     
+![png](day22_boundaries/boundaries5.png)     
 
 ## Day 23 
 23-11-2021 | **Data challenge 3: GHSL Global Human Settlement Layer**| The third data challenge should be created using this great dataset by EC JRC on human population. You can find it [here](https://ghsl.jrc.ec.europa.eu/). Different resolutions and areas you can choose from
-![png](dayx_x/x.png)     
+![png](day23_ghsl/ghsl.png)     
 
 ## Day 24 
 24-11-2021 | **Historical map** | Historical data, historical style or something else
-![png](dayx_x/x.png)     
+![png](day24_historical/historical.png)     
 
 ## Day 25 
 25-11-2021 | **Interactive map** | What if the user wants to click, pan and explore your map? If you don't feel comfortable with programming, one easy way is to use [qgis2web](https://github.com/tomchadwin/qgis2web) plugin. Or try out for example [kepler.gl](https://kepler.gl/) or [Unfolded Studio](https://studio.unfolded.ai/home)
-![png](dayx_x/x.png)     
+![png](day25_interactive/interactive.png)     
 
 ## Day 26 
 26-11-2021 | **Choropleth map** | A choropleth map is a type of thematic map in which a set of pre-defined areas is colored or patterned in proportion to a statistical variable that represents an aggregate summary of a geographic characteristic within each area, such as population density or per-capita income. (Source: [Wikipedia](https://en.wikipedia.org/wiki/Choropleth_map))
-![png](dayx_x/x.png)     
+![png](day26_choropleth/choropleth.png)     
 
 ## Day 27 
 27-11-2021 | **Heatmap** | A heat map (or heatmap) is a data visualization technique that shows magnitude of a phenomenon as color in two dimensions. The variation in color may be by hue or intensity, giving obvious visual cues to the reader about how the phenomenon is clustered or varies over space. (Source: [Wikipedia](https://en.wikipedia.org/wiki/Heat_map))
-![png](dayx_x/x.png)     
+![png](day27_heatmap/heatmap.png)     
 
 ## Day 28 
 28-11-2021 | **The Earth is not flat** | The Earth isn’t flat (AFAIK), so how would you show that on a map? Maybe something creative with projections? You can use e.g. [this QGIS plugin.](https://github.com/GispoCoding/GlobeBuilder)
-![png](dayx_x/x.png)     
+![png](day28_earth_not_flat/earth_not_flat.png)     
 
 ## Day 29 
 29-11-2021 | **NULL** 
-![png](dayx_x/x.png)            
+![png](day29_null/null.png)            
 
 ## Day 30 
 30-11-2021 | **Metamapping day** | Final day! Spend the day either by 1) collecting your entries from the challenge to a common gallery, 2) writing a tutorial or a blog post on one of your maps or 3) create a map from a theme you have chosen yourself
-![png](dayx_x/x.png)     
+![png](day30_metamapping/metamapping.png)     
 
 ## Data 🗺
 
