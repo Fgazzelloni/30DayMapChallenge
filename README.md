@@ -90,7 +90,7 @@ This is my #30DayMapChallenge repository fork of [Topi Tjukanov official repo](h
 
 ## Day 21 
 21-11-2021 | **Elevation** | Sweet hillshades, beautiful contours, high mountains or low valleys.  DEM, DSM or something else
-![png](day21_elevation.png)     
+![png](day21_elevation/elevation.png)     
 
 ## Day 22 
 22-11-2021 | **Boundaries** | Boundaries are all around us. Some of them are visible and some of them are in our heads
