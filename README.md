@@ -94,7 +94,7 @@ This is my #30DayMapChallenge repository fork of [Topi Tjukanov official repo](h
 
 ## Day 22 
 22-11-2021 | **Boundaries** | Boundaries are all around us. Some of them are visible and some of them are in our heads
-![png](day22_boundaries/boundaries5.png)     
+![png](day22_boundaries/boundaries.png)     
 
 ## Day 23 
 23-11-2021 | **Data challenge 3: GHSL Global Human Settlement Layer**| The third data challenge should be created using this great dataset by EC JRC on human population. You can find it [here](https://ghsl.jrc.ec.europa.eu/). Different resolutions and areas you can choose from
