@@ -94,11 +94,11 @@ This is my #30DayMapChallenge repository fork of [Topi Tjukanov official repo](h
 
 ## Day 22 
 22-11-2021 | **Boundaries** | Boundaries are all around us. Some of them are visible and some of them are in our heads
-![png](day22_boundaries/boundaries5.png)     
+![png](day22_boundaries/boundaries.png)     
 
 ## Day 23 
 23-11-2021 | **Data challenge 3: GHSL Global Human Settlement Layer**| The third data challenge should be created using this great dataset by EC JRC on human population. You can find it [here](https://ghsl.jrc.ec.europa.eu/). Different resolutions and areas you can choose from
-![png](day23_ghsl/ghsl.png)     
+![png](day23_ghsl_data/ghsl.png)     
 
 ## Day 24 
 24-11-2021 | **Historical map** | Historical data, historical style or something else
@@ -114,7 +114,7 @@ This is my #30DayMapChallenge repository fork of [Topi Tjukanov official repo](h
 
 ## Day 27 
 27-11-2021 | **Heatmap** | A heat map (or heatmap) is a data visualization technique that shows magnitude of a phenomenon as color in two dimensions. The variation in color may be by hue or intensity, giving obvious visual cues to the reader about how the phenomenon is clustered or varies over space. (Source: [Wikipedia](https://en.wikipedia.org/wiki/Heat_map))
-![png](day27_heatmap/heatmap.png)     
+![png](day27_heatmap/heatmat.png)     
 
 ## Day 28 
 28-11-2021 | **The Earth is not flat** | The Earth isn’t flat (AFAIK), so how would you show that on a map? Maybe something creative with projections? You can use e.g. [this QGIS plugin.](https://github.com/GispoCoding/GlobeBuilder)
@@ -122,7 +122,7 @@ This is my #30DayMapChallenge repository fork of [Topi Tjukanov official repo](h
 
 ## Day 29 
 29-11-2021 | **NULL** 
-![png](day29_null/null.png)            
+![png](day29_null/NULL.png)            
 
 ## Day 30 
 30-11-2021 | **Metamapping day** | Final day! Spend the day either by 1) collecting your entries from the challenge to a common gallery, 2) writing a tutorial or a blog post on one of your maps or 3) create a map from a theme you have chosen yourself
