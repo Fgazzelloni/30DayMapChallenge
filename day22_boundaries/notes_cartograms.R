@@ -2,7 +2,7 @@
 library(maps)
 library(tidyverse)
 library(spData)
-
+spData::world
 spData::nz
 spData::lnd
 #spDataLarge::
