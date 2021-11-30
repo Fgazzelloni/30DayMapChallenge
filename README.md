@@ -7,7 +7,7 @@ This is my #30DayMapChallenge repository fork of [Topi Tjukanov official repo](h
 
 # #30DayMapChallenge 🌎🌏🌎 schedule:
 
-![Themes for the maps. See more below.](https://raw.githubusercontent.com/tjukanovt/30DayMapChallenge/master/images/30dmpc_2021.png)
+![Themes for the maps. See more below.](https://github.com/tjukanovt/30DayMapChallenge)
 
 ## Themes 📆
 
