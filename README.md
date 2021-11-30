@@ -122,7 +122,7 @@ This is my #30DayMapChallenge repository fork of [Topi Tjukanov official repo](h
 
 ## Day 29 
 29-11-2021 | **NULL** 
-![png](day29_null/null.png)            
+![png](day29_null/NULL.png)            
 
 ## Day 30 
 30-11-2021 | **Metamapping day** | Final day! Spend the day either by 1) collecting your entries from the challenge to a common gallery, 2) writing a tutorial or a blog post on one of your maps or 3) create a map from a theme you have chosen yourself
