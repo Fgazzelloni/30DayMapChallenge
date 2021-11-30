@@ -98,7 +98,7 @@ This is my #30DayMapChallenge repository fork of [Topi Tjukanov official repo](h
 
 ## Day 23 
 23-11-2021 | **Data challenge 3: GHSL Global Human Settlement Layer**| The third data challenge should be created using this great dataset by EC JRC on human population. You can find it [here](https://ghsl.jrc.ec.europa.eu/). Different resolutions and areas you can choose from
-![png](day23_ghsl/ghsl.png)     
+![png](day23_ghsl_data/ghsl.png)     
 
 ## Day 24 
 24-11-2021 | **Historical map** | Historical data, historical style or something else
