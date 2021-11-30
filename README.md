@@ -61,7 +61,7 @@ This is my #30DayMapChallenge repository fork of [Topi Tjukanov official repo](h
 
 ## Day 14 
 14-11-2021 | **Map with a new tool** | As the whole #30DayMapChallenge is much about learning and experimenting, this day is dedicated to exploring new tools. See the list on this repo below or find something interesting yourself!
-![png](dayx_x/x.png)
+![png](day14_newtool/newtool.png)
 
 ## Day 15
 15-11-2021 | **Map made without using a computer** | Title speaks for itself. Use pen & paper, [carrots](https://twitter.com/lacxrx/status/1326763865460367361?s=20) or something else
