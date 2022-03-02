@@ -114,7 +114,7 @@ This is my #30DayMapChallenge repository fork of [Topi Tjukanov official repo](h
 
 ## Day 27 
 27-11-2021 | **Heatmap** | A heat map (or heatmap) is a data visualization technique that shows magnitude of a phenomenon as color in two dimensions. The variation in color may be by hue or intensity, giving obvious visual cues to the reader about how the phenomenon is clustered or varies over space. (Source: [Wikipedia](https://en.wikipedia.org/wiki/Heat_map))
-![png](day27_heatmap/heatmat.png)     
+![png](day27_heatmap/heatmap.png)     
 
 ## Day 28 
 28-11-2021 | **The Earth is not flat** | The Earth isn’t flat (AFAIK), so how would you show that on a map? Maybe something creative with projections? You can use e.g. [this QGIS plugin.](https://github.com/GispoCoding/GlobeBuilder)
