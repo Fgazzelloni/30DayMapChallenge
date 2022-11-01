@@ -4,7 +4,7 @@
 
 This is [Federica Gazzelloni](https://github.com/Fgazzelloni)'s official #30DayMapChallenge repository
 
-### My contributions are on [Twitter: \@fgazzelloni](https://twitter.com/fgazzelloni):
+### My contributions are on [Twitter: \@fgazzelloni](https://twitter.com/fgazzelloni)
 
 #### Themes for this year are:
 
