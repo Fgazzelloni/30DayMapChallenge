@@ -14,7 +14,7 @@ library(extrafont)
 showtext::showtext_auto()
 showtext::showtext_opts(dpi=320)
 font_add(family ="Roboto Condensed",regular="RobotoCondensed-Regular.ttf")
-# font_add_google(name ="Roboto Condensed",family="Roboto Condensed")
+
 # read in the rivers data
 # https://www.hydrosheds.org/products/hydrorivers
 # my_rivers <- st_read(dsn = 'HydroRIVERS_v10_eu_shp/HydroRIVERS_v10_eu.shp') 
