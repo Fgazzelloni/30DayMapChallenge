@@ -398,19 +398,6 @@ webshot("temp.html", file = "Rplot.png", cliprect = "viewport")
 ```
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 Or we can set a bbox with the coordinates for a section of the map.
 
 ```{r}
@@ -425,7 +412,7 @@ Or we can set a bbox with the coordinates for a section of the map.
 ## spDataLarge data ----
 Let's say for example that we want to populate our map with shops. We can download the shops dataset, made ready from {spDataLarge} and ? How do we used {osmdata}?
  
-let's see how to apply these "shpos" data to a map. This is made of **simple features** and some named variables: 
+let's see how to apply these "shop" data to a map. This is made of **simple features** and some named variables: 
 
 - osm_id
 - shop
