@@ -21,7 +21,7 @@ This is my #30DayMapChallenge repository fork of [Topi Tjukanov official repo](h
 
 ## Day 6
 
-06-11-2021 \| **Red**\| A map with red colour or a map about something red. ![Day 6: Something Red](day6_red/drought_red.gif)
+06-11-2021 \| **Red**\| A map with red colour or a map about something red. <br>![Day 6: Something Red](day6_red/drought_red.gif)
 
 ## Day 7
 
