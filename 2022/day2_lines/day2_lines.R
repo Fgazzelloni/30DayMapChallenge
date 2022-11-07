@@ -1,5 +1,5 @@
-#30DayMapChallenge 2022 day 2: Lines
-# author: Federica Gazzelloni
+#30DayMapChallenge 2022 Day 2: Lines
+# Author: Federica Gazzelloni
 
 
 # load the libraries

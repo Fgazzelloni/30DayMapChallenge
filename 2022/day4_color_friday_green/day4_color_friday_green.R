@@ -1,3 +1,7 @@
+#30DayMapChallenge 2022 Day 4: Color Friday Green
+# Author: Federica Gazzelloni
+
+
 library(osmdata)
 library(mapdeck)
 library(cowplot)
