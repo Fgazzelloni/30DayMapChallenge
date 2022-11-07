@@ -1,5 +1,5 @@
-#30DayMapChallenge 2022 day 1: Points
-# author: Federica Gazzelloni
+#30DayMapChallenge 2022 Day 1: Points
+# Author: Federica Gazzelloni
 
 
 # load the libraries
