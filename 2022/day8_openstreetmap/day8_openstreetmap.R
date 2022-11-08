@@ -110,29 +110,29 @@ ggplot() +
         plot.margin = margin(10,10,40,10,unit = "pt"))
 
 # save the base map
-ggsave("day8_osm.png", width = 6, height = 6)
+ggsave("base_map.png", width = 6, height = 6)
 
 
 # draw the map-viz
 library(cowplot)
 
 ggdraw()+
-  draw_image("day8_osm.png")+
-  draw_line(x=c(0.165,0.833),y=c(0.156,0.156),
+  draw_image("data/base_map.png")+
+  draw_line(x=c(0.055,0.945),y=c(0.169,0.169),
             size=25,color="#dedede",alpha=0.7)+
-  draw_line(x=c(0.38,0.62),y=c(0.21,0.21),
+  draw_line(x=c(0.3,0.7),y=c(0.22,0.22),
             size=1)+
   draw_label("Rome",
-             x=0.5,y=0.18,
+             x=0.5,y=0.19,
              size=15,
              fontface = "bold",
              fontfamily = "Gideon Roman")+
   draw_label("41.9027°N/12.4964°E",
-             x=0.5,y=0.135,
+             x=0.5,y=0.149,
              size=6,
              fontfamily = "Gideon Roman") +
   draw_label("OSM key: Military",
-             x=0.5,y=0.11,
+             x=0.5,y=0.125,
              size=5,
              fontfamily = "Gideon Roman") +
   draw_label("#30DayMapChallenge 2022 Day 7: osmdata\nDataSource: {osmdata}: Rome, Italy | Map: Federica Gazzelloni (@fgazzelloni)",
@@ -143,7 +143,7 @@ ggdraw()+
 
 # save final version
 ggsave("day8_openstreetmap.png", 
-       dpi=200,
-       width = 8, 
+       dpi=160,
+       width = 5.8, 
        height = 6,
        bg="white")
