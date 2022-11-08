@@ -124,26 +124,26 @@ ggdraw()+
             size=1)+
   draw_label("Rome",
              x=0.5,y=0.19,
-             size=15,
+             size=14.5,
              fontface = "bold",
              fontfamily = "Gideon Roman")+
   draw_label("41.9027°N/12.4964°E",
              x=0.5,y=0.149,
-             size=6,
+             size=5,
              fontfamily = "Gideon Roman") +
   draw_label("OSM key: Military",
              x=0.5,y=0.125,
-             size=5,
+             size=4,
              fontfamily = "Gideon Roman") +
-  draw_label("#30DayMapChallenge 2022 Day 7: osmdata\nDataSource: {osmdata}: Rome, Italy | Map: Federica Gazzelloni (@fgazzelloni)",
-             x=0.5,y=0.05,
-             size=5,
-             lineheight = 1.5,
+  draw_label("#30DayMapChallenge 2022 Day 8: osmdata\nDataSource: {osmdata}: Rome, Italy | Map: Federica Gazzelloni (@fgazzelloni)",
+             x=0.5,y=0.07,
+             size=4,
+             lineheight = 1.8,
              fontfamily = "Gideon Roman")
 
 # save final version
 ggsave("day8_openstreetmap.png", 
-       dpi=160,
+       dpi=150,
        width = 5.8, 
        height = 6,
        bg="white")
