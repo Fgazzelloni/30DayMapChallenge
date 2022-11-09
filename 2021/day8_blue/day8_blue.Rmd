@@ -54,7 +54,7 @@ Once you have found the file name, you can obtain the file searching on google t
 
 For example google this, it might take a little while: ftp://ftp.bom.gov.au/anon/gen/gms/IDE00422.202001072100.tif
 
-It pops up a window asking you to identify as a "guest", (it might probably saying that it couldn't conncet you, but then split all the pictures. You need to search for the desired piture, if it didn't prompt with the one you were searching for, mind it is  .tif type of file and you might need to choose a picture from your current year, such as 2021 - as the pictures from 2020 are not available anymore.)
+It pops up a window asking you to identify as a "guest", (it might probably saying that it couldn't connect you, but then split all the pictures. You need to search for the desired picture, if it didn't prompt with the one you were searching for, mind it is  .tif type of file and you might need to choose a picture from your current year, such as 2021 - as the pictures from 2020 are not available anymore.)
 
 ```{r}
 
