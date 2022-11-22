@@ -2,6 +2,7 @@
 # TidyTuesday week 6 2022
 # original Dubois collection:
 # https://www.loc.gov/collections/african-american-photographs-1900-paris-exposition/?sb=shelf-id_desc&sp=1&st=grid
+# https://github.com/ajstarks/dubois-data-portraits/blob/master/plate01/georgia-negro.dsh
 
 # load data------------
 library(tidyverse)
