@@ -13,7 +13,7 @@ The idea is to create maps based around different themes each day of November us
 <!-- TABLE START -->
 
 | Day | Date         | Theme                           | Map                                                                                                                                                                                                                                            |
-|------------------|------------------|------------------|-------------------|
+|---------|---------|---------|-----------------------------------------------|
 | 1   | `01-11-2022` | Points                          | [![Malaria in children, The Gambia, Africa](day1_points/day1_points.png "Points")](https://github.com/Fgazzelloni/30DayMapChallenge/blob/master/2022/day1_points/day1_points.R)                                                                |
 | 2   | `02-11-2022` | Lines                           | [![Rivers in Italy and surrounding areas](day2_lines/day2_lines.png "Lines"){width="256"}](https://github.com/Fgazzelloni/30DayMapChallenge/blob/master/2022/day2_lines/day2_lines.R)                                                          |
 | 3   | `03-11-2022` | Polygons                        | [![census tracts of New York](day3_polygons/day3_polygons.png "Polygons")](https://github.com/Fgazzelloni/30DayMapChallenge/blob/master/2022/day3_polygons/day3_polygons.R)                                                                    |
@@ -42,7 +42,7 @@ The idea is to create maps based around different themes each day of November us
 | 26  | `26-11-2022` | Island(s)                       | ![day26_islands2](day26_islands/day26_islands2.png)                                                                                                                                                                                            |
 | 27  | `27-11-2022` | Music                           | ![day27_music](day27_music/day27_music.png)                                                                                                                                                                                                    |
 | 28  | `28-11-2022` | 3D                              | [![day28_3D](day28_3D/day28_3D.png)](https://github.com/Fgazzelloni/30DayMapChallenge/blob/master/2022/day28_3D/day28_3D.R)                                                                                                                    |
-| 29  | `29-11-2022` | *"Out of my comfort zone"*      | Challenge yourself. Maybe a map using a new tool?                                                                                                                                                                                              |
+| 29  | `29-11-2022` | *"Out of my comfort zone"*      | ![day29_out_comfort_zone](day29_out_comfort_zone/day29_out_comfort_zone.png)                                                                                                                                                                   |
 | 30  | `30-11-2022` | Remix                           | Take a map that you've done during the month and do a new version. Or take a map you really like by someone else and do your own version.                                                                                                      |
 
 <!-- TABLE END -->
