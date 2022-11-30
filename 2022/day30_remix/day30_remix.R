@@ -114,7 +114,7 @@ ggdraw()+
   draw_line(x=c(0,0.99),y=c(0.89),
             alpha=0.4,
             color="grey95",size=20)+
-  draw_label("Capmsites in Urupukapuka Island no dogs allowed",
+  draw_label("Campsites in Urupukapuka Island no dogs allowed",
              x=0.5,y=0.95,
              fontface = "bold",
              fontfamily = "Poor Story") +
