@@ -43,7 +43,7 @@ The idea is to create maps based around different themes each day of November us
 | 27  | `27-11-2022` | Music                           | ![day27_music](day27_music/day27_music.png)                                                                                                                                                                                                    |
 | 28  | `28-11-2022` | 3D                              | [![day28_3D](day28_3D/day28_3D.png)](https://github.com/Fgazzelloni/30DayMapChallenge/blob/master/2022/day28_3D/day28_3D.R)                                                                                                                    |
 | 29  | `29-11-2022` | *"Out of my comfort zone"*      | ![day29_out_comfort_zone](day29_out_comfort_zone/day29_out_comfort_zone.png)                                                                                                                                                                   |
-| 30  | `30-11-2022` | Remix                           | Take a map that you've done during the month and do a new version. Or take a map you really like by someone else and do your own version.                                                                                                      |
+| 30  | `30-11-2022` | Remix                           | ![day30_remix](day30_remix/day30_remix.png)                                                                                                                                                                                                    |
 
 <!-- TABLE END -->
 

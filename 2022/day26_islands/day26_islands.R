@@ -1,8 +1,10 @@
+#30DayMapChallenge 2022 Day 26: Islands
+# Author: Federica Gazzelloni
 
 
 library(leaflet)
-library(leaflet.extras)
-library(leaflet.providers)
+# library(leaflet.extras)
+# library(leaflet.providers)
 
 fileid<- "d069b4c5-ec5b-c750-45aa-0a13f57dc35a"
   #Geographic Bounding Box
@@ -10,7 +12,7 @@ bbox<- c(174.064747966174,.345239694,-35.2867580621,-35.1399271488)
 tile <- "http://tiles-{s}.data-cdn.linz.govt.nz/services;key=0661036048984cf88489c5930d0c2e98/tiles/v4/layer=NZ512501/EPSG:3857/{z}/{x}/{y}.png"
 
 islands <- leaflet(options = leafletOptions(zoomControl = FALSE)) %>% 
-  setView(174.1642,-35.22549,zoom=13) %>%
+  setView(174.1642,-35.22549,zoom=12) %>%
   addTiles() %>%
   # addProviderTiles(providers$Esri.NatGeoWorldMap,
   #                  options = providerTileOptions(opacity = 0.35))%>%
