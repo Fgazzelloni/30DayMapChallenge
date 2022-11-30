@@ -111,21 +111,17 @@ webshot("temp.html", file = "data/islands_mixup.png",
 library(cowplot)
 ggdraw()+
   draw_image("data/islands_mixup.png")+
-  draw_line(x=c(0,0.99),y=c(0.89),
-            alpha=0.4,
-            color="grey95",size=20)+
   draw_label("Capm sites in Urupukapuka Island no dogs allowed",
              x=0.5,y=0.95,
              fontface = "bold",
              fontfamily = "Poor Story") +
   draw_label("#30DayMapChallenge 2022 Day 30: Mixup\nDataSource: New Zealand Hydrographic Authority & data.govt.nz | Graphics: @fgazzelloni",
-             x=0.5,y=0.90,
-             lineheight = 1.2,
+             x=0.5,y=0.91,
              fontfamily = "Poor Story",
-             size=5) 
+             size=6) 
 
 ggsave("day30_remix.png",
-       dpi=200,
+       dpi=280,
        width = 6.83,
        height =5.26 )
 
