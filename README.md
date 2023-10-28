@@ -17,7 +17,7 @@ The idea is to create maps based around different themes each day of November us
 <!-- TABLE START -->
 
 | Maps                               |                                                |                                        |                                                  |
-|------------------------------------|------------------------------------------------|----------------------------------------|--------------------------------------------------|
+|-----------------|-------------------|-----------------|--------------------|
 | Day 1 - `01-11-2023 -`Points       | Day 2 - `02-11-2023 - Lines`                   | Day 3 - `03-11-2023 -`Polygons         | Day 4 - `04-11-2023 - A Bad Map`                 |
 |                                    |                                                |                                        |                                                  |
 | Day 5 - `05-11-2023 -`Analog Map   | Day 6 - `06-11-2023 -`Asia                     | Day 7 - `07-11-2023 -`Navigation       | Day 8 - `08-11-2023 -`Data: Africa               |
@@ -35,8 +35,6 @@ The idea is to create maps based around different themes each day of November us
 | Day 29 - `29-11-2023 - Pouplation` | Day 30 - `30-11-2023 - My Favourite`           |                                        |                                                  |
 
 <!-- TABLE END -->
-
-The above table is also available as an [iCal calendar file](https://raw.githubusercontent.com/tjukanovt/30DayMapChallenge/main/themes.ical) for consumption by your favorite calendar/scheduling application.
 
 ## Data 🗺
 
