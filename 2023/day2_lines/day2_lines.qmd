@@ -1,0 +1,11 @@
+---
+title: 'Lines'
+subtitle: 'Welcome to #30DayMapChallenge 2023 day 2'
+date: '2023-11-02'
+image: 'day2_lines.qmd'
+image-alt: ''
+description: ''
+output: html_document
+execute: 
+   eval: false
+---

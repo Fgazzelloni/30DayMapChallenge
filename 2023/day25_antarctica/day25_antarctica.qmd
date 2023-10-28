@@ -1,0 +1,11 @@
+---
+title: 'Antarctica'
+subtitle: 'Welcome to #30DayMapChallenge 2023 day 25'
+date: '2023-11-25'
+image: 'day25_antarctica.qmd'
+image-alt: ''
+description: ''
+output: html_document
+execute: 
+   eval: false
+---

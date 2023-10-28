@@ -1,0 +1,11 @@
+---
+title: 'Raster'
+subtitle: 'Welcome to #30DayMapChallenge 2023 day 21'
+date: '2023-11-21'
+image: 'day21_raster.qmd'
+image-alt: ''
+description: ''
+output: html_document
+execute: 
+   eval: false
+---

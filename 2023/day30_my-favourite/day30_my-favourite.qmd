@@ -1,0 +1,11 @@
+---
+title: 'My Favourite'
+subtitle: 'Welcome to #30DayMapChallenge 2023 day 30'
+date: '2023-11-30'
+image: 'day30_my-favourite.qmd'
+image-alt: ''
+description: ''
+output: html_document
+execute: 
+   eval: false
+---

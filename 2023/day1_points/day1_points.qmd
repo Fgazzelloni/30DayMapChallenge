@@ -1,0 +1,70 @@
+---
+title: 'Points'
+subtitle: 'Welcome to #30DayMapChallenge 2023 day 1'
+date: '2023-11-01'
+image: 'day1_points.qmd'
+image-alt: ''
+description: ''
+output: html_document
+execute: 
+   eval: false
+---
+
+
+## Overview
+
+
+
+Let's have a look at the `{spatstat}` package for spatial point patterns usage: 
+```{r}
+#| eval: false
+install.packages("spatstat")
+```
+
+Load necessary libraries:
+```{r}
+#| message: false
+#| warning: false
+library(tidyverse)
+library(spatstat)
+```
+
+
+For this challenge we have a look at the `bovine tubercolosis` dataset from the {spatstat} package.
+
+Geospatial data of 873 farm locations with detected bovine tuberculosis in Cornwall, UK, over the years 1989-2002. 
+
+    ?btb
+    
+```{r}
+spatstat.data::btb
+```
+
+```{r}
+spatstat.data::btb.extra
+```
+
+
+```{r}
+data(btb)
+```
+
+```{r}
+summary(btb)
+```
+```{r}
+btb$marks
+dat <- tibble(lon=btb$x,
+       lat=btb$y,
+       n=btb$n)
+```
+
+
+```{r}
+dat%>%
+  ggplot(aes(x=lon,y=lat))+
+  geom_point()
+```
+
+
+

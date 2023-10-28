@@ -1,0 +1,11 @@
+---
+title: 'Dot'
+subtitle: 'Welcome to #30DayMapChallenge 2023 day 27'
+date: '2023-11-27'
+image: 'day27_dot.qmd'
+image-alt: ''
+description: ''
+output: html_document
+execute: 
+   eval: false
+---

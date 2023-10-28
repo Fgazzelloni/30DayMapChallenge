@@ -1,0 +1,11 @@
+---
+title: 'North Is Not Always Up'
+subtitle: 'Welcome to #30DayMapChallenge 2023 day 22'
+date: '2023-11-22'
+image: 'day22_north-is-not-always-up.qmd'
+image-alt: ''
+description: ''
+output: html_document
+execute: 
+   eval: false
+---

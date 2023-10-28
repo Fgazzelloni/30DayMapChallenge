@@ -1,0 +1,11 @@
+---
+title: 'Choropleth'
+subtitle: 'Welcome to #30DayMapChallenge 2023 day 13'
+date: '2023-11-13'
+image: 'day13_choropleth.qmd'
+image-alt: ''
+description: ''
+output: html_document
+execute: 
+   eval: false
+---

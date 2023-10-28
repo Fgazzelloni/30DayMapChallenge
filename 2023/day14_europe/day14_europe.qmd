@@ -1,0 +1,11 @@
+---
+title: 'Europe'
+subtitle: 'Welcome to #30DayMapChallenge 2023 day 14'
+date: '2023-11-14'
+image: 'day14_europe.qmd'
+image-alt: ''
+description: ''
+output: html_document
+execute: 
+   eval: false
+---

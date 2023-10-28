@@ -1,0 +1,11 @@
+---
+title: 'Atmosphere'
+subtitle: 'Welcome to #30DayMapChallenge 2023 day 18'
+date: '2023-11-18'
+image: 'day18_atmosphere.qmd'
+image-alt: ''
+description: ''
+output: html_document
+execute: 
+   eval: false
+---

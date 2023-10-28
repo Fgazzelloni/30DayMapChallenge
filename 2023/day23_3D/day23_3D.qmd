@@ -1,0 +1,11 @@
+---
+title: '3d'
+subtitle: 'Welcome to #30DayMapChallenge 2023 day 23'
+date: '2023-11-23'
+image: 'day23_3D.qmd'
+image-alt: ''
+description: ''
+output: html_document
+execute: 
+   eval: false
+---

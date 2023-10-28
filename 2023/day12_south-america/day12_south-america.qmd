@@ -1,0 +1,11 @@
+---
+title: 'South America'
+subtitle: 'Welcome to #30DayMapChallenge 2023 day 12'
+date: '2023-11-12'
+image: 'day12_south-america.qmd'
+image-alt: ''
+description: ''
+output: html_document
+execute: 
+   eval: false
+---

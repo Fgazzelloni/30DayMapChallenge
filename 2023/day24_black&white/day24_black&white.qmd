@@ -1,0 +1,11 @@
+---
+title: 'Black&White'
+subtitle: 'Welcome to #30DayMapChallenge 2023 day 24'
+date: '2023-11-24'
+image: 'day24_black&white.qmd'
+image-alt: ''
+description: ''
+output: html_document
+execute: 
+   eval: false
+---
