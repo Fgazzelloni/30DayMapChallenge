@@ -1,0 +1,11 @@
+---
+title: 'Minimal'
+subtitle: 'Welcome to #30DayMapChallenge 2023 day 26'
+date: '2023-11-26'
+image: 'day26_minimal.qmd'
+image-alt: ''
+description: ''
+output: html_document
+execute: 
+   eval: false
+---

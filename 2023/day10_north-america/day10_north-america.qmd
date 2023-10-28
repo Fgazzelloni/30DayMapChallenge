@@ -1,0 +1,11 @@
+---
+title: 'North America'
+subtitle: 'Welcome to #30DayMapChallenge 2023 day 10'
+date: '2023-11-10'
+image: 'day10_north-america.qmd'
+image-alt: ''
+description: ''
+output: html_document
+execute: 
+   eval: false
+---

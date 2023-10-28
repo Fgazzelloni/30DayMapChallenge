@@ -1,0 +1,11 @@
+---
+title: 'Navigation'
+subtitle: 'Welcome to #30DayMapChallenge 2023 day 7'
+date: '2023-11-07'
+image: 'day7_navigation.qmd'
+image-alt: ''
+description: ''
+output: html_document
+execute: 
+   eval: false
+---
