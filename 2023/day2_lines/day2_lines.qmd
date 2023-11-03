@@ -2,10 +2,61 @@
 title: 'Lines'
 subtitle: 'Welcome to #30DayMapChallenge 2023 day 2'
 date: '2023-11-02'
-image: 'day2_lines.qmd'
+image: 'day2_lines.png'
 image-alt: ''
 description: ''
 output: html_document
 execute: 
    eval: false
 ---
+
+# Overview
+
+```{r}
+library("topo.ridges")
+library(sf)
+```
+
+## Read in data
+
+    raster::raster()
+
+```{r}
+elev_raster2 <- raster::raster("data/cdl_30m_r_ny_2022_utm18.tif")
+```
+
+
+```{r}
+raster::plot(elev_raster2)
+```
+
+
+```{r}
+#| eval: false
+elev_raster_lowres2 <- raster::aggregate(elev_raster2,
+                                        fact = 2)
+# saveRDS(elev_raster_lowres2,"data/elev_raster_lowres2.rds")
+```
+
+```{r}
+#| echo: false
+elev_raster_lowres2 <- readRDS("data/elev_raster_lowres2.rds")
+```
+
+
+```{r}
+map <- topo.ridges::ridgemap(elev_data = elev_raster2,
+                             line_color = "white",
+                             background_color = "gray10",
+                             line_count = 300,
+                             y_scalar = 75,
+                             scale_factor = 1.25,
+                             line_weight = 0.5,
+                             min_height = 0)
+```
+
+
+```{r}
+ggsave(filename = "day2_lines.png")
+```
+
