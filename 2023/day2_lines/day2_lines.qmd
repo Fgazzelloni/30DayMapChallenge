@@ -14,7 +14,7 @@ execute:
 
 ```{r}
 library("topo.ridges")
-library(sf)
+library(ggplot2)
 ```
 
 ## Read in data
