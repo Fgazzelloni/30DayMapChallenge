@@ -24,6 +24,11 @@ library(sf)
 
 Package used is {topo.ridges} source: <https://github.com/nstauffer/topo.ridges>
 Data are from <https://datagateway.nrcs.usda.gov/>
+
+1- [Land Use Land Cover: Cropland Data Layer by State](https://datagateway.nrcs.usda.gov/GDGHome_DirectDownLoad.aspx)
+
+2- [NASS_NY.zip folder](https://nrcs.app.box.com/v/gateway/folder/22218925171)
+
 ```{r}
 elev_raster2 <- raster::raster("data/cdl_30m_r_ny_2022_utm18.tif")
 ```
