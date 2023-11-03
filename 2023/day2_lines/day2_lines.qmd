@@ -21,6 +21,9 @@ library(sf)
 
     raster::raster()
 
+
+Package used is {topo.ridges} source: <https://github.com/nstauffer/topo.ridges>
+Data are from <https://datagateway.nrcs.usda.gov/>
 ```{r}
 elev_raster2 <- raster::raster("data/cdl_30m_r_ny_2022_utm18.tif")
 ```
