@@ -2,10 +2,46 @@
 title: 'A Bad Map'
 subtitle: 'Welcome to #30DayMapChallenge 2023 day 4'
 date: '2023-11-04'
-image: 'day4_a-bad-map.qmd'
+image: 'day4_a-bad-map.png'
 image-alt: ''
 description: ''
 output: html_document
 execute: 
    eval: false
 ---
+
+
+### Load necessary libraries
+
+
+```{r}
+library(ggplot2)
+library(maps)
+```
+
+### Extract map data for the United States
+```{r}
+us_map <- map_data("world")
+```
+
+
+### Create a "bad" map with exaggerated 3D view
+```{r}
+ggplot(data = us_map, 
+       aes(x = long, y = lat, group = group)) +
+  geom_polygon(fill = "lightblue", color = "black") +
+  coord_map("ortho", orientation = c(90, 0, 0)) +
+  labs(title = "Exaggerated 3D View of the United States",
+       caption="#30DayMapChallenge 2023 Day4 - A Bad Map | Map: @fgazzelloni")+
+  theme_void() +
+    theme(text=element_text(color="lightblue"),
+          plot.title = element_text(face="bold",size=18,hjust=0.5),
+          plot.caption = element_text(size=9,hjust=0.5))
+
+
+```
+
+```{r}
+ggsave("day4_a_bad_map.png",bg="#211e1c")
+```
+
