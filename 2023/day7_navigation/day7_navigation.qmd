@@ -2,10 +2,79 @@
 title: 'Navigation'
 subtitle: 'Welcome to #30DayMapChallenge 2023 day 7'
 date: '2023-11-07'
-image: 'day7_navigation.qmd'
+image: 'day7_navigation.png'
 image-alt: ''
 description: ''
 output: html_document
 execute: 
-   eval: false
+   eval: true
 ---
+
+# Overview
+
+```{r}
+#| message: false
+#| warning: false
+# install.packages("leaflet")
+library(leaflet)
+library(tidyverse)
+```
+
+
+```{r}
+bats <- read.csv("data/3D flights of European free-tailed bats.csv")
+bats %>% glimpse
+```
+```{r}
+bats%>%
+  count(tag.local.identifier,individual.local.identifier )
+```
+
+
+
+```{r}
+dat <- bats%>%
+  select(individual.local.identifier,timestamp,long=location.long,lat=location.lat, ground.speed,height.above.msl)%>%
+  mutate(date=(as.Date(timestamp)),.after = timestamp)%>%
+  select(-timestamp)
+
+dat %>% head
+```
+```{r}
+RdYlBu <- colorFactor("RdYlBu", domain = dat$individual.local.identifier)
+```
+
+
+
+
+```{r}
+map<-leaflet(dat) %>%
+  addTiles() %>%
+   addTiles(group = "OSM (default)") %>%
+  addProviderTiles(providers$Esri.WorldStreetMap)%>%
+  #addProviderTiles(provider="OpenStreetMap.HOT")%>%
+  addCircles(lng = ~long,lat = ~lat,
+                   color=~RdYlBu(individual.local.identifier), 
+                   #fillOpacity = 0.5,
+                   #radius =0.05,
+                  popup = ~individual.local.identifier)%>%
+  addMiniMap()%>%
+  mapOptions()%>%
+  addMeasure()%>%
+  addScaleBar()
+```
+
+```{r}
+map
+```
+
+
+
+```{r}
+#| eval: false
+library(htmlwidgets)
+ library(htmltools)
+
+ saveWidget(map, file="day7_navigator.html",title = "3D flights of European free-tailed bats")
+```
+

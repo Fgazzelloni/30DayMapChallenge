@@ -217,7 +217,7 @@ Set the color scheme:
 
 ```{r}
 brks <- brks$brks
-colors <- brewer.pal(length(brks), "Spectral")
+colors <- RColorBrewer::brewer.pal(length(brks), "Spectral")
 ```
 
 Finalize the dataset to use for the map with the population estimation interval cuts.
