@@ -7,8 +7,6 @@ image-alt: ''
 description: ''
 output: html_document
 format: html
-execute: 
-   eval: true
 ---
 
 # Overview
@@ -19,9 +17,7 @@ The study results can be accessed on <https://www.movebank.org/> and contains da
 
 > O'Mara MT, Amorim F, McCracken GF, Mata V, Safi K, Wikelski M, Beja P, Rebelo H, Dechmann DKN. 2021. Data from: European free-tailed bats use topography and nocturnal updrafts to fly high and fast. Movebank Data Repository. <https://doi.org/10.5441/001/1.52nn82r9>
 
-```{r}
-#| message: false
-#| warning: false
+```{r message=FALSE,warning=FALSE}
 # install.packages("leaflet")
 library(leaflet)
 library(tidyverse)
@@ -34,6 +30,9 @@ Data can be downloaded from the [www.movebank.org](https://www.movebank.org/). I
 bats <- read.csv("data/3D flights of European free-tailed bats.csv")
 bats %>% glimpse
 ```
+
+
+
 ```{r}
 bats%>%
   count(tag.local.identifier,individual.local.identifier )
@@ -83,8 +82,7 @@ leaflet(dat) %>%
 
 
 
-```{r}
-#| eval: false
+```{r eval=FALSE}
 library(htmlwidgets)
  library(htmltools)
 
