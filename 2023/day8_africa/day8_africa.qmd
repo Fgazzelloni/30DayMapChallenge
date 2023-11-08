@@ -10,17 +10,24 @@ execute:
    eval: false
 ---
 
-Source: 
+# Overview
 
+For this challenge I looked at an interesting resource: [Analyzing US Census Data: Methods, Maps, and Models in R](https://walker-data.com/census-r/working-with-census-data-outside-the-united-states.html?q=tfr#visualizing-idb-data), also found the `{idbr}` package R Interface to the US Census Bureau International Data Base API.
+
+
+Source: 
 <https://walker-data.com/census-r/working-with-census-data-outside-the-united-states.html>
 
+## API key from {tidycensus}
 
-If you need a `tidycensus` API key go to <https://api.census.gov/data/key_signup.html> and add your details. It will send you an email with the API key.
+You might need a `tidycensus` API key to use the {idbr} function `get_idb()` to donwload census data, then go to <https://api.census.gov/data/key_signup.html> and add your details. It will send you an email with the API key.
 
-The put your key here:
+Then use your key in the `tidycensus::census_api_key()` function:
 
     tidycensus::census_api_key(key="xxx",
                                install = TRUE)
+                               
+                          
 ```{r}
 #| eval: false
 library(tidycensus)
@@ -34,6 +41,9 @@ To check whether the key is set do:
     readRenviron("~/.Renviron")
     Sys.getenv("CENSUS_API_KEY")
     
+## Census Data with {idbr}
+
+Now you are all set to get ready downloading your favorite census data.   
 
 ```{r}
 #| message: false
@@ -42,6 +52,12 @@ library(idbr)
 library(tidyverse)
 ```
 
+
+### Get data for all countries
+
+Here the `tfr` variable is selected as interested in the differences in total fertility rate in 2021 in Africa.
+
+Get the data for all countries and then select only Africa countries.
 ```{r}
 data <- get_idb(
   country = "all",
@@ -53,10 +69,14 @@ data <- get_idb(
 
 data %>% head()
 ```
+
+
 ```{r}
 data%>%
   names
 ```
+
+Have a look at the global total fertility rate in 2021.
 ```{r}
 ggplot(data, aes(fill = code)) + 
   theme_bw() + 
@@ -68,7 +88,9 @@ ggplot(data, aes(fill = code)) +
         legend.text = element_text(size=2),
         legend.position = "bottom")
 ```
-scrap the African countries from wikipedia:
+
+
+### Scrap the African countries from Wikipedia:
 <https://en.wikipedia.org/wiki/List_of_African_countries_by_population>
 
 ```{r}
@@ -95,6 +117,7 @@ afri_countries <- afri_countries%>%select(Country)%>%
   unlist()
 ```
 
+## Get the Africa tfr data
 
 ```{r}
 africa <- get_idb(
@@ -108,42 +131,18 @@ africa <- get_idb(
 africa %>% head()
 ```
 
-```{r}
-library(RColorBrewer)
-myPalette <- colorRampPalette(rev(brewer.pal(11, "RdYlBu")))
-```
 
+Check the range of the tfr:
 ```{r}
-tfr_range <- (range(africa$tfr) - min(africa$tfr)) / diff(range(africa$tfr))
-new_range <- seq(tfr_range[[1]], tfr_range[[2]], length.out=100)
-```
-
-```{r}
-
 summary(africa$tfr)
 ```
 
+Set a color range:
 ```{r}
 col.range<- c(2,7)
 ```
 
-```{r}
-# remotes::install_github("dieghernan/tidyterra")
-library(tidyterra) # for colors
-library(ggspatial)
-# devtools::install_github('oswaldosantos/ggsn')
-library(ggsn)
-```
-```{r}
-library(sf)
-coords<- africa%>%
-  #as.data.frame()%>%
-  sf::st_coordinates()%>%
-  as.data.frame()%>%
-  rename(long=X,lat=Y)
-coords%>%dim
-```
-
+## Make the Map
 
 ```{r}
 ggplot(africa, aes(fill = tfr)) + 
@@ -186,6 +185,7 @@ ggplot(africa, aes(fill = tfr)) +
 ```
 
 
+### Save it!
 ```{r}
 ggsave("day8_africa.png",bg="#ebe7d8")
 ```
