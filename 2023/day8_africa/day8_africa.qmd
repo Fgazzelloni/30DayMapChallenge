@@ -2,10 +2,191 @@
 title: 'Africa'
 subtitle: 'Welcome to #30DayMapChallenge 2023 day 8'
 date: '2023-11-08'
-image: 'day8_africa.qmd'
+image: 'day8_africa.png'
 image-alt: ''
 description: ''
 output: html_document
 execute: 
    eval: false
 ---
+
+Source: 
+
+<https://walker-data.com/census-r/working-with-census-data-outside-the-united-states.html>
+
+
+If you need a `tidycensus` API key go to <https://api.census.gov/data/key_signup.html> and add your details. It will send you an email with the API key.
+
+The put your key here:
+
+    tidycensus::census_api_key(key="xxx",
+                               install = TRUE)
+```{r}
+#| eval: false
+library(tidycensus)
+tidycensus::census_api_key(key="xxx",
+                           install = TRUE)
+```
+
+
+To check whether the key is set do:
+    
+    readRenviron("~/.Renviron")
+    Sys.getenv("CENSUS_API_KEY")
+    
+
+```{r}
+#| message: false
+#| warning: false
+library(idbr)
+library(tidyverse)
+```
+
+```{r}
+data <- get_idb(
+  country = "all",
+  year = 2021,
+  variables = "tfr",
+  geometry = TRUE,
+)
+
+
+data %>% head()
+```
+```{r}
+data%>%
+  names
+```
+```{r}
+ggplot(data, aes(fill = code)) + 
+  theme_bw() + 
+  geom_sf() + 
+  coord_sf(crs = 'ESRI:54030') + 
+  scale_fill_viridis_d()+
+  guides(fill=guide_legend(nrow = 10,title = ""))+
+  theme(legend.key.size = unit(2,units = "pt"),
+        legend.text = element_text(size=2),
+        legend.position = "bottom")
+```
+scrap the African countries from wikipedia:
+<https://en.wikipedia.org/wiki/List_of_African_countries_by_population>
+
+```{r}
+#| warning: false
+#| message: false
+library(rvest)
+```
+
+```{r}
+afri_data <- read_html("https://en.wikipedia.org/wiki/List_of_African_countries_by_population")
+
+
+afri_countries <- afri_data %>%
+  html_nodes("table") %>%
+  .[[1]] %>%
+  html_table(fill = TRUE)
+
+afri_countries %>% names()
+```
+
+
+```{r}
+afri_countries <- afri_countries%>%select(Country)%>%
+  unlist()
+```
+
+
+```{r}
+africa <- get_idb(
+  country = afri_countries,
+  year = 2021,
+  variables = "tfr",
+  geometry = TRUE,
+)
+
+
+africa %>% head()
+```
+
+```{r}
+library(RColorBrewer)
+myPalette <- colorRampPalette(rev(brewer.pal(11, "RdYlBu")))
+```
+
+```{r}
+tfr_range <- (range(africa$tfr) - min(africa$tfr)) / diff(range(africa$tfr))
+new_range <- seq(tfr_range[[1]], tfr_range[[2]], length.out=100)
+```
+
+```{r}
+
+summary(africa$tfr)
+```
+
+```{r}
+col.range<- c(2,7)
+```
+
+```{r}
+# remotes::install_github("dieghernan/tidyterra")
+library(tidyterra) # for colors
+library(ggspatial)
+# devtools::install_github('oswaldosantos/ggsn')
+library(ggsn)
+```
+```{r}
+library(sf)
+coords<- africa%>%
+  #as.data.frame()%>%
+  sf::st_coordinates()%>%
+  as.data.frame()%>%
+  rename(long=X,lat=Y)
+coords%>%dim
+```
+
+
+```{r}
+ggplot(africa, aes(fill = tfr)) + 
+  geom_sf(color="white") + 
+  geom_sf_text(aes(label=name),size=2,family="Roboto Condensed")+
+  scale_fill_continuous(low = "#fff7ec", 
+                        high = "#7F0000",
+                        limits=col.range)+
+  ggtext::geom_richtext(x=0,y=0,
+                        hjust = 0.8,
+                        vjust=1.5,
+                        label="Africa",
+                        fill = NA, 
+                        label.color = NA,
+                        size=25,
+                        family = "Gill Sans")+
+    ggtext::geom_richtext(x=0,y=0,
+                        hjust = 0.8,
+                        vjust=6,
+                        label="Total fertility rate by country in 2021",
+                        fill = NA, 
+                        label.color = NA,
+                        size=4,
+                        family = "Gill Sans")+
+  coord_sf(crs = 'ESRI:54030',clip = "off") + 
+  labs(caption="#30DayMapChallenge 2023 - Day 8 Africa\nDataSource: wikipedia & {idbr} package | Map @fgazzelloni\n\n'Scale on map varies by more than 10%, scale bar may be inaccurate' {ggspatial}",
+       fill="Total fertility rate (tfr)")+
+  ggthemes::theme_map()+
+  theme(text=element_text(family = "Gill Sans"),
+        plot.title = element_text(face="bold",size=14,hjust=0.5),
+        plot.subtitle = element_text(hjust=0.5),
+        plot.caption = element_text(hjust=0),
+        legend.position = c(0.75,-0.02),
+        legend.key.size = unit(9,units = "pt"),
+        legend.text = element_text(size=7.5),
+        legend.title = element_text(face="bold",size=8),
+        legend.background = element_rect(color="#edece6",fill="#edece6"))+
+  ggspatial::annotation_scale()
+
+```
+
+
+```{r}
+ggsave("day8_africa.png",bg="#ebe7d8")
+```
+
