@@ -2,10 +2,55 @@
 title: 'North America'
 subtitle: 'Welcome to #30DayMapChallenge 2023 day 10'
 date: '2023-11-10'
-image: 'day10_north-america.qmd'
+image: 'day10_north-america.png'
 image-alt: ''
 description: ''
 output: html_document
 execute: 
    eval: false
 ---
+
+
+
+```{r}
+library(tidyverse)
+library(rnaturalearth)
+```
+
+
+```{r}
+canada_disasters<- read.delim("data/CDD.txt")
+
+canada_disasters%>%#count(PLACE)
+  filter(!str_detect(PLACE,"[0-9]+"))%>%
+  count(PLACE)
+```
+
+```{r}
+canada<- ne_states("canada",returnclass = "sf")
+ggplot(canada)+
+  geom_sf(aes(fill=name))+
+  scale_fill_viridis_d(option = "mako", name="Regions",
+                       direction = -1, end = .9)+
+  labs(#subtitle="Mapping Regions",
+       caption = "#30DayMapChallenge 2023 - Day 10: North America\nDataSource {rnaturalearth} | Map: @fgazzelloni)")+
+  ggtitle("Canada: Mapping Regions") +
+  ggthemes::theme_map()+
+  theme(text=element_text(family="Roboto Condensed",face="bold"),
+        plot.title = ggtext::element_markdown(size=18),
+        plot.caption = element_text(hjust = 0.5),
+        legend.key.size = unit(5,units = "pt"),
+        legend.text = element_text(size=5),
+        legend.position = "right")+
+   ggspatial::annotation_scale()
+```
+
+```{r}
+ggsave("day10_north-america.png",bg="white")
+```
+
+
+```{r}
+canada%>%count(name)
+```
+
