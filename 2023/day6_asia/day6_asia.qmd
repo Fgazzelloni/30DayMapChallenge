@@ -17,7 +17,7 @@ execute:
 
 For this `#30DayMapChallenge 2023 Day6 - Asia` let's explore the Population estimation for Regions and major Cities, from different sources.
 
-Also, we will be looking at how to get started with `{ggmap}` to find the `geocodes` for the major cities in Asia.
+Also, we will be looking at `how to get started with {ggmap}` to find the `geocodes` for the major cities in Asia.
 
 
 ## Asia Cities and Population by Wikipedia.org
