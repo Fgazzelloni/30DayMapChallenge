@@ -1,8 +1,5 @@
 #30DayMapChallenge 26 Choropleth map
 
-# How to read a .shp file in r:
-# https://datacarpentry.org/r-raster-vector-geospatial/06-vector-open-shapefile-in-r/
-
 
 # Inspiration:
 # https://gist.github.com/leeolney3/8f26d720c1884fccab282bad23dc6038

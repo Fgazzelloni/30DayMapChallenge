@@ -2,10 +2,103 @@
 title: 'Choropleth'
 subtitle: 'Welcome to #30DayMapChallenge 2023 day 13'
 date: '2023-11-13'
-image: 'day13_choropleth.qmd'
+image: 'day13_choropleth.png'
 image-alt: ''
 description: ''
 output: html_document
 execute: 
    eval: false
+   message: false
+   warning: false
 ---
+
+# Overview
+
+AIDS
+
+DataSource: <https://aidsinfo.unaids.org/>
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+aids <- read_csv("data/Epidemic transition metrics_Trend of new HIV infections.csv")
+
+aids%>%glimpse
+```
+
+
+
+```{r}
+aids_avg <- aids %>%
+  select(!contains("Footnote"))%>%
+  select(Country,'2010','2010_lower','2010_upper','2020','2020_lower','2020_upper')%>%
+  janitor::clean_names()%>%
+  mutate(x2010=as.numeric(str_extract(x2010,"([0-9]+)")),
+         x2010_lower=as.numeric(str_extract(x2010_lower,"([0-9]+)")),
+         x2010_upper=as.numeric(str_extract(x2010_upper,"([0-9]+)")),
+         avg_2010=(x2010_upper-x2010_lower)/2,
+         x2020=as.numeric(str_extract(x2010,"([0-9]+)")),
+         x2020_lower=as.numeric(str_extract(x2020_lower,"([0-9]+)")),
+         x2020_upper=as.numeric(str_extract(x2020_upper,"([0-9]+)")),
+         avg_2020=(x2020_upper-x2020_lower)/2,
+         aids_change=(avg_2020-avg_2010),
+         aids_change2=aids_change/sum(aids_change,na.rm = T))%>%
+  select(1,8,9,10,11)
+
+aids_avg %>%
+  select(aids_change,aids_change2)%>%
+  summary()
+```
+
+
+```{r}
+library(sf)
+library(tmap)
+data("World")
+
+aids_map <- aids_avg%>%
+  left_join(World %>%select(country=name,geometry),by="country")%>%
+  st_as_sf()%>%
+  st_transform(crs="ESRI:54030")
+```
+
+
+```{r}
+text <- tibble(text=c("In dark/light grey are Countries whose Estimates were not available at the time of publication"))
+```
+
+
+
+```{r}
+ggplot()+
+  geom_sf(data=World,color="grey25",fill="grey75")+
+  geom_sf(data=aids_map,
+          mapping=aes(geometry=geometry,fill=aids_change),
+          color="red")+
+  scale_fill_gradient(labels=scales::label_percent(),low="white",high = "red")+
+  coord_sf(crs="ESRI:54030",clip = "off")+
+  labs(title="Epidemic transition of new HIV infections",
+       subtitle="Metrics Trend 2010-2020",
+       caption="#30DayMapChallenge 2023 Day 13 - Choropleth\nDataSource: Global data on HIV epidemiology and response (aidsinfo.unaids.org)\nMap: @fgazzelloni",
+       fill="HIV Change (%)\nIn dark/light grey are Countries\nwhose Estimates were not available\nat the time of publication\nProj:ESRI:54030")+
+  theme(text=element_text(face="bold"),
+        panel.grid = element_line(color="grey25"),
+        plot.title = element_text(size=20.5),
+        plot.subtitle = element_text(color="grey25"),
+        plot.caption = element_text(color="grey25"),
+        legend.title = element_text(size=4),
+        legend.text = element_text(size=8))
+```
+
+```{r}
+ggsave("day13_choropleth.png",height = 5)
+```
+
+
+
+
+
+
+
