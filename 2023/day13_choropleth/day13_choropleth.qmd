@@ -14,7 +14,7 @@ execute:
 
 # Overview
 
-AIDS
+AIDS: percentage contribution of each country's change to the total change
 
 DataSource: <https://aidsinfo.unaids.org/>
 
@@ -25,7 +25,7 @@ library(tidyverse)
 ```{r}
 aids <- read_csv("data/Epidemic transition metrics_Trend of new HIV infections.csv")
 
-aids%>%glimpse
+aids%>%head
 ```
 
 
@@ -44,7 +44,7 @@ aids_avg <- aids %>%
          x2020_upper=as.numeric(str_extract(x2020_upper,"([0-9]+)")),
          avg_2020=(x2020_upper-x2020_lower)/2,
          aids_change=(avg_2020-avg_2010),
-         aids_change2=aids_change/sum(aids_change,na.rm = T))%>%
+         aids_change2=round(aids_change/sum(aids_change,na.rm = T),5))%>%
   select(1,8,9,10,11)
 
 aids_avg %>%
@@ -52,6 +52,10 @@ aids_avg %>%
   summary()
 ```
 
+```{r}
+#| echo: false
+write_csv(aids_avg,"~/Documents/R/R_general_resources/Blog/my_blog/content/blog/data_visualization/hiv/data/aids_avg.csv")
+```
 
 ```{r}
 library(sf)
@@ -81,7 +85,7 @@ ggplot()+
   coord_sf(crs="ESRI:54030",clip = "off")+
   labs(title="Epidemic transition of new HIV infections",
        subtitle="Metrics Trend 2010-2020",
-       caption="#30DayMapChallenge 2023 Day 13 - Choropleth\nDataSource: Global data on HIV epidemiology and response (aidsinfo.unaids.org)\nMap: @fgazzelloni",
+       caption="#30DayMapChallenge 2023 Day 13 - Choropleth\nPercentage contribution of each country's change to the total change\nDataSource: Global data on HIV epidemiology and response (aidsinfo.unaids.org)\nMap: @fgazzelloni",
        fill="HIV Change (%)\nIn dark/light grey are Countries\nwhose Estimates were not available\nat the time of publication\nProj:ESRI:54030")+
   theme(text=element_text(face="bold"),
         panel.grid = element_line(color="grey25"),

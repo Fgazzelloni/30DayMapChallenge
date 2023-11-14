@@ -65,7 +65,9 @@ asia_cities %>% head()
 
 To find the Asia City `Geocodes` we use the `geocode()` function from the {ggmap} package.
 
+
 ::: callout
+
 In order to get started with {ggmap} follow these steps:
 
 -   Install the package from source:
@@ -85,6 +87,8 @@ In order to get started with {ggmap} follow these steps:
     ggmap::register_google(<your api key>, write = T)
     
 :::
+
+
 
 Once you are all set try:
 
