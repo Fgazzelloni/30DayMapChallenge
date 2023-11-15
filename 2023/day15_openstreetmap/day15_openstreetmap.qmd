@@ -2,10 +2,220 @@
 title: 'OpenStreetMap'
 subtitle: 'Welcome to #30DayMapChallenge 2023 day 15'
 date: '2023-11-15'
-image: 'day15_openstreetmap.qmd'
+image: 'day15_openstreetmap.png'
 image-alt: ''
 description: ''
 output: html_document
 execute: 
    eval: false
+   message: false
+   warning: false
 ---
+
+
+# Overview
+
+OpenStreetMap data
+
+
+Resources: <https://rspatialdata.github.io/osm.html>
+
+
+
+
+```{r}
+library(tidyverse)
+library(osmdata)
+library(ggmap)
+```
+
+
+Let's check available features, there are 263 features.
+```{r}
+#| eval: false
+available_features()
+```
+
+
+## Defining the bounding box
+
+?getbb
+
+```{r}
+valencia_bb <- getbb("valencia")
+```
+
+
+
+## Valencia Underground
+
+```{r}
+available_tags("location")
+```
+
+
+```{r}
+valencia <-valencia_bb%>%
+  opq() %>%
+  add_osm_feature(key = "location",value="underground") %>%
+  osmdata_sf()
+
+valencia$osm_points%>%head
+```
+
+```{r}
+valencia_map<- ggmap::get_map(location = "Valencia",
+                              maptype = "stamen_terrain",
+                              zoom=13)
+```
+
+
+```{r}
+ggmap(valencia_map) +
+  geom_sf(
+    data = valencia$osm_polygons,
+    inherit.aes = FALSE,
+    colour = "#cc161d",
+    fill = "#be2d42",
+    size = 2
+  ) +
+    geom_sf(
+    data = valencia$osm_points,
+    inherit.aes = FALSE,
+    colour = "#cc161d",
+    fill = "#be2d42",
+    size = 0.2
+  ) +
+  labs(x = "", y = "")
+```
+
+
+## Vlencia Schools
+
+```{r}
+osmdata::available_tags("amenity")
+```
+
+```{r}
+valencia_schools <-
+  valencia_bb%>%
+  opq() %>%
+  add_osm_feature(key="amenity",value="school")%>%
+  osmdata_sf()
+```
+
+```{r}
+valencia_map2<- ggmap::get_map(location = "Valencia",
+                              maptype = "stamen_terrain_lines",
+                              zoom=13)
+```
+
+
+```{r}
+ggmap(valencia_map2) +
+  geom_sf(
+    data = valencia$osm_polygons,
+    inherit.aes = FALSE,
+    colour = "#cc161d",
+    fill = "#be2d42",
+    size = 2
+  ) +
+    geom_sf(
+    data = valencia$osm_points,
+    inherit.aes = FALSE,
+    colour = "#cc161d",
+    size = 0.2
+  ) +
+    geom_sf(
+    data = valencia_schools$osm_polygons,
+    inherit.aes = FALSE,
+    fill = "#40E0D0",color="#A0522D",
+    size = 0.2
+  ) +
+  labs(title="València")+
+  ggthemes::theme_map(base_size = 14,base_family = "Gill Sans")
+```
+
+```{r}
+valencia_streets <- valencia_bb %>%
+  opq() %>%
+  add_osm_feature("highway", c("motorway", "primary", "secondary", "tertiary")) %>%
+  osmdata_sf()
+
+# retrieving data of small streets in Lagos
+valencia_small_streets <- valencia_bb %>%
+  opq() %>%
+  add_osm_feature(key = "highway", value = c("residential", "living_street", "unclassified", "service", "footway")) %>%
+  osmdata_sf()
+
+# retrieving data of rivers in Lagos
+valencia_rivers <- valencia_bb %>%
+  opq() %>%
+  add_osm_feature(key = "waterway", value = "river") %>%
+  osmdata_sf()
+```
+
+
+
+```{r}
+ggmap(valencia_map2)+
+    geom_sf(data = valencia_streets$osm_lines, 
+            inherit.aes = FALSE, 
+            color = "#ffbe7f", linewidth = .2, alpha = .8) +
+  geom_sf(data = valencia_small_streets$osm_lines, 
+          inherit.aes = FALSE, 
+          color = "#a6a6a6", linewidth = .01, alpha = .8) +
+  geom_sf(data = valencia_rivers$osm_lines, 
+          inherit.aes = FALSE, 
+          color = "#7fc0ff", size = .8, alpha = .5)+
+  geom_sf(
+    data = valencia$osm_polygons,
+    inherit.aes = FALSE,
+    colour = "#cc161d",
+    fill = "#be2d42",
+    size = 2
+  ) +
+    geom_sf(
+    data = valencia$osm_points,
+    inherit.aes = FALSE,
+    aes(colour = "#cc161d"),
+    size = 0.2
+  ) +
+    geom_sf(
+    data = valencia_schools$osm_polygons,
+    inherit.aes = FALSE,
+    aes(fill = "#40E0D0",color="#A0522D"),
+    size = 0.2,key_glyph = draw_key_pointrange
+  ) +
+    geom_sf(
+    data = valencia_schools$osm_polygons,
+    inherit.aes = FALSE,
+    color="#A0522D",fill=NA,
+    size = 0.2,
+  ) +
+  scale_color_manual(values=c("#40E0D0","#cc161d"),labels=c("Schools","Underground"))+
+  scale_fill_manual(values=c("#40E0D0"))+
+  guides(fill="none",
+         color=guide_legend(title.position ="left"))+
+  coord_sf(clip="off")+
+  labs(title="València, ES",
+       subtitle="#30DayMapChallenge2023 Day 15 - OpenStreetMap",
+       caption="DataSource: {osmdata} | Map: @fgazzelloni",
+       color="")+
+  ggthemes::theme_map(base_size = 14,base_family = "Gill Sans")+
+  theme(plot.title = element_text(hjust = 0.5,size=20),
+        plot.subtitle = element_text(size=10,hjust = 0.5),
+        plot.title.position = "plot",
+        legend.box.background = element_blank(),
+        #legend.background = element_blank(),
+        legend.position = c(0.8,0.05))+
+   ggspatial::annotation_scale(hjust=1)
+```
+
+```{r}
+ggsave("day15_openstreetmap.png",
+       scale = 0.5,
+       limitsize=F,
+       bg="#f0f0f0")
+```
+
