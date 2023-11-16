@@ -97,6 +97,9 @@ eu_cities <- eu_cities%>%
 eu_cities<- eu_cities[,-1]
 eu_cities %>% names()
 ```
+
+
+
 ```{r}
 eu_cities<- eu_cities %>% 
   mutate(City=str_replace_all(City, "\\[.*\\]",""))%>%
