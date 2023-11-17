@@ -2,10 +2,62 @@
 title: 'Flow'
 subtitle: 'Welcome to #30DayMapChallenge 2023 day 17'
 date: '2023-11-17'
-image: 'day17_flow.qmd'
+image: 'day17_flow.png'
 image-alt: ''
 description: ''
 output: html_document
 execute: 
    eval: false
+   message: false
+   warning: false
 ---
+
+# Overview
+
+```{r}
+library(tidyverse)
+library(sf)
+```
+
+
+```{r}
+rivers <- read_sf("data/HydroRIVERS_v10_eu_shp")
+```
+
+
+```{r}
+rivers%>%select(LENGTH_KM)%>%summary()
+```
+
+```{r}
+ggplot()+
+    geom_sf(data=rivers,
+          linewidth=0.1,aes(color=DIST_DN_KM),
+          show.legend = F)+
+  scale_color_gradient(low = "white",high = "black")+
+  ggnewscale::new_scale_color()+
+      geom_sf(data=rivers,
+          linewidth=0.5,aes(color=DIST_UP_KM),
+          show.legend = F)+
+  scale_color_gradient(low = "white",high = "red")+
+  scale_y_continuous(limits = c(35,45))+
+  scale_x_continuous(limits = c(-10,10))+
+  ggthemes::theme_map()
+```
+
+
+```{r}
+ggsave("day17_flow.png",bg="grey")
+```
+
+
+
+
+
+
+
+
+
+
+
+
