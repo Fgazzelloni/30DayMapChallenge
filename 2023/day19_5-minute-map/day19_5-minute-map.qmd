@@ -2,10 +2,56 @@
 title: '5 Minute Map'
 subtitle: 'Welcome to #30DayMapChallenge 2023 day 19'
 date: '2023-11-19'
-image: 'day19_5-minute-map.qmd'
+image: 'day19_5-minute-map.png'
 image-alt: ''
 description: ''
 output: html_document
 execute: 
-   eval: false
+   eval: true
+   message: false
+   warning: false
 ---
+
+
+# Overview
+
+A 5-minute map made with {tmap} package to visualize the Estimate Population change 1950-2030.
+
+```{r}
+#| message: false
+#| warning: false
+library(tmap)
+library(tmaptools)
+```
+
+```{r}
+data("World")
+data("metro")
+dat <- metro%>%
+  mutate(pop_change=(pop2030-pop1950)/pop1950)%>%
+  select(pop_change)
+```
+
+
+```{r}
+map<- tm_shape(World, projection = 8857) +
+    tm_polygons()+
+  tm_shape(dat) + 
+  tm_bubbles(size = "pop_change") +
+  tm_style("col_blind") +
+  tm_format("World")+
+  tm_layout(title= '1950-2030')+
+  tm_credits("{tmap} | @fgazzelloni",position = c(0.8,0.05))
+```
+
+
+```{r}
+# save map
+tmap_mode("plot")
+tmap_save(map, "day19_5-minute-map.png", 
+          scale = 0.7, 
+          width = 5.125, 
+          outer.margins = 0)
+```
+
+
