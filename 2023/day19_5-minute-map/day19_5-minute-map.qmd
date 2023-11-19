@@ -20,6 +20,7 @@ A 5-minute map made with {tmap} package to visualize the Estimate Population cha
 ```{r}
 #| message: false
 #| warning: false
+library(tidyverse)
 library(tmap)
 library(tmaptools)
 ```
