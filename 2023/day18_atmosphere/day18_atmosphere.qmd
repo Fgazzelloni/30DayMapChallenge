@@ -7,10 +7,17 @@ image-alt: ''
 description: ''
 output: html_document
 execute: 
-   eval: false
+   eval: true
+   message: false
+   warning: false
 ---
 
+This challenge is all about wind movements. The selected area is Italy, also some parts of the surrounding territories can be seen. I am going to use the {rWind} package for downloading the information about wind speed and direction vectors (u,v) for today, Nov 18, 2023. 
 
+In order to be able to interpolate the information from {rWind}, I'll use the {oce} package which provide a type of interpolating function for calculating the Barnes interpolation with: `oce::interpBarnes()` function.
+
+
+Load necessary libraries
 
 ```{r}
 #| warning: false
@@ -26,6 +33,8 @@ library(rWind)
 library(oce)
 ```
 
+
+## Set the Date
 ```{r}
 time_range <- seq(ymd_hms(paste(2023, 11, 18, 00, 00, 00, 
                                 sep = "-")),
@@ -33,7 +42,11 @@ time_range <- seq(ymd_hms(paste(2023, 11, 18, 00, 00, 00,
                                 sep = "-")),
                   by = "1 hours"
                   )
+```
 
+## Download Data from {rWind}
+
+```{r}
 mean_wind_data2 <- rWind::wind.dl_2(time_range, 
                                    3.472, 36.368, 23.906, 46.665) %>%
   rWind::wind.mean()
@@ -41,36 +54,18 @@ mean_wind_data2 <- rWind::wind.dl_2(time_range,
 eur_wind_df2 <- as.data.frame(mean_wind_data2)
 eur_wind_df2%>%head
 ```
-```{r}
-eur_wind_df2%>%#rownames_to_column("id")%>%
-  count(speed,sort = T)
-```
 
 
+
+### Quick look at the first grid
 ```{r}
 ggplot(eur_wind_df2)+
   geom_point(aes(lon,lat,color=speed),size=1.5,alpha=0.9)
 ```
 
 
-```{r}
-ggplot()+
-    geom_sf(data=rivers%>%filter(LENGTH_KM>2),
-          linewidth=0.1,
-          aes(color=DIST_DN_KM),
-          show.legend = F)+
-  scale_color_gradient(low = "white",high = "black")+
-  ggnewscale::new_scale_color()+
-  geom_point(data=eur_wind_df2,
-             mapping=aes(lon,lat,color=speed),size=1.5,alpha=0.9)+
-  scale_color_gradient(low = "white",high = "pink")+
-  scale_x_continuous(limits = c(3.472,23.906))+
-  scale_y_continuous(limits = c(36.368,46.665))
-  
-```
 
-
-
+## Download the polygons for Europe
 ```{r}
 eur_sf <- giscoR::gisco_get_countries(
         year = "2020", epsg = "4326",
@@ -78,6 +73,8 @@ eur_sf <- giscoR::gisco_get_countries(
     )
 ```
 
+
+### Have a look at the first level map
 ```{r}
 ggplot(eur_wind_df2)+
   geom_point(aes(lon,lat,color=speed),size=2)+
@@ -91,6 +88,13 @@ ggplot(eur_wind_df2)+
 ```
 
 
+## Interpolation
+
+Here I try to make the Barnes interpolation on the first level grid. 
+  
+    oce::interpBarnes
+
+And have a look at the information provided with the `contour()` function.
 
 
 ```{r}
@@ -108,6 +112,7 @@ contour(wu$xg,wu$yg,wu$zg)
 ```
 
 
+## Set a second level grid
 
 
 ```{r}
@@ -127,11 +132,17 @@ eur_wind_pts
     dplyr::mutate(id = row_number())
 ```
 
+
+
+### Have a look at the second level grid
 ```{r}
 ggplot(eur_wind_grid)+
   geom_sf()
 ```
 
+## Make an adjusted grid set
+
+For more information about this type of analysis have a look at this tutorial: <https://milospopovic.net/mapping-wind-data-in-r/>
 
 ```{r}
 eur_wind_grid_agg <- 
@@ -149,13 +160,17 @@ eur_wind_grid_agg <-
     na.omit()
 ```
 
+
+### Visualize the adjusted grid
 ```{r}
 ggplot(eur_wind_grid_agg)+
   geom_sf(aes(fill=speed))
 ```
 
+## Rebuild the original set with adding adjusted coordinates
 
 
+The Centroids:
 ```{r}
 coords <- eur_wind_grid_agg %>%
     st_centroid() %>%
@@ -171,6 +186,8 @@ eur_df <- coords %>%
     bind_cols(sf::st_drop_geometry(eur_wind_grid_agg))
 ```
 
+
+
 ```{r}
 eur_df %>%
         ggplot() +
@@ -178,7 +195,9 @@ eur_df %>%
 ```
 
 
+## Interpolation II
 
+Repete the procedure with the adjusted grid.
 
 ```{r}
 wu <- oce::interpBarnes(
@@ -232,10 +251,9 @@ df <- udf %>%
 head(df)
 ```
 
-
+## Make the Map
 
 ```{r}
-
 df %>%
         ggplot() +
         metR::geom_streamline(
@@ -249,7 +267,7 @@ df %>%
             alpha = .85
         ) 
 ```
-
+## Make the map on polygons
 
 ```{r}
 df %>%
@@ -280,10 +298,18 @@ df %>%
         plot.caption = element_text(hjust=0.5,size=10,face="bold"))
 ```
 ```{r}
+#| eval: false
+
 ggsave("day18_atmosphere.png",
        height = 5,
        bg="#dedede")
 ```
+
+
+
 ## Resource
 
-<https://milospopovic.net/mapping-wind-data-in-r/>
+- <https://milospopovic.net/mapping-wind-data-in-r/>
+- <https://semba-blog.netlify.app/10/25/2018/processing-satellite-wind-speed-data-with-r/>
+- <https://stackoverflow.com/questions/55583611/how-to-create-contour-with-wind-animation-using-gganimate>
+- <https://www.r-bloggers.com/2018/11/plotting-wind-highways-using-rwind/>
