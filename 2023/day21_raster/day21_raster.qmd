@@ -2,10 +2,101 @@
 title: 'Raster'
 subtitle: 'Welcome to #30DayMapChallenge 2023 day 21'
 date: '2023-11-21'
-image: 'day21_raster.qmd'
+image: 'day21_raster.png'
 image-alt: ''
 description: ''
 output: html_document
 execute: 
    eval: false
 ---
+
+# Overview
+
+How to color a `Raster Map` with R.
+
+```{r}
+# Install and load necessary packages
+# install.packages(c("ggplot2", "raster"))
+library(tidyverse)
+library(raster)
+library(rasterVis)
+```
+
+
+- <https://stackoverflow.com/questions/33359284/r-plot-background-map-from-geotiff-with-ggplot2>
+
+```{r}
+alaska <- "data/SR_50M_alaska_nad.tif"
+alaska_raster <- raster(alaska)
+ctab <- rep(RColorBrewer::brewer.pal(n = 8, name = "RdBu"),200)
+colortable(alaska_raster) <- ctab
+gplot(alaska_raster, maxpixels = 10e5) +
+  geom_tile(aes(fill = factor(value))) +
+  scale_fill_manual(values = ctab,guide = "none") +
+  coord_equal()+
+  ggthemes::theme_map()
+```
+
+
+```{r}
+alaska <- "data/SR_50M_alaska_nad.tif"
+alaska_raster <- raster(alaska)
+```
+
+
+```{r}
+alaska_df <- as.data.frame(rasterToPoints(alaska_raster))
+val <- unique(alaska_df$SR_50M_alaska_nad)
+```
+
+Fonts:
+```{r}
+library(sysfonts)
+font_add_google("Raleway","Raleway")
+showtext::showtext_auto()
+```
+
+Colors:
+```{r}
+colors <- c("#001F3F","#008080","#00BCD4","#4CAF50",
+            "#8BC34A","#FFD700")
+```
+
+Map: 
+```{r}
+map <- gplot(alaska_raster, maxpixels = 10e5) +
+  geom_tile(aes(fill = value)) +
+  scale_fill_gradientn(colors=rev(colors))+
+  coord_equal()+
+  labs(title="Alaska",
+       subtile="#30DayMapChallenge 2023 Day 21 Raster",
+       caption="Colors indicate the high and low level of elevation in Alaska\nDataSource: QGis Raster Sample Data | Map: @fgazzelloni",fill="Elevation")+
+  ggthemes::theme_map()+
+  theme(text=element_text(family="Raleway",color="#f6f7f9",
+                          size=40),
+        panel.grid = element_line(color="#f6f7f9"),
+        plot.title = element_text(hjust=0.5,vjust=-0.1,
+                                  size=120,
+                                  face="bold"),
+        plot.caption = element_text(lineheight = 0.4),
+        legend.position = "bottom",
+        legend.background = element_blank(),
+        legend.text = element_text(color="#f6f7f9",
+                                   lineheight = 0.4),
+        plot.background = element_rect(color="grey50",fill="grey50"),
+        panel.background = element_rect(color="grey50",fill="grey50"))
+showtext::showtext_end()
+```
+
+
+```{r}
+ggsave(map,"day21_raster2.png",
+       dpi=320,
+       bg="grey50")
+```
+
+
+
+
+
+
