@@ -2,10 +2,63 @@
 title: 'Outdoors'
 subtitle: 'Welcome to #30DayMapChallenge 2023 day 20'
 date: '2023-11-20'
-image: 'day20_outdoors.qmd'
+image: 'day20_outdoors.png'
 image-alt: ''
 description: ''
 output: html_document
 execute: 
    eval: false
 ---
+
+
+```{r}
+library(tidyverse)
+library(rnaturalearth)
+#?rnaturalearth::ne_countries()
+library(rnaturalearthhires)
+#?rnaturalearthhires::coastline10
+library(sf)
+```
+
+```{r}
+sysfonts::font_add_google("Smooch Sans","Smooch Sans")
+showtext::showtext_auto()
+```
+
+
+
+
+```{r}
+sf_world <- ne_countries(returnclass = "sf")
+coasts <- rnaturalearthhires::coastline10
+
+coastlines<-  coasts%>%
+  st_as_sf()%>%
+  mutate(scalerank=as.integer(scalerank),
+         scalerank=as.factor(scalerank)
+         )
+
+ggplot()+
+  geom_sf(data=sf_world,fill="#88398a",color=NA)+
+  geom_sf(data=coastlines,
+  mapping=aes(color=scalerank),
+          show.legend = T)+
+  scale_color_viridis_d()+
+  coord_sf(crs = 'ESRI:54030',clip = "off")+
+  labs(title="Coastlines",color="Scalerank",
+       subtitle="#30DayMapChallenge 2023 Day 20 Outdoors",
+       caption="DataSource: {rnaturalearthhires} | Map: @fgazzelloni")+
+  theme(text=element_text(family="Smooch Sans",size=40,face="bold"),
+        plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5),
+        plot.caption  = element_text(hjust = 0.5),
+        plot.background = element_rect(color="#bfd0dd",fill="#bfd0dd"),
+        panel.background = element_rect(color="#bfd0dd",fill="#bfd0dd"),
+        legend.background = element_rect(color="#bfd0dd",fill="#bfd0dd"))
+showtext::showtext_end()
+```
+
+```{r}
+ggsave("day20_outdoors.png",bg="#bfd0dd",height = 4)
+```
+
