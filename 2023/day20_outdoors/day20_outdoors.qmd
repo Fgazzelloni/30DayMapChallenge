@@ -10,6 +10,11 @@ execute:
    eval: false
 ---
 
+# Overview
+
+`World` map of the Coastlines Scalerank. Data is from `{rnaturalearthhires}` package.
+
+
 
 ```{r}
 library(tidyverse)

@@ -130,6 +130,9 @@ library(tmap)
 data("World")
 plot(World)
 ```
+
+
+
 ```{r}
 #devtools::install_github("signaux-faibles/rsignauxfaibles")
 library(rsignauxfaibles)
@@ -148,6 +151,7 @@ city.colors <- rep(RColorBrewer::brewer.pal(10,"Set3"),2)
 ```{r}
 #| warning: false
 #| message: false
+
 ggplot() + 
   geom_sf(data = ocean, 
           fill = "#3e5d8b", 
