@@ -2,10 +2,92 @@
 title: 'Minimal'
 subtitle: 'Welcome to #30DayMapChallenge 2023 day 26'
 date: '2023-11-26'
-image: 'day26_minimal.qmd'
+image: 'day26_minimal.png'
 image-alt: ''
 description: ''
 output: html_document
 execute: 
    eval: false
 ---
+
+
+# Overview
+
+This is a minimal Climate Raster Map for 
+
+`worldclim` data and species distribution: 
+- <https://www.worldclim.org/data/worldclim21.html#google_vignette>
+- <https://damariszurell.github.io/EEC-MGC/b2_EnvData.html>
+- <https://edzer.github.io/hertie-school/>
+- <https://edzer.github.io/hertie-school/#raster_data>
+- <https://r-spatial.github.io/stars/reference/geom_stars.html>
+- <https://wec.wur.nl/r/spatial/raster-data.html>
+
+Download climate data with the `worldclim_country()` function from the `{geodata}` package. Then make the map with `geom_spatraster()` function from the `{tidyterra}` package.
+
+```{r}
+library(tidyverse)
+library(geodata)
+library(terra)
+library(tidyterra)
+library(stars)
+library(showtext)
+library(sysfonts)
+```
+
+```{r}
+bio <- geodata::worldclim_tile(var="bio", 
+                      lon=c(5.5),
+                      lat=c(49),
+                      path=tempdir())
+# plot(bio)
+```
+
+```{r}
+bio_star <- bio%>%stars::st_as_stars()
+file_path<- bio_star$tile_19_wc2.1_30s_bio.tif
+temp_rast <- terra::rast(file_path)
+```
+
+
+```{r}
+# Display a single layer
+names(temp_rast)
+```
+
+```{r}
+font_add_google(name = "Josefin Sans", family = "Josefin Sans")
+showtext_auto()
+showtext_opts(dpi = 320)
+```
+
+```{r}
+ggplot() +
+  tidyterra::geom_spatraster(data = temp_rast, 
+                  aes(fill = tile_19_wc2.1_30s_bio_14)) +
+  coord_sf(crs = 4326,clip = "off") +
+  scale_fill_hypso_c()+
+  labs(title="Central Europe:\nBioclimatic variables",
+       subtitle="Precipitation of Driest Month",
+       caption="#30DayMapChallege 2023 Day 26 Minimal\nDataSource: geodata::worldclim_tile\nMap-Vis: @fgazzelloni")+
+  ggthemes::theme_map()+
+  theme(text=element_text(family="Josefin Sans"),
+        plot.title = element_text(hjust=0.5,size=20,face="bold"),
+        plot.subtitle = element_text(hjust=0.5,size=15),
+        plot.caption = element_text(hjust=0.5,size=10),
+        legend.background = element_rect(fill="#bfc0ca",color="#bfc0ca"),
+        legend.direction = "horizontal",
+        legend.position =c(0.5,0.1))
+```
+
+
+
+```{r}
+ggsave("day26_minimal.png",bg="#7781a6",width=4)
+```
+
+
+
+
+
+

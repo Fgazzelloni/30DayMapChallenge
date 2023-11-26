@@ -47,6 +47,8 @@ g <- an_read(cache = "session")
 g <- an_preferred(g, origin = c("Poland", "Germany"))
 g%>%head
 ```
+
+
 ```{r}
 g%>%str
 ```
