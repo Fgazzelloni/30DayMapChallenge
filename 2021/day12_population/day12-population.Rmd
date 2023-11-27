@@ -88,5 +88,5 @@ tmap_save(tm, filename = "world_map.png")
 ```
 
 
-
+> That is you and me. Or maybe animal population from Movebank.org? Anyhow a classic theme for thematic maps 
 
