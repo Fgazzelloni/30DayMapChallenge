@@ -155,7 +155,7 @@ ggplot() +
            family="Ubuntu",
            fontface = "bold", 
            size = 18, color = "#000000", vjust = "top") +
-  annotation_north_arrow(location = "br", 
+  ggspatial::annotation_north_arrow(location = "br", 
                          which_north = "true", 
                          pad_x = unit(0.0, "in"), 
                          pad_y = unit(0.2, "in"),
