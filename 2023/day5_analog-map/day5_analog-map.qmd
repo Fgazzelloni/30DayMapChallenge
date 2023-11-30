@@ -9,3 +9,7 @@ output: html_document
 execute: 
    eval: false
 ---
+
+
+🗺️ Analog maps, aka paper maps, are real-deal geographic representations on tangible surfaces.
+Here is a postage stamp map of `Portofino`, Italy emitted by `Poste Italiane in 1974`. 
