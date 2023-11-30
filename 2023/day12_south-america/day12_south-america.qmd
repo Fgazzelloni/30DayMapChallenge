@@ -86,7 +86,8 @@ south_america_countries %>% names()
 ```
 
 ```{r}
-south_america_countries <- south_america_countries%>%select('Country / Territory')%>%
+south_america_countries <- south_america_countries%>%
+  select('Country / Territory')%>%
   unlist()
 ```
 
@@ -158,6 +159,7 @@ ggplot(sa, aes(fill = tfr)) +
 
 ### Save it!
 ```{r}
+#| eval: false
 ggsave("day12_south-america.png",
        bg="#F4EBD9")
 ```
