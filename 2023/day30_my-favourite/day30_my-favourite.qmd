@@ -95,7 +95,7 @@ ggplot()+
 
 
 ```{r}
-ggsave("day30_myfavorite.png",
+ggsave("day30_my-favorite.png",
        bg="white",width=7,height = 5)
 ```
 
