@@ -119,6 +119,10 @@ This is my #30DayMapChallenge repository fork of [Topi Tjukanov official repo](h
 
 30-11-2021 \| **Metamapping day** \| Final day! Spend the day either by 1) collecting your entries from the challenge to a common gallery, 2) writing a tutorial or a blog post on one of your maps or 3) create a map from a theme you have chosen yourself ![png](day30_metamapping/metamapping.png)
 
+# Final Collage
+
+[![collage 2021](collage/collage2021.png)](https://fgazzelloni.quarto.pub/unlocking-the-power-of-data-visualization-with-r/mapchallenges/cases2021/)
+
 ## Data 🗺
 
 You can use **what ever data you want.** But here are a few sources which could help you to get started or give you new ideas 👇
