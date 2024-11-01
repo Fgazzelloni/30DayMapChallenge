@@ -1,0 +1,81 @@
+---
+title: 'Points'
+subtitle: 'Welcome to #30DayMapChallenge 2024 Day 1'
+date: '2024-11-01'
+image: 'day1_points.png'
+image-alt: 'day1_points'
+description: 'Cropped Grid of Points on World Map'
+output: html_document
+execute: 
+   eval: false
+---
+
+![Cropped Grid of Points on World Map](day1_points.png)
+
+```{r}
+library(ggplot2)
+library(sf)
+library(rnaturalearth)
+library(rnaturalearthdata)
+
+# Load the world map as an sf object
+world <- ne_countries(scale = "medium", returnclass = "sf") 
+# Define the resolution of the grid (e.g., 5 degrees)
+resolution <- 3
+
+# Create a grid of longitude and latitude points
+grid <- expand.grid(lon = seq(-180, 180, by = resolution), 
+                    lat = seq(-90, 90, by = resolution))
+
+# Convert the grid to an sf object
+grid_sf <- st_as_sf(grid, coords = c("lon", "lat"), crs = 4326)
+```
+
+
+```{r}
+# It takes long time to run
+# Crop the grid points so that only points within the world map polygons remain
+grid_cropped <- st_intersection(grid_sf, world)
+```
+
+
+```{r}
+library(ggthemes)
+library(ggspatial)
+# Plot
+map <- ggplot() +
+  geom_sf(data = grid_cropped, 
+          linetype = "dotdash",
+          shape = 21, 
+          stroke = 0.2, 
+          fill = NA) +
+  geom_sf(data = grid_cropped, 
+          aes(color = sovereignt), 
+          show.legend = F,
+          size = 0.3) +
+  scale_color_viridis_d(option = "F", 
+                        begin = 0.1, 
+                        end = 0.9) + # Adjusts color gradient for better contrast
+  coord_sf(crs = sf::st_crs("+proj=robin")) +
+  ggthemes::theme_map() 
+map
+
+```
+
+
+```{r}
+map + 
+  # add a north arrow
+  ggspatial::annotation_north_arrow(location = "br") +
+  # add a title and a caption
+  labs(title = "Cropped Grid of Points on World Map",
+       caption = "Source: Natural Earth | #30DayMapChallenge 2024 Day1 | @fgazzelloni") +
+  # adjust the appearance of the plot
+  theme(text = element_text(family = "Courier"),
+        plot.title = element_text(size = 16, color = "grey20", face = "bold"),
+        plot.caption = element_text(size = 8, color = "grey20", face = "bold"),
+        plot.background = element_rect(fill = NA, color = NA),
+        panel.background = element_rect(fill = NA, color = NA),
+        #panel.grid = element_line(color = "grey90"),
+        legend.position = "none")
+```

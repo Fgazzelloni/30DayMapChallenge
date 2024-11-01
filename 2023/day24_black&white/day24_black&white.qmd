@@ -69,7 +69,7 @@ ggplot(bg_sf)+
 
 
 
-Let's have a look at the same map witout transofrmation.
+Let's have a look at the same map without transformation.
 ```{r}
 ggplot(belgium)+
   geom_polygon(aes(long,lat,group=group),fill="grey40")+
