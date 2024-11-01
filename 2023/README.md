@@ -1,14 +1,12 @@
 ## #30DayMapChallenge 2023
 
-## Daily social mapping project happening every November
-
-This is [Federica Gazzelloni](https://github.com/Fgazzelloni)'s official #30DayMapChallenge repository
+[Federica Gazzelloni](https://github.com/Fgazzelloni)'s official #30DayMapChallenge repository
 
 ### My contributions will be posted on [Twitter: \@fgazzelloni](https://twitter.com/fgazzelloni) and [Mastodon](https://fosstodon.org/@fgazzelloni) with the hashtag #30DayMapChallenge
 
 #### Themes for this year are:
 
-![Themes for the 2023 maps.](images/30dmc_2023.png)
+![Themes for the 2023 maps.](../images/30dmc_2023.png)
 
 The [official repository for #30DayMapChallenge](https://github.com/tjukanovt/30DayMapChallenge) is a daily mapping challenge open to everyone by [Topi Tjukanov \@tjukanov](https://twitter.com/tjukanov).
 
