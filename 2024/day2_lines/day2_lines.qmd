@@ -1,0 +1,118 @@
+---
+title: 'Lines on World Map'
+subtitle: 'Welcome to #30DayMapChallenge 2024 Day 2'
+date: '2024-11-02'
+image: 'day2_lines.png'
+image-alt: 'day2_lines'
+description: 'Lines on World Map'
+output: html_document
+execute: 
+   eval: false
+---
+
+![Rivers Lines on World Map](day2_lines.png)
+
+
+```{r}
+library(sf)
+multilines_sf <- st_read("data/ne_10m_rivers_lake_centerlines")
+```
+
+
+```{r}
+library(tidyverse)
+# Cast MULTILINESTRING to LINESTRING
+linestrings_sf <- multilines_sf %>%
+  st_cast("LINESTRING", 
+          do_split = TRUE) %>%  
+  # Ensure splitting into LINESTRINGs, not POINTs
+  filter(st_geometry_type(geometry) == "LINESTRING")
+```
+
+
+```{r}
+library(sfnetworks)
+# Convert to sfnetwork
+network <- sfnetworks::as_sfnetwork(linestrings_sf, directed = FALSE)
+```
+
+```{r}
+# Extract edges as an sf object
+edges_sf <- network %>%
+  activate("edges") %>%
+  st_as_sf()
+edges_sf %>% names
+```
+
+```{r}
+edges_sf%>%count(featurecla)
+```
+
+```{r}
+# Extract nodes as an sf object
+nodes_sf <- network %>%
+  activate("nodes") %>%
+  st_as_sf()
+
+nodes_sf %>%names
+```
+
+
+```{r}
+gr <- sfnetworks::as_sfnetwork(network)
+```
+
+
+```{r}
+library(ggraph)
+ggraph(gr, 'sf') + 
+  geom_edge_sf(aes(color = name_en),
+               show.legend = F) + 
+  geom_node_sf(size = 0.3)
+```
+
+```{r}
+ggraph(gr, 'sf') + 
+  geom_edge_sf(aes(color = scalerank),
+               show.legend = T) + 
+  geom_node_sf(size = 0.3)
+```
+
+
+
+```{r}
+ggraph(gr, 'sf') + 
+  geom_edge_sf(aes(color = dissolve),
+               show.legend = F) + 
+  geom_node_sf(size = 0.1)
+```
+
+```{r}
+map <- ggraph(gr, 'sf') + 
+  geom_edge_sf(aes(color = featurecla),
+               show.legend = T) +
+  scale_edge_color_manual(values = c("red","navy","#50c8c6","brown")) + 
+  ggthemes::theme_map() 
+  
+map  
+```
+
+
+```{r}
+map + 
+  # add a north arrow
+  ggspatial::annotation_north_arrow(location = "br") +
+  # add a title and a caption
+  labs(title = "Rivers Lines on World Map",
+       caption = "Source: Natural Earth | #30DayMapChallenge 2024 Day2 | @fgazzelloni") +
+  # adjust the appearance of the plot
+  theme(text = element_text(family = "Courier"),
+        plot.title = element_text(size = 16, 
+                                  color = "grey20", face = "bold"),
+        plot.caption = element_text(size = 8, 
+                                    color = "grey20", face = "bold"),
+        plot.background = element_rect(fill = NA, color = NA),
+        panel.background = element_rect(fill = NA, color = NA))
+```
+
+
