@@ -1,10 +1,10 @@
 ---
-title: 'Lines on World Map'
+title: 'Rivers Lines on World Map'
 subtitle: 'Welcome to #30DayMapChallenge 2024 Day 2'
 date: '2024-11-02'
 image: 'day2_lines.png'
 image-alt: 'day2_lines'
-description: 'Lines on World Map'
+description: 'Rivers Lines on World Map'
 output: html_document
 execute: 
    eval: false
