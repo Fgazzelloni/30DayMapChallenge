@@ -17,9 +17,9 @@ The idea is to create maps based around different themes each day of November us
 <!-- TABLE START -->
 
 | Maps |   |   |   |
-|----|----|----|----|
+|------------------|------------------|------------------|------------------|
 | Day 1 - `01-11-2024 -`Points | Day 2 - `02-11-2024 - Lines` | Day 3 - `03-11-2024 -`Polygons | Day 4 - `04-11-2024 - Hexagons` |
-| ![day1_points](2024/day1_points/day1_points.png) | ![day2_lines](2024/day2_lines/day2_lines.png) | ![day3_polygons](2024/day3_polygons/day3_polygons.png) | ![day4](2024/day4_a-bad-map/day4_a-bad-map.png) |
+| ![day1_points](2024/day1_points/day1_points.png) | ![day2_lines](2024/day2_lines/day2_lines.png) | ![day3_polygons](2024/day3_polygons/day3_polygons.png) | ![day4](2024/day4_hexagons/day4_hexagons.png) |
 | Day 5 - `05-11-2024 -`A journey | Day 6 - `06-11-2024 -`Raster | Day 7 - `07-11-2024 -`Vintage style | Day 8 - `08-11-2024 -`Data: HDX |
 |  |  |  |  |
 | Day 9 - `09-11-2024 -`AI only | Day 10 - `10-11-2024 -` Pen & paper | Day 11 - `11-11-2022 -` Artic | Day 12 - `12-11-2024 -` Time & space |

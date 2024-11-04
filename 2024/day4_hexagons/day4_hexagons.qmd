@@ -1,0 +1,76 @@
+---
+title: 'Hexagons Map'
+subtitle: 'Welcome to #30DayMapChallenge 2024 Day 4'
+date: '2024-11-04'
+image: 'day4_hexagons.png'
+image-alt: 'day4_hexagons'
+description: 'Hexagons Map'
+output: html_document
+execute: 
+   eval: false
+---
+
+![Hexagons Map](day4_hexagons.png)
+
+
+```{r}
+# Install and load required packages
+if (!requireNamespace("sf", quietly = TRUE)) install.packages("sf")
+if (!requireNamespace("ggplot2", quietly = TRUE)) install.packages("ggplot2")
+
+library(sf)
+library(ggplot2)
+
+# Load Europe shapefile data
+europe <- ne_countries(continent = "Europe", returnclass = "sf")
+
+# Reproject the data to a projected CRS (ETRS89 / LAEA Europe)
+europe_projected <- st_transform(europe, crs = 3035)
+
+# Create a hexagonal grid with the new CRS
+hex_grid <- st_make_grid(europe_projected, 
+                         cellsize = 50000, 
+                         square = FALSE)  # Adjust cellsize as needed
+hex_sf <- st_sf(geometry = hex_grid)
+
+# Clip the hex grid to the shape of Europe
+hex_europe <- st_intersection(hex_sf, st_union(europe_projected))
+```
+
+```{r}
+sysfonts::font_families()
+```
+
+
+```{r}
+# Plot the hexagonal grid map
+ggplot(data = hex_europe) +
+  geom_sf(fill = "lightblue", color = "darkblue") +
+  labs(title = "Hexagon Map of Europe (ETRS89 / LAEA Europe)",
+       caption = "Data source: Natural Earth\n#30DayMapChallenge 2024 Day4 | @fgazzelloni") +
+  theme_minimal() +
+  theme(text = element_text(family = "serif", color = "navy"),
+        legend.position = "right",
+        plot.title = element_text(hjust = 0.5, 
+                                  face = "bold",
+                                  color = "navy",
+                                  size = 22),
+        plot.subtitle = element_text(hjust = 0.5, 
+                                     color = "navy",
+                                     size = 15),
+        plot.caption = element_text(hjust = 0.5, 
+                                    color = "navy",
+                                    size = 10),
+        axis.text = element_blank(),
+        panel.grid = element_line(color="navy")) +
+  # add a north arrow and a scale bar
+  ggspatial::annotation_north_arrow(location = "br") +
+  ggspatial::annotation_scale(location = "bl", width_hint = 0.5)
+```
+```{r}
+# save the map as png
+ggsave("day4_hexagons.png", 
+       bg = "white",
+       width = 8, height = 8, units = "in", dpi = 300)
+```
+
