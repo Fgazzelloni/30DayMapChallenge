@@ -20,6 +20,7 @@ if (!requireNamespace("ggplot2", quietly = TRUE)) install.packages("ggplot2")
 
 library(sf)
 library(ggplot2)
+library(rnaturalearth)
 
 # Load Europe shapefile data
 europe <- ne_countries(continent = "Europe", returnclass = "sf")
@@ -38,7 +39,7 @@ hex_europe <- st_intersection(hex_sf, st_union(europe_projected))
 ```
 
 ```{r}
-sysfonts::font_families()
+# sysfonts::font_families()
 ```
 
 
@@ -67,6 +68,8 @@ ggplot(data = hex_europe) +
   ggspatial::annotation_north_arrow(location = "br") +
   ggspatial::annotation_scale(location = "bl", width_hint = 0.5)
 ```
+
+
 ```{r}
 # save the map as png
 ggsave("day4_hexagons.png", 
