@@ -56,7 +56,7 @@ ggplot() +
 
 Save the plot as png
 ```{r}
-ggsave("~/Documents/R/R_general_resources/EDA_and_maps/30DayMapChallenge/2024/day6_raster/day6_raster.png", 
+ggsave("day6_raster/day6_raster.png", 
        bg = "white",
        width = 12, height = 12, 
        units = "in", dpi = 600)
