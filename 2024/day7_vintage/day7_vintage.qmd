@@ -16,7 +16,6 @@ Load the required libraries and data
 library(sf)
 library(ggplot2)
 library(rnaturalearth)
-library(rnaturalearthdata)
 library(ggspatial)
 ```
 
@@ -34,9 +33,8 @@ ggplot(data = world) +
   coord_sf(xlim = c(-20, 60), ylim = c(-40, 40), expand = FALSE) +  # Limit to show specific area
   labs(
     title = "Vintage Map of Africa and Europe",
-    subtitle = "A Journey Through Ancient Lands",
-    caption = "Data source: Natural Earth | Created for #30DayMapChallenge"
-  ) +
+    subtitle = "A simple Map Through Ancient Lands",
+    caption = "Data source: Natural Earth\n#30DayMapChallenge 2024 Day6 | @fgazzelloni") +
   theme_void() +  # Remove modern elements
   theme(
     plot.background = element_rect(fill = "#F5DEB3", color = NA),  # Old paper background
@@ -50,11 +48,10 @@ ggplot(data = world) +
   ggspatial::annotation_north_arrow(location = "tl", which_north = "true", 
                                     style = north_arrow_orienteering(fill = c("#8B4513", "#D2B48C")))
 ```
-
+Save the plot as a PNG file
 
 ```{r}
-# save the plot as a PNG file
-ggsave("2024/day7_vintage/day7_vintage.png", 
+ggsave("day7_vintage.png", 
        bg = "transparent",
        width = 8, height = 6, 
        dpi = 300) 
