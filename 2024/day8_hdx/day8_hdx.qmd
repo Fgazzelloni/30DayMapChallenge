@@ -29,12 +29,12 @@ get_rhdx_config()
 Search for Ukraine data on HDX and list the datasets.
 ```{r}
 dat <- search_datasets("ukraine")
+dat[2]
 ```
 
 Select the second dataset and display the metadata: ukraine-border-crossings
 ```{r}
 border_crossing <- dat[2]
-border_crossing
 ```
 
 Display the resources available in the dataset.
@@ -55,14 +55,19 @@ data2 <- search_datasets("Ukraine administrative boundaries")
 And select the first dataset and display the metadata: kontur-boundaries-ukraine
 ```{r}
 boundaries <- search_datasets("kontur-boundaries-ukraine")
-kontur_boundaries_ukraine <- boundaries[1]
-kontur_boundaries_ukraine
+boundaries[1]
 ```
+
+
+```{r}
+kontur_boundaries_ukraine <- boundaries[1]
+```
+
 
 ```{r}
 resource <- kontur_boundaries_ukraine %>%
   nth(1) %>%
-  get_resource(2)
+  get_resource(1)
 
 resource
 ```
@@ -78,24 +83,24 @@ file_path
 ```
 
 
+
 ```{r}
 file.info(file_path)$size
 ```
-```{r}
-decompressed_file <- sub("\\.gz$", "", file_path) 
-decompressed_file
-```
+
 
 Unzip the file
 ```{r}
 library(R.utils)
-gunzip(file_path, destname = decompressed_file, overwrite = TRUE)
+gunzip(file_path, 
+       destname = decompressed_file, 
+       overwrite = TRUE)
 ```
 
 Read the shapefile
 ```{r}
 library(sf)
-ukraine_boundaries <- st_read(decompressed_file)
+ukraine_boundaries <- sf::st_read(decompressed_file)
 ```
 ```{r}
 ukraine_boundaries
@@ -103,9 +108,33 @@ ukraine_boundaries
 
 
 ```{r}
+map <- ggplot(ukraine_boundaries) +
+  geom_sf()
+map
+```
+
+
+```{r}
+map +
+  geom_sf(data = UKR_data, 
+          shape = 4,
+          color="red", 
+          size=2) +
+  ggthemes::theme_map() +
+  labs(title = "Ukraine Border Crossings",
+       subtitle = "Data from HDX",
+       caption = "Source: HDX | #30DayMapChallenge 2024 Day8 |Created by @fgazzelloni",
+       fill = "Population") 
+```
+
+```{r}
 ggplot(ukraine_boundaries) +
-  geom_sf() +
-  geom_sf(data = UKR_data, color="red", size=2) +
+  geom_sf(aes(fill = population)) +
+  geom_sf(data = UKR_data, 
+          shape = 4,
+          color="red", 
+          size=2) +
+  scale_fill_viridis_c() +
   ggthemes::theme_map() +
   labs(title = "Ukraine Border Crossings",
        subtitle = "Data from HDX",
@@ -114,17 +143,27 @@ ggplot(ukraine_boundaries) +
 ```
 
 
-
 ```{r}
 ggplot(ukraine_boundaries) +
-  geom_sf(aes(fill=population)) +
-  geom_sf(data = UKR_data, color="red", size=2) +
-  scale_fill_gradient(low = "navy", high = "gold",) +
+  geom_sf(aes(color = population)) +
+  geom_sf(data = UKR_data, 
+          shape = 4,
+          color="red", 
+          size=2) +
+  scale_color_gradient(low = "navy", high = "gold",) +
   ggthemes::theme_map() +
   labs(title = "Ukraine Border Crossings",
        subtitle = "Data from HDX",
        caption = "Source: HDX | #30DayMapChallenge 2024 Day8 |Created by @fgazzelloni",
        fill = "Population") 
+```
+```{r}
+ukraine_boundaries%>%
+  count(admin_level)
+```
+```{r}
+ukraine_boundaries%>%
+  count(name_en)
 ```
 
 Save the plot as a PNG file
