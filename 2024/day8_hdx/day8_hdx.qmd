@@ -165,12 +165,123 @@ ukraine_boundaries%>%
 ukraine_boundaries%>%
   count(name_en)
 ```
+```{r}
+ukraine_pop <- ukraine_boundaries%>%
+  group_by(name_en) %>%
+  reframe(geom,population = sum(population)) %>%
+  arrange(desc(population)) 
+
+ukraine_pop
+```
+```{r}
+ukraine_pop %>%
+  filter(name_en == "Ukraine") %>%
+  ggplot()+
+  geom_sf(aes(geometry=geom)) 
+```
+```{r}
+ukraine_pop %>%
+  filter(!name_en == "Ukraine") %>%
+  ggplot()+
+  geom_sf(aes(geometry=geom, fill = population)) 
+```
+
+```{r}
+ukraine_pop %>%
+  filter(!name_en == "Ukraine") %>%
+  ggplot()+
+  geom_sf(aes(geometry=geom, 
+              fill = population, 
+              color = population)) +
+  geom_sf(data = UKR_data, 
+          shape = 4,
+          color="red", 
+          size=2) +
+  ggthemes::theme_map() +
+  labs(title = "Ukraine Border Crossings",
+       subtitle = "Data from HDX",
+       caption = "Source: HDX | #30DayMapChallenge 2024 Day8 |Created by @fgazzelloni",
+       fill = "Population") +
+  scale_fill_viridis_c(
+    name = "Population",
+    labels = scales::label_comma(),
+    guide = "colourbar"  # Show legend for 'fill'
+  ) +
+  scale_color_viridis_c(
+    guide = "none"  # Suppress legend for 'color'
+  ) 
+```
+
+
+```{r}
+ukraine_boundaries %>%
+  filter(!name_en == "Ukraine") %>%
+  ggplot() +
+  geom_sf(aes(fill = population)) +
+  geom_sf(data = UKR_data, 
+          shape = 4,
+          color="red", 
+          size=2) +
+  scale_fill_viridis_c(name = "Population",
+                       labels = scales::label_comma(),
+                       guide = "colourbar") +
+  labs(title = "Ukraine Border Crossings",
+       subtitle = "Data from HDX",
+       caption = "Source: HDX | #30DayMapChallenge 2024 Day8 |Created by @fgazzelloni",
+       fill = "Population") +
+  ggthemes::theme_map() +
+  theme(
+    plot.title = element_text(
+      size = 24,
+      face = "bold", 
+      color = "darkred",  
+      hjust = 0.5),
+    plot.subtitle = element_text(
+      size = 14,
+      face = "italic",
+      color = "gray50",
+      hjust = 0.5)) 
+```
+```{r}
+ukraine_boundaries %>%
+  filter(!name_en == "Ukraine") %>%
+  ggplot() +
+  geom_sf(aes(fill = population)) +
+  geom_sf(data = UKR_data, 
+          shape = 4,
+          color="red", 
+          size=2) +
+  scale_fill_viridis_c(name = "Population",
+                       labels = scales::label_comma(),
+                       guide = "colourbar") +
+  labs(title = "Ukraine Border Crossings",
+       subtitle = "Data from HDX",
+       caption = "Source: HDX | #30DayMapChallenge 2024 Day8 |Created by @fgazzelloni",
+       fill = "Population") +
+  ggthemes::theme_map() +
+  theme(
+    plot.title = element_text(
+      size = 24,
+      face = "bold", 
+      color = "darkred",  
+      hjust = 0.5),
+    plot.subtitle = element_text(
+      size = 14,
+      face = "italic",
+      color = "gray50",
+      hjust = 0.5),
+    plot.caption = element_text(
+      size = 10,
+      face = "italic",
+      color = "gray50",
+      hjust = 0.5))
+```
 
 Save the plot as a PNG file
 
 ```{r}
 ggsave("day8_hdx.png", 
-       bg = "transparent",
+       bg = "white",
        width = 8, height = 6, 
        dpi = 300) 
 ```
