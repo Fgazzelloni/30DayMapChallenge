@@ -23,9 +23,7 @@ ctr_africa <- readRDS("~/Documents/R/R_general_resources/EDA_and_maps/30DayMapCh
 kriging_df<- readRDS("~/Documents/R/R_general_resources/EDA_and_maps/30DayMapChallenge/2024/day6_raster/data/kriging_df.rds")
 ```
 
-```{r}
 
-```
 
 Plot the raster map
 ```{r}
