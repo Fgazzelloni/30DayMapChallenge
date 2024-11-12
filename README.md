@@ -23,7 +23,7 @@ The idea is to create maps based around different themes each day of November us
 | Day 5 - `05-11-2024 -`A journey | Day 6 - `06-11-2024 -`Raster | Day 7 - `07-11-2024 -`Vintage style | Day 8 - `08-11-2024 -`Data: HDX |
 | ![day5 A Journey](2024/day5_a-journey/day5_a-journey.png) | ![day6 Raster](2024/day6_raster/day6_raster.png){alt="day5 A Journey"} | ![day8 hdx](2024/day8_hdx/day8_hdx.png) | ![day9 AI](2024/day9_ai/day9_ai.png) |
 | Day 9 - `09-11-2024 -`AI only | Day 10 - `10-11-2024 -` Pen & paper | Day 11 - `11-11-2022 -` Artic | Day 12 - `12-11-2024 -` Time & space |
-| ![day11 artic](2024/day11_artic/day11_artic.png) |  |  |  |
+| ![day11 artic](2024/day11_artic/day11_artic.png) | ![day12_space&time](2024/day12_time&space/day12_space&time.gif) |  |  |
 | Day 13 - `13-11-2024 -` A new tool | Day 14 - `14-11-2024 -`A world map | Day 15 - `15-11-2024 -` Data: Mt data | Day 16 - `16-11-2024 -` Choropleth |
 |  |  |  |  |
 | Day 17 - `17-11-2024 -`Collaborative map | Day 18 - `18-11-2024 - 3D` | Day 19 - `19-11-2024 - Typography` | Day 20 - `20-11-2024 -` Data: OpenStreetMap |
