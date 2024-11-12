@@ -1,16 +1,16 @@
 ---
-title: 'AI Map'
-subtitle: 'Welcome to #30DayMapChallenge 2024 Day 9'
-date: '2024-11-09'
-image: 'day9_ai.png'
-image-alt: 'day9_ai'
-description: 'AI Map'
+title: 'Artic Map'
+subtitle: 'Welcome to #30DayMapChallenge 2024 Day 11'
+date: '2024-11-11'
+image: 'day11_artic.png'
+image-alt: 'day11_artic'
+description: 'Artic Map'
 output: html_document
 execute: 
    eval: false
 ---
 
-![AI Map](day9_ai.png)
+![Artic Map](day11_artic.png)
 
 ```{r}
 # Install and load required packages
