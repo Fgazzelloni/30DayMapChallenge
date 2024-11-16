@@ -1,0 +1,59 @@
+---
+title: 'My Data Map'
+subtitle: 'Welcome to #30DayMapChallenge 2024 Day 15'
+date: '2024-11-15'
+image: 'day15_my_data.png'
+image-alt: 'day15_my_data'
+description: 'My Data Map'
+output: html_document
+execute: 
+   eval: false
+---
+
+![My Data Map](day15_my_data.png)
+
+```{r}
+library(malariaAtlas)
+library(tidyverse)
+library(sf)
+library(rnaturalearth)
+```
+
+```{r}
+#tanzania_data <- getPR(country = "Tanzania", species = "Pf")
+#saveRDS(tanzania_data, "data/inst/extdata/tanzania_data.rds")  
+```
+
+
+```{r}
+tanzania_data <- readRDS("data/inst/extdata/tanzania_data.rds")
+tanzania_data_sf <- tanzania_data %>%
+  arrange(year_start) %>%
+  select(year_start,longitude,latitude,positive) %>%
+  filter(!is.na(longitude) & !is.na(year_start)) %>%
+  st_as_sf(coords = c("longitude", "latitude"), 
+                       crs = 4326)
+
+tanzania_sf <- ne_countries(country = "United Republic of Tanzania", 
+                                        returnclass = "sf")
+ggplot() +
+  geom_sf(data = tanzania_sf, 
+          fill = "gray90", 
+          color = "white")+
+geom_sf(data = tanzania_data_sf, 
+        aes(size=positive, color = positive),
+        alpha=0.5)+
+  scale_color_viridis_c(option = "plasma", name = "Malaria Cases") +
+  guides(size = "none") +
+  labs(title = "Malaria Hotspots in Tanzania",
+       subtitle = "1985-1994",
+       caption = "Source: Malaria Atlas Project | #30DayMapChallenge Day15 | @fgazzelloni") +
+  theme(legend.position = "right")+
+theme(plot.caption = element_text(hjust = 0))
+```
+save as png
+```{r}
+ggsave("day15_my_data/day15_my_data.png", 
+bg = "#bfd0dd",
+width = 8, height = 6, units = "in")
+```

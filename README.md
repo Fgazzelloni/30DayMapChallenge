@@ -25,7 +25,7 @@ The idea is to create maps based around different themes each day of November us
 | Day 9 - `09-11-2024 -`AI only | Day 10 - `10-11-2024 -` Pen & paper | Day 11 - `11-11-2022 -` Artic | Day 12 - `12-11-2024 -` Time & space |
 | ![day11 ai](2024/day9_ai/day9_ai.png) | ![day10_pen&paper](2024/day10_pen&paper/day10_pen&paper.jpg) | ![day11_artic](2024/day11_artic/day11_artic.png) | ![day12_space&time](2024/day12_time&space/day12_space&time.gif) |
 | Day 13 - `13-11-2024 -` A new tool | Day 14 - `14-11-2024 -`A world map | Day 15 - `15-11-2024 -` Data: Mt data | Day 16 - `16-11-2024 -` Choropleth |
-| ![day13_newtool](2024/day13_new_tool/day13_newtool.png) | ![day14_worldmap](2024/day14_worldmap/day14_worldmap.png) |  |  |
+| ![day13_newtool](2024/day13_new_tool/day13_newtool.png) | ![day14_worldmap](2024/day14_worldmap/day14_worldmap.png) | ![day15_my_data](2024/day15_my_data/day15_my_data.png) |  |
 | Day 17 - `17-11-2024 -`Collaborative map | Day 18 - `18-11-2024 - 3D` | Day 19 - `19-11-2024 - Typography` | Day 20 - `20-11-2024 -` Data: OpenStreetMap |
 |  |  |  |  |
 | Day 21 - `21-11-2024 - Conflict` | Day 22 - `22-11-2024 - 2 colours` | Day 23 - `23-11-2024 -` Memory | Day 24 - `24-11-2024 -` Only circular shapes |
