@@ -1,10 +1,10 @@
 ---
-title: 'A World Map Map'
+title: 'A World Map'
 subtitle: 'Welcome to #30DayMapChallenge 2024 Day 14'
 date: '2024-11-14'
 image: 'day14_worldmap.png'
 image-alt: 'day14_worldmap'
-description: 'A World Map Map'
+description: 'A World Map'
 output: html_document
 execute: 
    eval: false
