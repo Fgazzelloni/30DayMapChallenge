@@ -1,0 +1,270 @@
+---
+title: 'OSM Map'
+subtitle: 'Welcome to #30DayMapChallenge 2024 Day 20'
+date: '2024-11-20'
+image: 'day20_osm.png'
+image-alt: 'day20_osm'
+description: 'OSM Map'
+output: html_document
+execute: 
+   eval: false
+---
+
+![OSM Map](day20_osm.png)
+
+
+```{r}
+library(showtext)
+library(sysfonts)
+library(extrafont)
+showtext::showtext_auto()
+showtext::showtext_opts(dpi=320)
+font_add_google(name="Gideon Roman",
+                family="Gideon Roman")
+```
+
+
+```{r}
+# load libraries for data manipulation
+library(tidyverse)
+
+# search for data
+library(osmdata)
+```
+
+
+```{r}
+location <- "Rome"
+getbb(location)
+```
+```{r}
+available_features()
+```
+
+
+```{r}
+feature <- "bicycle_road"
+available_tags(feature)
+```
+
+
+```{r}
+# bicycle_road points
+br <- opq(c(12.23447,41.65564,12.85576,42.14103)) %>% 
+  add_osm_feature(key = "bicycle_road") %>%
+  osmdata_sf(quiet = FALSE)
+```
+
+```{r}
+xmin <- sf::st_bbox(br$osm_points)[1]
+ymin <- sf::st_bbox(br$osm_points)[2]
+xmax <- sf::st_bbox(br$osm_points)[3]
+ymax <- sf::st_bbox(br$osm_points)[4]
+```
+
+```{r}
+# saveRDS(br, file = "data/br.RDS")
+br <- readRDS("data/br.RDS")
+```
+
+
+```{r}
+streets <- opq(c(12.23447,41.65564,12.85576,42.14103)) %>% 
+  add_osm_feature(key = "highway", 
+                  value = c("motorway", "primary", 
+                            "secondary", "tertiary")) %>%
+  osmdata_sf()
+```
+
+
+```{r}
+saveRDS(streets, file = "data/streets.RDS")
+streets <- readRDS("data/streets.RDS")
+```
+
+
+```{r}
+small_streets <- opq(c(xmin,ymin,xmax,ymax)) %>% 
+  add_osm_feature(key = "highway", 
+                  value = c("residential", "living_street",
+                            "unclassified",
+                            "service", "footway")) %>%
+  osmdata_sf()
+```
+
+
+
+```{r}
+river <- opq(c(xmin,ymin,xmax,ymax)) %>%
+  add_osm_feature(key = "waterway", value = "river") %>%
+  osmdata_sf()
+```
+
+
+
+Make the map
+
+The latitude of Rome, Italy is 41.902782, and the longitude is 12.496366.
+
+```{r}
+ggplot() +
+ geom_sf(data = streets$osm_lines,
+         inherit.aes = FALSE,
+         color = "navy",
+         linewidth = .5,
+         alpha = .8) +
+ geom_sf(data = small_streets$osm_lines,
+         inherit.aes = FALSE,
+         color = "grey20",
+         linewidth = .1,
+         alpha = .8) +
+  geom_sf(data = br$osm_points,
+          inherit.aes = FALSE,
+          color = "red",
+          size = 1,
+          alpha = .8) +
+    geom_sf(data = br$osm_points,
+          inherit.aes = FALSE,
+          color = "grey20",
+          shape=21,
+          stroke=0.1,
+          size = 1.2,
+          alpha = .9) +
+  coord_sf(xlim=c(xmin,xmax),
+         ylim=c(ymin,ymax),
+           expand = FALSE) +
+  theme_void()+
+  theme(text=element_text(family="Gideon Roman"),
+        plot.background = element_rect(fill="white",linewidth=0.5),
+        panel.background = element_rect(fill="#dbd3c5",linewidth=1),
+        plot.margin = margin(10,10,40,10,unit = "pt"))
+```
+
+```{r}
+library(ggplot2)
+library(sf)
+library(cowplot)
+
+# Main Map: Detailed View
+main_map <- ggplot() +
+  geom_sf(data = streets$osm_lines,
+          inherit.aes = FALSE,
+          color = "navy",
+          linewidth = .5,
+          alpha = .8) +
+  geom_sf(data = small_streets$osm_lines,
+          inherit.aes = FALSE,
+          color = "grey20",
+          linewidth = .1,
+          alpha = .8) +
+  geom_sf(data = br$osm_points,
+          inherit.aes = FALSE,
+          color = "red",
+          size = 1,
+          alpha = .8) +
+  geom_sf(data = br$osm_points,
+          inherit.aes = FALSE,
+          color = "grey20",
+          shape = 21,
+          stroke = 0.1,
+          size = 1.2,
+          alpha = .9) +
+  coord_sf(xlim = c(xmin, xmax),
+           ylim = c(ymin, ymax),
+           expand = FALSE) +
+  theme_void() +
+  theme(
+    text = element_text(family = "Gideon Roman"),
+    plot.background = element_rect(fill = "white", linewidth = 0.5),
+    panel.background = element_rect(fill = "#dbd3c5", linewidth = 1),
+    plot.margin = margin(10, 10, 40, 10, unit = "pt")
+  )
+
+# Inset Map: Overview of the Region
+inset_map <- ggplot() +
+ geom_sf(data = streets$osm_lines,
+         inherit.aes = FALSE,
+         color = "navy",
+         linewidth = .07,
+         alpha = .8) +
+ geom_sf(data = small_streets$osm_lines,
+         inherit.aes = FALSE,
+         color = "grey20",
+         linewidth = .1,
+         alpha = .8) +
+  geom_sf(data = br$osm_points,
+          inherit.aes = FALSE,
+          color = "red",
+          size = 1,
+          alpha = .8) +
+  labs(caption="Rome")+
+  theme_void() +
+  theme(text = element_text(family = "Gideon Roman"),
+        panel.background = element_rect(fill = alpha("white",alpha = 0.1),
+                                        linewidth = 0),
+        plot.background = element_rect(fill = alpha("white",alpha = 0.1),
+                                       linewidth = 0))
+
+# Combine Main Map with Inset Map
+combined_map <- ggdraw() +
+  draw_plot(main_map) +
+  draw_plot(inset_map, x = 0.7, y = 0.7, width = 0.25, height = 0.25)  +
+  draw_label("Bike Roads in Rome",
+             x=0.5,y=0.19,
+             size=14.5,
+             fontface = "bold",
+             fontfamily = "Gideon Roman")
+
+combined_map
+```
+
+
+
+```{r}
+# save the base map
+ggsave("base_map.png", width = 6, height = 6)
+```
+
+Draw the map-viz
+
+```{r}
+library(cowplot)
+
+ggdraw()+
+  draw_image("data/base_map.png")+
+  draw_line(x=c(0.055,0.945),y=c(0.169,0.169),
+            size=25,color="#dedede",alpha=0.7)+
+  draw_line(x=c(0.3,0.7),y=c(0.22,0.22),
+            size=1)+
+  draw_label("Rome",
+             x=0.5,y=0.19,
+             size=14.5,
+             fontface = "bold",
+             fontfamily = "Gideon Roman")+
+  draw_label("41.9027°N/12.4964°E",
+             x=0.5,y=0.149,
+             size=5,
+             fontfamily = "Gideon Roman") +
+  draw_label("OSM key: Military",
+             x=0.5,y=0.125,
+             size=4,
+             fontfamily = "Gideon Roman") +
+  draw_label("#30DayMapChallenge 2022 Day 8: osmdata\nDataSource: {osmdata}: Rome, Italy | Map: Federica Gazzelloni (@fgazzelloni)",
+             x=0.5,y=0.07,
+             size=4,
+             lineheight = 1.8,
+             fontfamily = "Gideon Roman")
+
+# save final version
+ggsave("day8_openstreetmap.png", 
+       dpi=150,
+       width = 5.8, 
+       height = 6,
+       bg="white")
+```
+
+
+```{r}
+Copyright © 2023 Federica Gazzelloni
+```
+
