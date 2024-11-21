@@ -1,3 +1,16 @@
+---
+title: 'Choropleth Map'
+subtitle: 'Welcome to #30DayMapChallenge 2024 Day 16'
+date: '2024-11-16'
+image: 'day16_choropleth_map.png'
+image-alt: 'day16_choropleth_map'
+description: 'Choropleth Map'
+output: html_document
+execute: 
+   eval: false
+---
+
+![Choropleth Map](day16_choropleth_map.png)
 
 ```{r}
 library(tidyverse)

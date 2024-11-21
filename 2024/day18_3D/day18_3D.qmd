@@ -1,0 +1,88 @@
+---
+title: '3D Map'
+subtitle: 'Welcome to #30DayMapChallenge 2024 Day 18'
+date: '2024-11-18'
+image: 'day18_3D.png'
+image-alt: 'day18_3D'
+description: '3D Map'
+output: html_document
+execute: 
+   eval: false
+---
+
+![3D Map](day18_3D.png)
+
+```{r}
+library(geodata)
+library(raster)
+library(plotly)
+library(sf)
+library(dplyr)
+
+# Step 1: Define a Larger Bounding Box for Paris Region
+paris_bbox <- st_bbox(c(xmin = 2.0, ymin = 48.6, xmax = 2.6, ymax = 49.2), crs = 4326)
+
+# Step 2: Download SRTM Elevation Data for France
+# Save in a temporary directory (can be set to a permanent path)
+srtm_data <- elevation_30s(country = "FRA", path = tempdir())
+
+# Verify if the SRTM raster contains valid data
+print(srtm_data)  # Print details of the raster
+plot(srtm_data, main = "SRTM Data for France\n#30DayMapChallenge Day18 | @fgazzelloni",cex.main = 0.8)  # Check if it contains data
+```
+```{r}
+# Set the file path and PNG dimensions
+png(filename = "srtm_data_france_day18.png", width = 800, height = 600, res = 150)
+
+# Plot the SRTM raster data with customized title
+plot(
+  srtm_data,dpi=300,
+  main = "SRTM Data for France\n#30DayMapChallenge Day18 | @fgazzelloni",
+  cex.main = 0.8,     # Main title size
+  col.main = "grey20",  # Main title color
+)
+
+# Close the PNG device
+dev.off()
+```
+
+
+```{r}
+# Step 3: Crop the SRTM Data to Paris Bounding Box
+paris_bbox_sp <- as(extent(paris_bbox$xmin, paris_bbox$xmax, paris_bbox$ymin, paris_bbox$ymax), "SpatialPolygons")
+crs(paris_bbox_sp) <- crs(srtm_data) # Match CRS with the raster
+elevation_data <- crop(srtm_data, paris_bbox_sp)
+
+# Verify the cropped raster for Paris
+print(elevation_data)  # Check for valid data
+plot(elevation_data, main = "Cropped Elevation Data for Paris")
+
+# Step 4: Convert Raster to Data Frame
+if (!is.null(elevation_data)) {
+  elevation_matrix <- raster::as.matrix(elevation_data)
+  elevation_df <- as.data.frame(as.table(elevation_matrix)) %>%
+    rename(row = Var1, col = Var2, elevation = Freq) %>%
+    mutate(
+      row = as.numeric(row),
+      col = as.numeric(col),
+      lon = raster::xFromCol(elevation_data, col),
+      lat = raster::yFromRow(elevation_data, row)
+    ) %>%
+    drop_na()  # Remove rows with missing data
+
+  # Step 5: Verify the Data Frame
+  print(summary(elevation_df))  # Check for valid values
+  print(head(elevation_df))  # Inspect a few rows
+} else {
+  stop("Elevation data is empty after cropping!")
+}
+
+#
+```
+
+Save it as png
+```{r}
+
+```
+
+

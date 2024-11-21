@@ -27,7 +27,7 @@ The idea is to create maps based around different themes each day of November us
 | Day 13 - `13-11-2024 -` A new tool | Day 14 - `14-11-2024 -`A world map | Day 15 - `15-11-2024 -` Data: Mt data | Day 16 - `16-11-2024 -` Choropleth |
 | ![day13_newtool](2024/day13_new_tool/day13_newtool.png) | ![day14_worldmap](2024/day14_worldmap/day14_worldmap.png) | ![day15_my_data](2024/day15_my_data/day15_my_data.png) | ![day16_choropleth_map](2024/day16_choropleth_map/day16_choropleth_map.png) |
 | Day 17 - `17-11-2024 -`Collaborative map | Day 18 - `18-11-2024 - 3D` | Day 19 - `19-11-2024 - Typography` | Day 20 - `20-11-2024 -` Data: OpenStreetMap |
-|  |  |  |  |
+| ![day17_collaborative_map](2024/day17_collaborative_map/day17_collaborative_map.png) | ![day18_3D](2024/day18_3D/day18_3D.png) |  |  |
 | Day 21 - `21-11-2024 - Conflict` | Day 22 - `22-11-2024 - 2 colours` | Day 23 - `23-11-2024 -` Memory | Day 24 - `24-11-2024 -` Only circular shapes |
 |  |  |  |  |
 | Day 25 - `25-11-2024 - Heat` | Day 26 - `26-11-2024 - Map projections` | Day 27 - `27-11-2024 - Micromapping` | Day 28 - `28-11-2024 - The blue planet` |
