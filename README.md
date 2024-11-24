@@ -29,7 +29,7 @@ The idea is to create maps based around different themes each day of November us
 | Day 17 - `17-11-2024 -`Collaborative map | Day 18 - `18-11-2024 - 3D` | Day 19 - `19-11-2024 - Typography` | Day 20 - `20-11-2024 -` Data: OpenStreetMap |
 | ![day17_collaborative_map](2024/day17_collaborative_map/day17_collaborative_map.png) | ![day18_3D](2024/day18_3D/day18_3D.png) | ![day19_typography](2024/day19_typography/day19_typography.png) | ![day20_osm](2024/day20_osm/day20_osm.png) |
 | Day 21 - `21-11-2024 - Conflict` | Day 22 - `22-11-2024 - 2 colours` | Day 23 - `23-11-2024 -` Memory | Day 24 - `24-11-2024 -` Only circular shapes |
-| ![day21_conflicts](2024/day21_conflicts/day21_conflicts.png) |  |  |  |
+| ![day21_conflicts](2024/day21_conflicts/day21_conflicts.png) | ![day22_two_colors](2024/day22_two_colors/day22_two_colors.png) | ![day23_memory](2024/day23_memory/day23_memory.png) | ![day24_only_circular_shapes](2024/day24_only_circular_shapes/day24_only_circular_shapes.png) |
 | Day 25 - `25-11-2024 - Heat` | Day 26 - `26-11-2024 - Map projections` | Day 27 - `27-11-2024 - Micromapping` | Day 28 - `28-11-2024 - The blue planet` |
 |  |  |  |  |
 | Day 29 - `29-11-2024 - Data: Overture` | Day 30 - `30-11-2024 - The final map` | Collage |  |
