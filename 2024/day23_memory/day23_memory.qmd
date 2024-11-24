@@ -1,0 +1,113 @@
+---
+title: 'Memory Map'
+subtitle: 'Welcome to #30DayMapChallenge 2024 Day 23'
+date: '2024-11-23'
+image: 'day23_memory.png'
+image-alt: 'day23_memory'
+description: 'Memory Map'
+output: html_document
+execute: 
+   eval: false
+---
+
+![Memory Map](day23_memory.png)
+```{r}
+library(tidyverse)
+library(sf)
+library(ggtext)
+library(rnaturalearth)
+library(ggspatial)
+library(showtext)
+```
+
+
+```{r}
+# Load the world map
+world <- ne_countries(scale = "medium", returnclass = "sf")
+```
+
+
+```{r}
+memories <- data.frame(
+  place = c("Home", 
+            "Holiday", 
+            "Job Abroad", 
+            "Dream Vacation"),
+  lon = c(12.4964, 2.1686, 0.1276, -74.006),
+  lat = c(41.9027, 41.3874, 51.5072, 40.7128)
+)
+```
+
+
+```{r}
+# Convert to sf object
+memories_sf <- st_as_sf(memories, 
+                        coords = c("lon", "lat"), 
+                        crs = 4326)
+```
+
+Set the fonts:
+```{r}
+font_add_google(name = 'Cormorant Garamond', 
+                family = 'Garamond')
+showtext_auto()
+```
+
+```{r}
+ggplot() +
+  # Base world map
+  geom_sf(data = world, 
+          fill = alpha("antiquewhite", alpha=0.5),
+          color = "gray50", 
+          size = 0.3) +
+  # Highlight the journey locations
+  geom_sf(data = memories_sf, 
+          aes(geometry = geometry), 
+          color = "darkred", 
+          size = 3) +
+  geom_text(data = memories,
+            aes(x = lon, y = lat, 
+                label = place),
+            nudge_y = 2,
+            size = 15,
+            family = "serif",
+            color = "darkred") +
+  # Add a soft grid and latitude/longitude lines
+  coord_sf(ylim = c(20, 60), xlim = c(-90, 20),clip = "off") +
+  annotation_scale(location = "bl", 
+                   width_hint = 0.3, 
+                   text_col = "gray30") +
+  annotation_north_arrow(location = "tr", 
+                         style = north_arrow_fancy_orienteering) +
+  labs(title = "Memories",
+       subtitle = "Tracing the journey of cherished moments",
+       caption = "#30DayMapChallenge Day23 | @fgazzelloni") +
+  ggthemes::theme_map() +
+  theme(text = element_text(family = "Garamond"),
+        plot.title = element_text(size = 160, 
+                                  face = "bold", 
+                                  hjust = 0.5, 
+                                  color = "darkred"),
+        plot.subtitle = element_text(size = 60, 
+                                     hjust = 0.5,
+                                     face = "bold",
+                                     color = "gray40"),
+        plot.caption = element_text(size = 40, 
+                                    hjust = 0.5, 
+                                    face = "bold",
+                                    color = "gray40"),
+        panel.background = element_rect(fill = "bisque", 
+                                        color = NA),
+        plot.background = element_rect(fill = "white", 
+                                       color = "white"),
+        legend.position = "none",
+        panel.grid.major = element_line(color = "gray90"))
+```
+
+
+Save the map as png:
+```{r}
+ggsave('day23_memory.png', 
+       height = 5, width = 8, 
+       dpi = 300)
+```

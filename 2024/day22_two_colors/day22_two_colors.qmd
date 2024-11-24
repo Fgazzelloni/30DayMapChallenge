@@ -1,0 +1,108 @@
+---
+title: 'Two Colors Map'
+subtitle: 'Welcome to #30DayMapChallenge 2024 Day 22'
+date: '2024-11-22'
+image: 'day22_two_colors.png'
+image-alt: 'day22_two_colors'
+description: 'Two Colors Map'
+output: html_document
+execute: 
+   eval: false
+---
+
+![Two Colors Map](day22_two_colors.png)
+
+Load Libraries
+
+```{r}
+library(tidyverse)
+library(sf)
+library(osmdata)
+library(showtext)
+```
+
+Set the View Point: Rome - City Centre
+
+41.9027°N/12.4964
+```{r}
+long = 12.4964
+lat = 41.9027
+```
+
+```{r}
+window <- st_point(c(long, lat)) %>%
+  st_sfc(crs = 4326) %>%
+  st_sf() %>%
+  st_buffer(dist = 5000) %>%
+  st_bbox()
+
+window
+```
+
+Download the Buildings / Features Data for the Area of Interest:
+```{r}
+features <- opq(window) %>%
+  add_osm_feature(key = "building") %>%
+  osmdata_sf()
+```
+
+```{r}
+polygons <- features$osm_polygons
+```
+
+```{r}
+polygons%>%
+  count(building, sort = TRUE)
+```
+
+```{r}
+polygons_mod <- polygons %>%
+  mutate(building = ifelse(!is.na(building), 'Buildings', "Other")) 
+```
+
+
+Set the fonts:
+```{r}
+font_add_google(name = 'Caveat', family = 'Caveat')
+showtext_auto()
+```
+
+Make the map:
+```{r}
+ggplot() +
+  geom_sf(data = polygons_mod,
+          aes(fill = building), 
+          color = NA) +
+scale_fill_manual(values = c('darkred','gold')) +
+  labs(title = 'Rome, Italy',
+       subtitle = '41.9027°N/12.4964',
+       caption = 'Data: OpenStreetMap - 5km Radius\n#30DayMapChallenge Day22 | @fgazzelloni',
+       fill = '') +
+  theme_void() +
+  theme(text = element_text(family = 'Caveat'),
+        legend.position = 'top',
+        legend.key.width = unit(0.2, "cm"),
+        legend.text = element_text(color = 'white', 
+                                   size = 40),
+        plot.title = element_text(color = 'darkred', 
+                                  size = 160,
+                                  hjust = 0.5),
+        plot.subtitle = element_text(color = 'gold', 
+                                     size = 60,
+                                     hjust = 0.5),
+        plot.caption = element_text(color = 'white', 
+                                    size = 40,
+                                    hjust = 0.5,
+                                    lineheight = 0.4),
+        plot.background = element_rect(fill = 'black', 
+                                       color = NA)) 
+```
+
+
+Save the map as png:
+```{r}
+ggsave('day22_two_colors.png', 
+       height = 10, width = 8, 
+       dpi = 300)
+```
+
