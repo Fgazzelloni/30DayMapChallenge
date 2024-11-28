@@ -31,7 +31,7 @@ The idea is to create maps based around different themes each day of November us
 | Day 21 - `21-11-2024 - Conflict` | Day 22 - `22-11-2024 - 2 colours` | Day 23 - `23-11-2024 -` Memory | Day 24 - `24-11-2024 -` Only circular shapes |
 | ![day21_conflicts](2024/day21_conflicts/day21_conflicts.png) | ![day22_two_colors](2024/day22_two_colors/day22_two_colors.png) | ![day23_memory](2024/day23_memory/day23_memory.png) | ![day24_only_circular_shapes](2024/day24_only_circular_shapes/day24_only_circular_shapes.png) |
 | Day 25 - `25-11-2024 - Heat` | Day 26 - `26-11-2024 - Map projections` | Day 27 - `27-11-2024 - Micromapping` | Day 28 - `28-11-2024 - The blue planet` |
-| ![day25_heat](2024/day25_heat/day25_heat.png) | ![day26_map_projections](2024/day26_map_projections/day26_map_projections.png) |  |  |
+| ![day25_heat](2024/day25_heat/day25_heat.png) | ![day26_map_projections](2024/day26_map_projections/day26_map_projections.png) | ![day27_micromapping](2024/day27_micromapping/day27_micromapping.png) |  |
 | Day 29 - `29-11-2024 - Data: Overture` | Day 30 - `30-11-2024 - The final map` | Collage |  |
 |  |  |  |  |
 
