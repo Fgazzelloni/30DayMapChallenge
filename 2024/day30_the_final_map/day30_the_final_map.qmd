@@ -1,0 +1,13 @@
+---
+title: 'The Final Map'
+subtitle: 'Welcome to #30DayMapChallenge 2024 Day 30'
+date: '2024-11-30'
+image: 'day30_the_final_map.png'
+image-alt: 'day30_the_final_map'
+description: 'The Final Map'
+output: html_document
+execute: 
+   eval: false
+---
+
+![The Final Map](day30_the_final_map.png)
