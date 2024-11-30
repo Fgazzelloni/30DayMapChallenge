@@ -33,7 +33,7 @@ The idea is to create maps based around different themes each day of November us
 | Day 25 - `25-11-2024 - Heat` | Day 26 - `26-11-2024 - Map projections` | Day 27 - `27-11-2024 - Micromapping` | Day 28 - `28-11-2024 - The blue planet` |
 | ![day25_heat](2024/day25_heat/day25_heat.png) | ![day26_map_projections](2024/day26_map_projections/day26_map_projections.png) | ![day27_micromapping](2024/day27_micromapping/day27_micromapping.png) | ![day28_the_blue_planet](2024/day28_the_blue_planet/day28_the_blue_planet.png) |
 | Day 29 - `29-11-2024 - Data: Overture` | Day 30 - `30-11-2024 - The final map` | Collage |  |
-| ![day29_overture](2024/day29_overture/day29_overture.png) |  |  |  |
+| ![day29_overture](2024/day29_overture/day29_overture.png) | ![day30_the_final_map](2024/day30_the_final_map/day30_the_final_map.png) |  |  |
 
 <!-- TABLE END -->
 
