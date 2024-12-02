@@ -1,0 +1,14 @@
+---
+title: 'Pen And Paper'
+subtitle: 'Welcome to #30DayMapChallenge 2024 Day 10'
+date: '2024-11-10'
+image: 'https://raw.githubusercontent.com/Fgazzelloni/30DayMapChallenge/master/2024/day10_pen&paper/day10_pen&paper.jpg'
+image-alt: 'day10_pen&paper'
+description: 'Pen And Paper'
+output: html_document
+execute: 
+   eval: false
+---
+
+![Pen And Paper](day10_pen&paper.jpg)
+

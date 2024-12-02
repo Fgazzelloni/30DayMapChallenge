@@ -23,7 +23,7 @@ The idea is to create maps based around different themes each day of November us
 | Day 5 - `05-11-2024 -`A journey | Day 6 - `06-11-2024 -`Raster | Day 7 - `07-11-2024 -`Vintage style | Day 8 - `08-11-2024 -`Data: HDX |
 | ![day5 A Journey](2024/day5_a-journey/day5_a-journey.png) | ![day6 Raster](2024/day6_raster/day6_raster.png){alt="day5 A Journey"} | ![day7_vintage](2024/day7_vintage/day7_vintage.png) | ![day8_hdx](2024/day8_hdx/day8_hdx.png) |
 | Day 9 - `09-11-2024 -`AI only | Day 10 - `10-11-2024 -` Pen & paper | Day 11 - `11-11-2022 -` Artic | Day 12 - `12-11-2024 -` Time & space |
-| ![day11 ai](2024/day9_ai/day9_ai.png) | ![day10_pen&paper](2024/day10_pen&paper/day10_pen&paper.jpg) | ![day11_artic](2024/day11_artic/day11_artic.png) | ![day12_space&time](2024/day12_time&space/day12_space&time.gif) |
+| ![day11 ai](2024/day9_ai/day9_ai.png) | ![day10_pen&paper](2024/day10_pen&paper/day10_pen&paper.jpg) | ![day11_artic](2024/day11_artic/day11_artic.png) | ![day12_time&space](2024/day12_time&space/day12_time&space.gif) |
 | Day 13 - `13-11-2024 -` A new tool | Day 14 - `14-11-2024 -`A world map | Day 15 - `15-11-2024 -` Data: Mt data | Day 16 - `16-11-2024 -` Choropleth |
 | ![day13_newtool](2024/day13_new_tool/day13_newtool.png) | ![day14_worldmap](2024/day14_worldmap/day14_worldmap.png) | ![day15_my_data](2024/day15_my_data/day15_my_data.png) | ![day16_choropleth_map](2024/day16_choropleth_map/day16_choropleth_map.png) |
 | Day 17 - `17-11-2024 -`Collaborative map | Day 18 - `18-11-2024 - 3D` | Day 19 - `19-11-2024 - Typography` | Day 20 - `20-11-2024 -` Data: OpenStreetMap |
@@ -33,7 +33,7 @@ The idea is to create maps based around different themes each day of November us
 | Day 25 - `25-11-2024 - Heat` | Day 26 - `26-11-2024 - Map projections` | Day 27 - `27-11-2024 - Micromapping` | Day 28 - `28-11-2024 - The blue planet` |
 | ![day25_heat](2024/day25_heat/day25_heat.png) | ![day26_map_projections](2024/day26_map_projections/day26_map_projections.png) | ![day27_micromapping](2024/day27_micromapping/day27_micromapping.png) | ![day28_the_blue_planet](2024/day28_the_blue_planet/day28_the_blue_planet.png) |
 | Day 29 - `29-11-2024 - Data: Overture` | Day 30 - `30-11-2024 - The final map` | Collage |  |
-| ![day29_overture](2024/day29_overture/day29_overture.png) | ![day30_the_final_map](2024/day30_the_final_map/day30_the_final_map.png) |  |  |
+| ![day29_overture](2024/day29_overture/day29_overture.png) | ![day30_the_final_map](2024/day30_the_final_map/day30_the_final_map.png) | ![collage2024](2024/collage/collage2024.png) |  |
 
 <!-- TABLE END -->
 
