@@ -1,0 +1,13 @@
+---
+title: 'New Tool'
+subtitle: 'Welcome to #30DayMapChallenge 2024 Day 13'
+date: '2024-11-13'
+image: 'https://raw.githubusercontent.com/Fgazzelloni/30DayMapChallenge/master/2024/day13_new_tool/day13_new_tool.png'
+image-alt: 'day13_new_tool'
+description: 'New Tool'
+output: html_document
+execute: 
+   eval: false
+---
+
+![New Tool](day13_new_tool.png)

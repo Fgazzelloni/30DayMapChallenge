@@ -1,16 +1,16 @@
 ---
-title: 'Space and Time Map'
+title: 'Time and Space Map'
 subtitle: 'Welcome to #30DayMapChallenge 2024 Day 12'
 date: '2024-11-12'
-image: 'day12_space&time.png'
-image-alt: 'day12_space&time'
+image: 'day12_time&space.png'
+image-alt: 'day12_time&space'
 description: 'Space and Time Map'
 output: html_document
 execute: 
    eval: false
 ---
 
-![Space and Time Map](day12_space&time.png)
+![Space and Time Map](day12_time&space.gif)
 
 ```{r}
 library(sf)
@@ -72,6 +72,7 @@ data <- as.data.frame(WorldPhones) %>%
 data
 ```
 
+
 ```{r}
 data %>% 
   pivot_longer(-year, 
@@ -91,6 +92,34 @@ data %>%
   enter_fade() +
   exit_fade()
 ```
+
+
+```{r}
+world <- ne_countries(returnclass = "sf") 
+
+selected_regions <- bind_rows(N.Amer, Europe, Asia, S.Amer, Oceania, Africa) 
+
+ggplot() +
+  geom_sf(data = world, color = "grey20", 
+          linewidth = 0.5) +
+  geom_sf(data = selected_regions, 
+          fill = "pink",
+          color = "white") +
+  theme_void()
+```
+
+```{r}
+data_coords <- data %>%
+  pivot_longer(-year, 
+               names_to = "continent", 
+               values_to = "phones") %>%
+  left_join(selected_regions, 
+            by = c("continent")) %>%
+  sf::st_as_sf(crs = 4326)
+  
+```
+
+
 
 ```{r}
 library(viridis)  # For distinct color scales
@@ -124,11 +153,11 @@ data_coords %>%
 
 Save the Gif
 ```{r}
-anim_save("day12_space&time.gif", 
+anim_save("day12_time&space.gif", 
           title = "The World's Telephones", 
           description = "The number of telephones in various regions of the world (in thousands)", 
           tags = "#30DayMapChallenge", 
-          category = "Space and Time", 
+          category = "Time and Space", 
           gif = animate_options(renderer = gifski_renderer()))
 ```
 
