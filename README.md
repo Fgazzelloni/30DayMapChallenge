@@ -2,7 +2,7 @@
 
 ## Daily social mapping project happening every November
 
-This is [Federica Gazzelloni](https://github.com/Fgazzelloni)'s official `#30DayMapChallenge` repository
+This is [Federica Gazzelloni](https://github.com/Fgazzelloni)'s official [#30DayMapChallenge](https://30daymapchallenge.com/) repository
 
 ### My contributions will be posted on [Twitter: \@fgazzelloni](https://twitter.com/fgazzelloni) and [Mastodon](https://fosstodon.org/@fgazzelloni) with the hashtag #30DayMapChallenge
 
