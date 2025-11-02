@@ -1,0 +1,72 @@
+---
+title: 'Points'
+subtitle: 'Welcome to #30DayMapChallenge 2024 Day 1'
+date: '2025-11-01'
+image: 'day1_points.png'
+image-alt: 'day1_points'
+description: 'Cropped Grid of Points on World Map'
+output: html_document
+execute: 
+   eval: false
+---
+
+![Dalys due to Infectious Diseases](day1_points.png)
+
+```{r}
+library(tidyverse)
+library(hmsidwR)
+library(sf)
+```
+
+
+```{r}
+data(idDALY_map_data)
+```
+
+
+```{r}
+world_map <- map_data("world") %>%
+  filter(!region == "Antarctica") %>%
+  st_as_sf(
+    coords = c("long", "lat"),
+    crs = 4326,
+    agr = "constant"
+  ) %>%
+  st_cast("POINT") %>%
+  group_by(group) %>%
+  summarise(
+    geometry = st_combine(geometry),
+    do_union = F
+  ) %>%
+  st_cast("POLYGON")
+```
+
+```{r}
+idDALY_points <- idDALY_map_data %>%
+  st_centroid()
+```
+
+
+```{r}
+world_map %>%
+  ggplot() +
+  geom_sf() +
+  geom_sf(data = idDALY_map_data,
+          aes(fill = DALYs), alpha = 0.3) +
+  geom_sf(data = idDALY_points,
+          aes(fill = DALYs), 
+          size = 0.8, color = "grey40",
+          shape = 21, stroke = 0.2) +
+  labs(title = "Infectious Diseases World Map",
+       caption = "Average DALYs per country 1990-2021\nDataSource: {hmsidwR} \nMap: Federica Gazzelloni #30DayMapChallenge 2025 - Day1 (Points)") +
+  ggthemes::scale_fill_gradient2_tableau() +
+  ggthemes::theme_map() +
+  theme(
+    plot.title = element_text(hjust = 0.5, 
+                              size = 16,
+                              #color = "Red-Gold",
+                              face = "bold"),
+    plot.caption = element_text(hjust = 0.5, face = "bold"))
+```
+
+
