@@ -91,9 +91,9 @@ Simple straight lines show direct connections from origin to each centroid. Good
 # Plot
 p1 <- ggplot() +
   geom_sf(data = world, fill = "grey90", color = "white") +
-  geom_sf(data = lines_sf, color = "darkred", size = 0.05) +
+  geom_sf(data = lines_sf, color = "brown", size = 0.05) +
   geom_sf(data = origin, color = "darkblue", shape = 21) +
-  geom_sf(data = centroids, aes(size = pop_est), color = "darkred", shape = 21) +
+  geom_sf(data = centroids, aes(size = pop_est), color = "brown", shape = 21) +
   scale_size_continuous(labels = ~ .x / 1e6, name = "Population (millions)") +
   ggthemes::theme_map()
 
@@ -122,9 +122,9 @@ lines_sf_gc <- do.call(rbind, lines_list_gc)
 ```{r}
 p2 <- ggplot() +
   geom_sf(data = world, fill = "grey90", color = "white") +
-  geom_sf(data = lines_sf_gc, color = alpha("darkred", 0.2), linewidth = 0.5) +
+  geom_sf(data = lines_sf_gc, color = alpha("brown", 0.2), linewidth = 0.5) +
   geom_sf(data = origin, color = "darkblue", shape = 21) +
-  geom_sf(data = centroids, aes(size = pop_est), show.legend = FALSE, color = "darkred", shape = 21) +
+  geom_sf(data = centroids, aes(size = pop_est), show.legend = FALSE, color = "brown", shape = 21) +
   coord_sf(crs = "+proj=robin") +
   ggthemes::theme_map()
 
@@ -157,11 +157,14 @@ curve_data <- centroids_df %>%
 # Plot flight-route style
 p3 <- ggplot() +
   geom_sf(data = world, fill = "grey90", color = "white") +
-  geom_curve(data = curve_data, aes(x = x, y = y, xend = xend, yend = yend),
-             curvature = 0.2, color = alpha("darkblue", 0.9), linewidth = 0.05) +
+  geom_curve(data = curve_data, aes(x = x, y = y, 
+                                    xend = xend, yend = yend),
+             curvature = 0.2, color = alpha("darkblue", 0.9), 
+             linewidth = 0.05) +
   geom_sf(data = origin, color = "darkblue", shape = 21) +
   geom_point(aes(x = X, y = Y), data = origin_df, color = "darkblue", shape = 21) +
-  geom_sf(data = centroids, aes(size = pop_est), show.legend = FALSE, color = "darkred", shape = 21) +
+  geom_sf(data = centroids, aes(size = pop_est), 
+          show.legend = FALSE, color = "brown", shape = 21) +
   ggthemes::theme_map() 
 
 p3 
@@ -173,13 +176,12 @@ p4 <- ggplot() +
   geom_sf(data = world, fill = "grey90", color = "white") +
   geom_curve(data = curve_data,
              aes(x = x, y = y, xend = xend, yend = yend),
-             curvature = 0.2, color = "grey30", 
+             curvature = 0.2, color = alpha("darkblue", 0.9),
              linewidth = 0.05) +
   geom_sf(data = origin, color = "darkblue", shape=21) +
-  geom_point(aes(x = 0, y = 0), color = "darkblue", shape = 21) +
-  geom_sf(data = lines_sf, linewidth = 0.05,color = "darkred") +
-    geom_sf(data = centroids, aes(size=pop_est),show.legend = F,
-          color = "darkred", 
+  geom_sf(data = lines_sf, linewidth = 0.05,color = "brown") +
+  geom_sf(data = centroids, aes(size=pop_est),show.legend = F,
+          color = "brown", 
           shape = 21) +
   scale_linewidth(range = c(0, 0.3))+
   ggthemes::theme_map()
@@ -218,8 +220,8 @@ combined <- (p1 + p2) / (p3 + p4) +
     theme = theme(plot.title = element_text(size = 18,
                                             face = "bold",
                                             hjust = 0.5),
-      plot.caption = element_text(size = 12, 
-                                  color = "grey40"))
+                  plot.caption = element_text(size = 12, 
+                                  color = "grey40")))
 
 
 combined 
