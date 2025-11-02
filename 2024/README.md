@@ -1,4 +1,4 @@
-## #30DayMapChallenge 2025
+## #30DayMapChallenge 2024
 
 ## Daily social mapping project happening every November
 
@@ -8,7 +8,7 @@ This is [Federica Gazzelloni](https://github.com/Fgazzelloni)'s official `#30Day
 
 #### Themes for this year are:
 
-![Themes for the 2025 maps.](images/30dmc_2025.png)
+![Themes for the 2024 maps.](images/30dmc_2024.png)
 
 The [official repository for #30DayMapChallenge](https://github.com/tjukanovt/30DayMapChallenge) is a daily mapping challenge open to everyone by [Topi Tjukanov \@tjukanov](https://twitter.com/tjukanov).
 
@@ -17,23 +17,23 @@ The idea is to create maps based around different themes each day of November us
 <!-- TABLE START -->
 
 | Maps |   |   |   |
-|------------------|------------------|------------------|------------------|
-| Day 1 - `01-11-2025 -`Points | Day 2 - `02-11-2025 - Lines` | Day 3 - `03-11-2025 -`Polygons | Day 4 - `04-11-2025 - Hexagons` |
-| ![day1 Points](2025/day1_points/day1_points.png) | ![day2 Lines](2025/day2_lines/day2_lines.png) | ![day3 Polygons](2025/day3_polygons/day3_polygons.png) | ![day4 Hexagons](2025/day4_hexagons/day4_hexagons.png) |
-| Day 5 - `05-11-2025 -`A journey | Day 6 - `06-11-2025 -`Raster | Day 7 - `07-11-2025 -`Vintage style | Day 8 - `08-11-2025 -`Data: HDX |
-| ![day5 A Journey](2025/day5_a-journey/day5_a-journey.png) | ![day6 Raster](2025/day6_raster/day6_raster.png){alt="day5 A Journey"} | ![day7_vintage](2025/day7_vintage/day7_vintage.png) | ![day8_hdx](2025/day8_hdx/day8_hdx.png) |
-| Day 9 - `09-11-2025 -`AI only | Day 10 - `10-11-2025 -` Pen & paper | Day 11 - `11-11-2022 -` Artic | Day 12 - `12-11-2025 -` Time & space |
-| ![day11 ai](2025/day9_ai/day9_ai.png) | ![day10_pen&paper](2025/day10_pen&paper/day10_pen&paper.jpg) | ![day11_artic](2025/day11_artic/day11_artic.png) | ![day12_time&space](2025/day12_time&space/day12_time&space.gif) |
-| Day 13 - `13-11-2025 -` A new tool | Day 14 - `14-11-2025 -`A world map | Day 15 - `15-11-2025 -` Data: Mt data | Day 16 - `16-11-2025 -` Choropleth |
-| ![day13_newtool](2025/day13_new_tool/day13_newtool.png) | ![day14_worldmap](2025/day14_worldmap/day14_worldmap.png) | ![day15_my_data](2025/day15_my_data/day15_my_data.png) | ![day16_choropleth_map](2025/day16_choropleth_map/day16_choropleth_map.png) |
-| Day 17 - `17-11-2025 -`Collaborative map | Day 18 - `18-11-2025 - 3D` | Day 19 - `19-11-2025 - Typography` | Day 20 - `20-11-2025 -` Data: OpenStreetMap |
-| ![day17_collaborative_map](2025/day17_collaborative_map/day17_collaborative_map.png) | ![day18_3D](2025/day18_3D/day18_3D.png) | ![day19_typography](2025/day19_typography/day19_typography.png) | ![day20_osm](2025/day20_osm/day20_osm.png) |
-| Day 21 - `21-11-2025 - Conflict` | Day 22 - `22-11-2025 - 2 colours` | Day 23 - `23-11-2025 -` Memory | Day 24 - `24-11-2025 -` Only circular shapes |
-| ![day21_conflicts](2025/day21_conflicts/day21_conflicts.png) | ![day22_two_colors](2025/day22_two_colors/day22_two_colors.png) | ![day23_memory](2025/day23_memory/day23_memory.png) | ![day24_only_circular_shapes](2025/day24_only_circular_shapes/day24_only_circular_shapes.png) |
-| Day 25 - `25-11-2025 - Heat` | Day 26 - `26-11-2025 - Map projections` | Day 27 - `27-11-2025 - Micromapping` | Day 28 - `28-11-2025 - The blue planet` |
-| ![day25_heat](2025/day25_heat/day25_heat.png) | ![day26_map_projections](2025/day26_map_projections/day26_map_projections.png) | ![day27_micromapping](2025/day27_micromapping/day27_micromapping.png) | ![day28_the_blue_planet](2025/day28_the_blue_planet/day28_the_blue_planet.png) |
-| Day 29 - `29-11-2025 - Data: Overture` | Day 30 - `30-11-2025 - The final map` | Collage |  |
-| ![day29_overture](2025/day29_overture/day29_overture.png) | ![day30_the_final_map](2025/day30_the_final_map/day30_the_final_map.png) | ![collage2025](2025/collage/collage2025.png) |  |
+|----|----|----|----|
+| Day 1 - `01-11-2024 -`Points | Day 2 - `02-11-2024 - Lines` | Day 3 - `03-11-2024 -`Polygons | Day 4 - `04-11-2024 - Hexagons` |
+| ![day1 Points](2024/day1_points/day1_points.png) | ![day2 Lines](2024/day2_lines/day2_lines.png) | ![day3 Polygons](2024/day3_polygons/day3_polygons.png) | ![day4 Hexagons](2024/day4_hexagons/day4_hexagons.png) |
+| Day 5 - `05-11-2024 -`A journey | Day 6 - `06-11-2024 -`Raster | Day 7 - `07-11-2024 -`Vintage style | Day 8 - `08-11-2024 -`Data: HDX |
+| ![day5 A Journey](2024/day5_a-journey/day5_a-journey.png) | ![day6 Raster](2024/day6_raster/day6_raster.png){alt="day5 A Journey"} | ![day7_vintage](2024/day7_vintage/day7_vintage.png) | ![day8_hdx](2024/day8_hdx/day8_hdx.png) |
+| Day 9 - `09-11-2024 -`AI only | Day 10 - `10-11-2024 -` Pen & paper | Day 11 - `11-11-2022 -` Artic | Day 12 - `12-11-2024 -` Time & space |
+| ![day11 ai](2024/day9_ai/day9_ai.png) | ![day10_pen&paper](2024/day10_pen&paper/day10_pen&paper.jpg) | ![day11_artic](2024/day11_artic/day11_artic.png) | ![day12_time&space](2024/day12_time&space/day12_time&space.gif) |
+| Day 13 - `13-11-2024 -` A new tool | Day 14 - `14-11-2024 -`A world map | Day 15 - `15-11-2024 -` Data: Mt data | Day 16 - `16-11-2024 -` Choropleth |
+| ![day13_newtool](2024/day13_new_tool/day13_newtool.png) | ![day14_worldmap](2024/day14_worldmap/day14_worldmap.png) | ![day15_my_data](2024/day15_my_data/day15_my_data.png) | ![day16_choropleth_map](2024/day16_choropleth_map/day16_choropleth_map.png) |
+| Day 17 - `17-11-2024 -`Collaborative map | Day 18 - `18-11-2024 - 3D` | Day 19 - `19-11-2024 - Typography` | Day 20 - `20-11-2024 -` Data: OpenStreetMap |
+| ![day17_collaborative_map](2024/day17_collaborative_map/day17_collaborative_map.png) | ![day18_3D](2024/day18_3D/day18_3D.png) | ![day19_typography](2024/day19_typography/day19_typography.png) | ![day20_osm](2024/day20_osm/day20_osm.png) |
+| Day 21 - `21-11-2024 - Conflict` | Day 22 - `22-11-2024 - 2 colours` | Day 23 - `23-11-2024 -` Memory | Day 24 - `24-11-2024 -` Only circular shapes |
+| ![day21_conflicts](2024/day21_conflicts/day21_conflicts.png) | ![day22_two_colors](2024/day22_two_colors/day22_two_colors.png) | ![day23_memory](2024/day23_memory/day23_memory.png) | ![day24_only_circular_shapes](2024/day24_only_circular_shapes/day24_only_circular_shapes.png) |
+| Day 25 - `25-11-2024 - Heat` | Day 26 - `26-11-2024 - Map projections` | Day 27 - `27-11-2024 - Micromapping` | Day 28 - `28-11-2024 - The blue planet` |
+| ![day25_heat](2024/day25_heat/day25_heat.png) | ![day26_map_projections](2024/day26_map_projections/day26_map_projections.png) | ![day27_micromapping](2024/day27_micromapping/day27_micromapping.png) | ![day28_the_blue_planet](2024/day28_the_blue_planet/day28_the_blue_planet.png) |
+| Day 29 - `29-11-2024 - Data: Overture` | Day 30 - `30-11-2024 - The final map` | Collage |  |
+| ![day29_overture](2024/day29_overture/day29_overture.png) | ![day30_the_final_map](2024/day30_the_final_map/day30_the_final_map.png) | ![collage2024](2024/collage/collage2024.png) |  |
 
 <!-- TABLE END -->
 
