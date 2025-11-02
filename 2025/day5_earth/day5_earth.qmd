@@ -1,0 +1,11 @@
+---
+title: 'Earth'
+subtitle: 'Welcome to #30DayMapChallenge 2025 day 5'
+date: '2025-11-05'
+image: 'day5_earth.png'
+image-alt: ''
+description: ''
+output: html_document
+execute: 
+   eval: false
+---

@@ -1,0 +1,11 @@
+---
+title: 'Data'
+subtitle: 'Welcome to #30DayMapChallenge 2025 day 4'
+date: '2025-11-04'
+image: 'day4_my_data.png'
+image-alt: ''
+description: ''
+output: html_document
+execute: 
+   eval: false
+---

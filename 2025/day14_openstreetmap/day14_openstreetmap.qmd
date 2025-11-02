@@ -1,0 +1,11 @@
+---
+title: 'Openstreetmap'
+subtitle: 'Welcome to #30DayMapChallenge 2025 day 14'
+date: '2025-11-14'
+image: 'day14_openstreetmap.png'
+image-alt: ''
+description: ''
+output: html_document
+execute: 
+   eval: false
+---

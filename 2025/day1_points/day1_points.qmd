@@ -4,7 +4,7 @@ subtitle: 'Welcome to #30DayMapChallenge 2024 Day 1'
 date: '2025-11-01'
 image: 'day1_points.png'
 image-alt: 'day1_points'
-description: 'Cropped Grid of Points on World Map'
+description: 'Dalys due to Infectious Diseases'
 output: html_document
 execute: 
    eval: false

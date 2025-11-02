@@ -1,0 +1,11 @@
+---
+title: 'Process'
+subtitle: 'Welcome to #30DayMapChallenge 2025 day 23'
+date: '2025-11-23'
+image: 'day23_process.png'
+image-alt: ''
+description: ''
+output: html_document
+execute: 
+   eval: false
+---

@@ -1,0 +1,11 @@
+---
+title: 'Raster'
+subtitle: 'Welcome to #30DayMapChallenge 2025 day 29'
+date: '2025-11-29'
+image: 'day29_raster.png'
+image-alt: ''
+description: ''
+output: html_document
+execute: 
+   eval: false
+---
