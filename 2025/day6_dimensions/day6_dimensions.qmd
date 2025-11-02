@@ -1,0 +1,11 @@
+---
+title: 'Dimensions'
+subtitle: 'Welcome to #30DayMapChallenge 2025 day 6'
+date: '2025-11-06'
+image: 'day6_dimensions.png'
+image-alt: ''
+description: ''
+output: html_document
+execute: 
+   eval: false
+---

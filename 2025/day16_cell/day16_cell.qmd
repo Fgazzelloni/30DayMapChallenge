@@ -1,0 +1,11 @@
+---
+title: 'Cell'
+subtitle: 'Welcome to #30DayMapChallenge 2025 day 16'
+date: '2025-11-16'
+image: 'day16_cell.png'
+image-alt: ''
+description: ''
+output: html_document
+execute: 
+   eval: false
+---

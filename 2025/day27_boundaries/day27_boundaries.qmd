@@ -1,0 +1,11 @@
+---
+title: 'Boundaries'
+subtitle: 'Welcome to #30DayMapChallenge 2025 day 27'
+date: '2025-11-27'
+image: 'day27_boundaries.png'
+image-alt: ''
+description: ''
+output: html_document
+execute: 
+   eval: false
+---

@@ -1,0 +1,11 @@
+---
+title: 'Accessibility'
+subtitle: 'Welcome to #30DayMapChallenge 2025 day 7'
+date: '2025-11-07'
+image: 'day7_accessibility.png'
+image-alt: ''
+description: ''
+output: html_document
+execute: 
+   eval: false
+---

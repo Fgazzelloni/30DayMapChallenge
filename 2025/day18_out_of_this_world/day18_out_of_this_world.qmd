@@ -1,0 +1,11 @@
+---
+title: 'World'
+subtitle: 'Welcome to #30DayMapChallenge 2025 day 18'
+date: '2025-11-18'
+image: 'day18_out_of_this_world.png'
+image-alt: ''
+description: ''
+output: html_document
+execute: 
+   eval: false
+---

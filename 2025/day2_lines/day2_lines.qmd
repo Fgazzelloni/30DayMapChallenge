@@ -1,0 +1,227 @@
+---
+title: 'Lines'
+subtitle: 'Welcome to #30DayMapChallenge 2025 day 2'
+date: '2025-11-02'
+image: 'day2_lines.png'
+image-alt: ''
+description: ''
+output: html_document
+execute: 
+   eval: false
+---
+
+## Overview
+
+This workflow demonstrates how to visualize connections from an origin point (e.g., Wuhan) to affected countries using different line techniques: straight lines, great-circle (curved) lines, and flight-route style curves. The goal is to illustrate line-based spatial visualization techniques in R.
+
+```{r}
+library(hmsidwR)      # sample data: affected countries & health metrics
+library(sf)           # spatial operations
+library(tidyverse)    # data wrangling & plotting
+library(rnaturalearth) # world map
+library(ggforce)      # for curved/Bezier lines
+library(geosphere)    # great-circle calculations
+library(patchwork)    # combining multiple plots
+```
+
+
+
+```{r}
+# Load world map and clean
+world <- ne_countries(returnclass = "sf") %>%
+  filter(name != "Antarctica") %>%
+  st_make_valid()
+```
+
+
+```{r}
+# Load affected countries data
+data("id_affected_countries", package = "hmsidwR")
+
+# Compute averages for each metric per country
+id_avg <- id_affected_countries %>%
+  group_by(location_name) %>%
+  reframe(
+    avgDALYs  = mean(DALYs),
+    avgYLLs   = mean(YLLs),
+    avgYLDs   = mean(YLDs),
+    avgDeaths = mean(Deaths)
+  )
+```
+
+### Join Data to World Map and Compute Centroids
+```{r}
+# Join country metrics with world map
+affected_sf <- world %>%
+  inner_join(id_avg, by = c("name" = "location_name"))
+
+# Disable s2 to avoid geometry issues
+sf_use_s2(FALSE)
+
+# Compute centroids for plotting connections
+centroids <- st_centroid(affected_sf)
+```
+
+
+### Define Origin Point
+```{r}
+# Wuhan 30.5928° N, 114.3052° E
+# (example origin)
+origin <- st_sfc(st_point(c(114.3052, 30.5928)), crs = 4326)
+```
+
+### Straight Line Connections
+```{r}
+# Create simple straight lines from origin to centroids
+lines_list <- lapply(st_geometry(centroids), function(pt) {
+  st_linestring(rbind(st_coordinates(origin), st_coordinates(pt)))
+})
+
+lines_sf <- st_sf(
+  data.frame(location = centroids$name, pop_est = centroids$pop_est),
+  geometry = st_sfc(lines_list, crs = 4326)
+)
+```
+
+### Make the Map
+
+Simple straight lines show direct connections from origin to each centroid. Good for basic visualization but may look unrealistic at a global scale due to map distortions.
+
+```{r}
+# Plot
+p1 <- ggplot() +
+  geom_sf(data = world, fill = "grey90", color = "white") +
+  geom_sf(data = lines_sf, color = "darkred", size = 0.05) +
+  geom_sf(data = origin, color = "darkblue", shape = 21) +
+  geom_sf(data = centroids, aes(size = pop_est), color = "darkred", shape = 21) +
+  scale_size_continuous(labels = ~ .x / 1e6, name = "Population (millions)") +
+  ggthemes::theme_map()
+
+p1
+```
+### Great-circle Lines
+
+Great-circle lines follow the shortest path on the globe, giving a more realistic representation of long-distance connections. The Robinson projection (+proj=robin) enhances the visual global perspective.
+
+```{r}
+# Great-circle interpolation (curved on globe)
+lines_list_gc <- lapply(st_geometry(centroids), function(pt) {
+  inter <- geosphere::gcIntermediate(
+    st_coordinates(origin),
+    st_coordinates(pt),
+    n = 50,             # points along the curve
+    addStartEnd = TRUE,
+    sp = TRUE
+  )
+  st_as_sf(inter)
+})
+
+lines_sf_gc <- do.call(rbind, lines_list_gc)
+```
+
+```{r}
+p2 <- ggplot() +
+  geom_sf(data = world, fill = "grey90", color = "white") +
+  geom_sf(data = lines_sf_gc, color = alpha("darkred", 0.2), linewidth = 0.5) +
+  geom_sf(data = origin, color = "darkblue", shape = 21) +
+  geom_sf(data = centroids, aes(size = pop_est), show.legend = FALSE, color = "darkred", shape = 21) +
+  coord_sf(crs = "+proj=robin") +
+  ggthemes::theme_map()
+
+p2
+```
+
+### Flight-Route Curves with geom_curve()
+
+Curved lines using geom_curve() resemble flight paths. They are visually appealing and can emphasize flow/direction. The curvature parameter controls the bending.
+
+```{r}
+# Prepare data for curves
+centroids_df <- st_coordinates(centroids) %>%
+  as.data.frame() %>%
+  mutate(name = centroids$name)
+
+origin_df <- data.frame(X = st_coordinates(origin)[1], Y = st_coordinates(origin)[2])
+
+curve_data <- centroids_df %>%
+  rowwise() %>%
+  mutate(
+    x = origin_df$X, y = origin_df$Y,
+    xend = X, yend = Y,
+    curvature = 0.2
+  )
+```
+
+
+```{r}
+# Plot flight-route style
+p3 <- ggplot() +
+  geom_sf(data = world, fill = "grey90", color = "white") +
+  geom_curve(data = curve_data, aes(x = x, y = y, xend = xend, yend = yend),
+             curvature = 0.2, color = alpha("darkblue", 0.9), linewidth = 0.05) +
+  geom_sf(data = origin, color = "darkblue", shape = 21) +
+  geom_point(aes(x = X, y = Y), data = origin_df, color = "darkblue", shape = 21) +
+  geom_sf(data = centroids, aes(size = pop_est), show.legend = FALSE, color = "darkred", shape = 21) +
+  ggthemes::theme_map() 
+
+p3 
+```
+
+
+```{r}
+p4 <- ggplot() +
+  geom_sf(data = world, fill = "grey90", color = "white") +
+  geom_curve(data = curve_data,
+             aes(x = x, y = y, xend = xend, yend = yend),
+             curvature = 0.2, color = "grey30", 
+             linewidth = 0.05) +
+  geom_sf(data = origin, color = "darkblue", shape=21) +
+  geom_point(aes(x = 0, y = 0), color = "darkblue", shape = 21) +
+  geom_sf(data = lines_sf, linewidth = 0.05,color = "darkred") +
+    geom_sf(data = centroids, aes(size=pop_est),show.legend = F,
+          color = "darkred", 
+          shape = 21) +
+  scale_linewidth(range = c(0, 0.3))+
+  ggthemes::theme_map()
+
+p4
+```
+
+### Combined 2x2 Plot with Patchwork
+
+- Straight lines (p1): simple, fast, but less realistic globally
+- Great-circle curves (p2): realistic paths along globe curvature
+- Flight-route curves (p3/p4): aesthetically curved, suggest movement or flow
+- Combined plot: shows how different line techniques can convey connections, distances, and relative magnitudes (using circle size for population).
+
+```{r}
+# 1 Straight lines
+p1 <- p1 + labs(caption = "Straight lines connecting\norigin to country centroids")
+
+# 2 Great-circle lines
+p2 <- p2 + labs(caption = "Great-circle curves: shortest path\non the globe (Robinson projection)")
+
+# 3 Flight-route curves (geom_curve)
+p3 <- p3 + labs(caption = "Flight-route style curves\nusing geom_curve()")
+
+# 4 Combined curved lines and points
+p4 <- p4 + labs(caption = "Combined visualization with\ncurved connections and population sizes")
+```
+
+
+```{r}
+combined <- (p1 + p2) / (p3 + p4) +  
+  plot_layout(guides = "collect") +  
+    plot_annotation(
+    title = "Visualizing Global Connections Using Lines",
+    caption = "Data: hmsidwR | Techniques: straight lines, great-circle curves, flight-route curves\nMap: Federica Gazzelloni #30DayMapChallenge 2025 - Day2 (Lines)",
+    theme = theme(plot.title = element_text(size = 18,
+                                            face = "bold",
+                                            hjust = 0.5),
+      plot.caption = element_text(size = 12, 
+                                  color = "grey40"))
+
+
+combined 
+```
+
