@@ -17,11 +17,11 @@ The idea is to create maps based around different themes each day of November us
 <!-- TABLE START -->
 
 | Maps |   |   |
-|----|----|----|
+|------------------------|------------------------|------------------------|
 | Day 1 - `01-11-2025 - Points` | Day 2 - `02-11-2025 - Lines` | Day 3 - `03-11-2025 - Polygons` |
 | ![day1](2025/day1_points/day1_points.png) | ![day2](2025/day2_lines/day2_lines.png) | ![day3](2025/day3_polygons/day3_polygons.png) |
 | Day 4 - `04-11-2025 - Data challenge: My Data` | Day 5 - `05-11-2025 - Earth` | Day 6 - `06-11-2025 - Dimensions` |
-| ![day4](2025/day4_data_challenge/day4.png) | ![day5](2025/day5_earth/day5.png) | ![day6](2025/day6_dimensions/day6.png) |
+| ![day4](2025/day4_my_data/day4_my_data.png) | ![day5](2025/day5_earth/day5.png) | ![day6](2025/day6_dimensions/day6.png) |
 | Day 7 - `07-11-2025 - Accessibility` | Day 8 - `08-11-2025 - Urban` | Day 9 - `09-11-2025 - Analog` |
 | ![day7](2025/day7_accessibility/day7.png) | ![day8](2025/day8_urban/day8.png) | ![day9](2025/day9_analog/day9.png) |
 | Day 10 - `10-11-2025 - Air` | Day 11 - `11-11-2025 - Minimal map` | Day 12 - `12-11-2025 - Map from 2125` |
