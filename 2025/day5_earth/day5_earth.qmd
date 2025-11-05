@@ -3,8 +3,8 @@ title: 'Earth'
 subtitle: 'Welcome to #30DayMapChallenge 2025 day 5'
 date: '2025-11-05'
 image: 'day5_earth.png'
-image-alt: 'Highlight regional inequalities and progress in life expectancy.'
-description: 'How Long We Live on Earth: Global Life Expectancy, 2021 - Highlight regional inequalities and progress in life expectancy.'
+image-alt: 'Age-standardized death rates due to suicide, 1990-2021'
+description: '"Mapping Suicide Mortality Across the Planet, Age-standardized death rates due to suicide, 1990-2021'
 output: html_document
 execute: 
    eval: false
