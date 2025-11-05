@@ -121,22 +121,36 @@ facet_legend_map <- base_map +
   theme(legend.position = "top",
         legend.key.size = unit(0.8, "lines"),
         legend.title = element_text(size = 5, face="bold"),
-        legend.text = element_text(size = 4))
+        legend.text = element_text(size = 4),
+        legend.background = element_rect(fill = NA,colour = NA))
 
 facet_legend_map
 ```
 ```{r}
-facet_legend_map +
+colored_map <- facet_legend_map +
   # Color scale and legend
   scale_fill_viridis_c(name = "Deaths\n(per 100,000 people)",
                        labels = scales::label_number(scale = 1e-3),
                        option = "D", direction = -1) +
-  theme(strip.text = element_text(size = 7, face = "bold"),
+  theme(text = element_text(family = body_font,
+                            size = 9,
+                            color = text_col),
+        strip.text = element_text(size = 7, face = "bold"),
         strip.background = element_rect(fill = NA, color = NA))
+
+colored_map
 ```
 
 ```{r}
+ragg::agg_png("day4_my_data3.png",
+              width = 6, height = 4, 
+              units = "in", 
+              res = 320,
+              bg = bg_col)
 
+colored_map
+
+dev.off()
 ```
 
 
