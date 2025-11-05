@@ -9,3 +9,196 @@ output: html_document
 execute: 
    eval: false
 ---
+
+
+## Overview
+
+Data for this challenge comes from the `{hmsidwR}` package, which includes **global polygon data for mapping disease burden (DALYs) worldwide** and other **health metrics**.
+
+### Load Libraries and Data
+```{r}
+library(tidyverse)
+library(hmsidwR)
+library(sf)
+```
+
+
+```{r}
+data(idDALY_map_data)
+data(deaths9)
+```
+
+To gain more info about the data:
+
+    ?idDALY_map_data
+    ?deaths9
+    
+    
+```{r}
+deaths <- deaths9 %>%
+  filter(sex=="both") %>%
+  select(location,cause,dx)
+
+deaths %>%head
+```
+
+
+### Combine Datasets by location
+
+```{r}
+geometry <- idDALY_map_data  %>%
+  select(location_name, geometry) 
+```
+
+
+```{r}
+deaths_map_data <- deaths %>%
+  #filter(cause=="COVID-19") %>%
+  inner_join(geometry, 
+            by = c("location" = "location_name"))
+deaths_map_data %>% count(cause)
+```
+
+### CamCorder and ShowText 
+
+
+```{r}
+# library(camcorder)
+# camcorder::gg_record(width = 6, height = 4)
+```
+
+```{r}
+# Colours
+text_col <- "grey10"
+bg_col <- "grey95"
+```
+
+```{r}
+# Fonts from Google Fonts
+# library(showtext)
+# font_add_google("Metal Mania")
+# font_add_google("Dancing Script")
+# showtext_auto()
+# showtext_opts(dpi = 300)
+# title_font <- "Metal Mania"
+# body_font <- "Dancing Script"
+```
+
+
+
+```{r}
+base_map <- idDALY_map_data %>%
+  ggplot() +
+  # Base map layer
+  geom_sf(fill = NA, 
+          color = alpha("grey70", 0.4), 
+          linewidth = 0.2) +
+  # Disease-specific data layer
+  geom_sf(data = deaths_map_data %>%
+            filter(cause %in% c("Alzheimer's disease and other dementias",
+                                "Chronic obstructive pulmonary disease",
+                                "Diabetes and kidney diseases",
+                                "Stroke")),
+          aes(fill = dx, geometry = geometry),
+          color = alpha("grey70", 0.4), 
+          linewidth = 0.2) +
+    # Coordinate limits (Europe focus)
+  coord_sf(xlim = c(-5, 20), 
+           ylim = c(35, 56),
+           expand = FALSE) 
+
+base_map
+```
+
+
+```{r}
+facet_legend_map <- base_map +
+  # Facets for each disease
+  facet_wrap(~cause,
+             labeller = label_wrap_gen(width = 25),
+             strip.position = "bottom") +
+  ggthemes::theme_map() +
+  theme(legend.position = "top",
+        legend.key.size = unit(0.8, "lines"),
+        legend.title = element_text(size = 5, face="bold"),
+        legend.text = element_text(size = 4))
+
+facet_legend_map
+```
+```{r}
+facet_legend_map +
+  # Color scale and legend
+  scale_fill_viridis_c(name = "Deaths\n(per 100,000 people)",
+                       labels = scales::label_number(scale = 1e-3),
+                       option = "D", direction = -1) +
+  theme(strip.text = element_text(size = 7, face = "bold"),
+        strip.background = element_rect(fill = NA, color = NA))
+```
+
+```{r}
+
+```
+
+
+```{r}
+base_map +
+
+
+  # Titles and caption
+  labs(
+    title = "Disease Burden in Europe, 2011-2021",
+    subtitle = "Deaths per 100,000 population for selected causes",
+    caption = "#30DayMapChallenge 2025 – Day 4: My Data | Data: {hmsidwR} package  |\nMap: Federica Gazzelloni\n\n") +
+  
+  guides(
+  fill = guide_colorbar(
+    title.position = "top",   # places title above the colorbar
+    title.hjust = 0.5,        # centers the title
+    barwidth = unit(5, "cm"), # adjust width
+    barheight = unit(0.4, "cm")
+  )
+) +
+
+  # Theme adjustments
+  ggthemes::theme_map(
+        base_family = body_font,
+        base_size = 9
+  ) +
+  theme(
+    plot.title.position = "plot",
+    plot.caption.position = "plot",
+    plot.title = element_text(family = title_font,
+                              size = rel(2)),
+    plot.subtitle = element_textbox_simple(size = rel(1.5),
+                                           margin = margin(b = 0)),
+    legend.direction = "horizontal",
+    legend.position = "inside",
+    legend.position.inside = c(0.5, 0.9),
+    legend.background = element_rect(fill = NA,
+                                     colour = NA),
+    legend.title = element_text(size = 8, face = "bold"),
+    legend.text = element_text(size = 7),
+    legend.key.spacing = unit(0.2, "lines"),
+    legend.key.size = unit(0.4, "lines"),
+    plot.caption = element_text(size = 6, 
+                                color = "grey30", hjust = 1),
+    strip.text = element_text(size = 7, face = "bold"),
+    strip.background = element_rect(fill = NA, color = NA),
+    panel.spacing = unit(0.5, "lines")
+  )
+```
+
+```{r}
+ggsave(
+  "day4_my_data2_wide.png",
+  width = 6, height = 4, 
+  bg = bg_col
+)
+```
+
+
+
+```{r}
+# gg_playback("day_4_my_data.gif", background = bg_col)
+```
+
