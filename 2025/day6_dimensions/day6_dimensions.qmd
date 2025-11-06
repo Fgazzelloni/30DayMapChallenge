@@ -9,3 +9,197 @@ output: html_document
 execute: 
    eval: false
 ---
+
+## Overview
+
+This challenge is all about showing the dimension ,
+
+we will process life expectancy at birth data from the IHME GBD 2021 **Global Burden of Disease Study 2021 (GBD 2021) Mortality and Life Expectancy Forecasts 2022-2050** dataset. 
+
+source: <https://ghdx.healthdata.org/record/ihme-data/global-life-expectancy-all-cause-mortality-and-cause-specific-mortality-forecasts-2022-2050> you'll need to login for accessing the data.
+
+### Load Libraries and Data
+
+```{r}
+library(tidyverse)
+library(stringr)
+library(readxl)
+```
+
+
+
+```{r}
+raw_le2022 <- read_excel("data/IHME_GBD_2021_MORT_LE_FORECASTS_2022_2050_TABLES_0/le.XLSX",skip = 1)
+head(raw_le2022)
+```
+
+### Reference scenario life expectancy at birth 2022 
+
+#### Female le data
+
+```{r}
+female_le2022 <- raw_le2022$`Reference scenario life expectancy at birth` %>%
+  str_replace_all("·", ".") %>%     
+  str_extract_all("\\d+\\.?\\d*", simplify = TRUE)
+```
+
+
+#### Locations
+```{r}
+location_name <- raw_le2022$...1
+```
+
+#### Build data frame
+
+```{r}
+female_le2022 <- data.frame(location_name,female_le2022) %>%
+  select(location_name, le = X1) %>%
+  mutate(le = as.numeric(le),
+         sex="female") %>%
+  drop_na()
+
+female_le2022
+```
+
+#### Male le data
+
+```{r}
+male_le2022 <- raw_le2022$...5 %>%
+  str_replace_all("·", ".") %>%     
+  str_extract_all("\\d+\\.?\\d*", simplify = TRUE)
+```
+
+```{r}
+male_le2022 <- data.frame(location_name,male_le2022) %>%
+  select(location_name, le = X1) %>%
+  mutate(le = as.numeric(le),
+         sex="male") %>%
+  drop_na()
+
+male_le2022
+```
+
+### Combine female and male le
+
+```{r}
+le2022_data <- bind_rows(female_le2022,male_le2022) %>%
+  group_by(location_name) %>%
+  reframe(le_avg2022=round(mean(le)))%>%
+  distinct()
+
+le2022_data%>%head
+```
+
+
+
+#### HALE data
+
+```{r}
+raw_le_hale2022 <- read_excel("data/IHME_GBD_2021_MORT_LE_FORECASTS_2022_2050_TABLES_0/le_hale.XLSX")
+head(raw_le_hale2022)
+```
+
+```{r}
+location_name <- raw_le_hale2022$`Supplemental Results Table S2. Life expectancy and healthy life expectancy (HALE) in 2022 and 2050 (reference scenario) by location for both sexes. Estimates are listed as means with 95% uncertainty intervals in parentheses. Highlighted rows indicate region and super region results from the GBD location hierarchy.`
+```
+
+
+```{r}
+hale2022 <- raw_le_hale2022$...5%>%
+  str_replace_all("·", ".") %>%      
+  str_extract_all("\\d+\\.?\\d*", simplify = TRUE)
+```
+
+```{r}
+hale2022 <- data.frame(location_name,hale2022) %>%
+  select(location_name, hale = X1) %>%
+  mutate(hale = as.numeric(hale)) %>%
+  drop_na()%>%
+  distinct()
+
+hale2022
+```
+
+
+#### From results healthdata website yll and yld by age standardized
+```{r}
+yll_yld2022_raw <- hmsidwR::getunz("https://dl.healthdata.org:443/gbd-api-2023-public/7bae287bc4f06482be6332f797f3ebc2_files/IHME-GBD_2023_DATA-7bae287b-1.zip")
+
+yll_yld2022 <- yll_yld2022_raw[[1]] %>% 
+  select(location_name=location,
+         measure,val)
+```
+
+
+```{r}
+yld2022_data <- yll_yld2022%>%
+  filter(measure=="YLDs (Years Lived with Disability)")%>%
+  rename(yld=val)%>%
+  select(-measure) %>%
+  distinct()
+yll2022_data <- yll_yld2022%>%
+  filter(measure=="YLLs (Years of Life Lost)")%>%
+  rename(yll=val)%>%
+  select(-measure) %>%
+  distinct()
+  
+yll_yld2022_data<- merge(yld2022_data,yll2022_data)
+```
+
+
+### Combine all data
+
+```{r}
+index_data2022 <- le2022_data %>%
+  left_join(hale2022, by="location_name") %>%
+  left_join(yll_yld2022_data ,by="location_name") %>%
+  drop_na()
+```
+
+the dimension index is calculated as:
+
+$$
+\text{dimension index} = \frac{\alpha\text{le} + (1-\alpha)\text{hale}}{(1-\hat{yll}) + (1-\hat{yld})} * 100
+$$
+where scaled yll and scaled yld are the standardized values of yll and yld respectively.
+
+In literature a dimension index is used to measure the quality of life in a location, taking into account not only life expectancy but also the burden of disease and disability.
+
+In particular, the dimension index combines life expectancy at birth (le_avg2022) and healthy life expectancy (hale) in the numerator, reflecting both the quantity and quality of life. The denominator incorporates the scaled values of years of life lost (yll) and years lived with disability (yld), which represent the burden of disease and disability in the population.
+
+Particular attention is put on the values of yll and yld, which are scaled to ensure comparability across different locations. The scaling process standardizes these values, allowing for a more accurate assessment of the overall health status of the population.
+
+for reference see:
+
+- <https://www.frontiersin.org/journals/public-health/articles/10.3389/fpubh.2025.1566469/full>
+- <https://pmc.ncbi.nlm.nih.gov/articles/PMC4140376/>
+
+
+scale between 0 and 1
+
+```{r}
+# scale <- function(x){
+#   (x - min(x)) / (max(x) - min(x))
+# }
+# 
+```
+
+```{r}
+index_data2022%>%summary()
+```
+
+```{r}
+index_data2022%>%
+  filter(is.na(yll) | is.na(yld))
+```
+?scale
+
+
+```{r}
+index_data2022%>%
+  mutate(yll_scaled=scale(yll,center = F),
+         yld_scaled=scale(yld,center = F)) %>%
+  mutate(dimension_index = round((le_avg2022 + hale)/((1-yll_scaled) + (1-yld_scaled))*100,2),
+         .after=location_name) 
+```
+
