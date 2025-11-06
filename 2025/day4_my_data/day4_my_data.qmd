@@ -59,6 +59,11 @@ deaths_map_data <- deaths %>%
 deaths_map_data %>% count(cause)
 ```
 
+```{r}
+deaths_map_data %>% count(location)
+```
+
+
 ### CamCorder and ShowText 
 
 
