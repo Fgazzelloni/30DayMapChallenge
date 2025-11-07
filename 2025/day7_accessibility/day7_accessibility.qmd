@@ -4,48 +4,40 @@ subtitle: 'Welcome to #30DayMapChallenge 2025 Day 7'
 date: '2025-11-07'
 image: 'day7_accessibility.png'
 image-alt: 'Accessibility map showing travel time to healthcare facilities'
-description: 'Exploring accessibility to healthcare facilities across Europe, highlighting spatial inequalities in travel time.'
+description: 'Exploring accessibility to healthcare facilities across Spain, highlighting spatial inequalities in travel time.'
 output: html_document
 execute: 
   eval: false
 ---
 
+
 ## Overview
 
 Accessibility is about **how easily people can reach essential services** — from hospitals and schools to green spaces and transport.  
-In this challenge, we visualise **travel time to the nearest healthcare facility** across European regions, showcasing how geography shapes health opportunities.
 
-The map combines population data with spatial travel-time models, illustrating areas with **limited access** and identifying **urban-rural disparities**.
+In this challenge, we visualise **travel time to the nearest healthcare facility** across Spain, showcasing how geography shapes health opportunities. The map combines population data with spatial travel-time models, illustrating areas with **limited access** and identifying **urban-rural disparities**.
 
 ## Method
 
 Data come from the [Global Human Settlement (GHS)](https://ghsl.jrc.ec.europa.eu/) and [WorldPop](https://www.worldpop.org/) datasets, integrated with OpenStreetMap road networks.  
+
+
 Travel time is calculated using a raster-based cost-distance algorithm:
 
 1. **Define origin points**: centroids of populated grid cells.  
-2. **Assign friction surface**: speed based on road type and terrain.  
+2. **Assign friction surface**: speed based on road type and terrain.
 3. **Compute least-cost path** to the nearest healthcare facility.  
 4. **Aggregate and visualise** results by country or region.
 
 ## Interpretation
 
 The resulting accessibility map shows striking contrasts:
+
 - **Urban cores** exhibit the shortest travel times (often under 15 minutes).
 - **Peripheral and mountain areas** may require **over an hour** to reach care.
 - These inequalities persist even in countries with universal healthcare systems.
 
 Such spatial disparities are crucial to understanding **health equity**, informing decisions on infrastructure investment and service allocation.
-
-## Reflection
-
-For Day 7, the focus is not only on visual beauty but also on **inclusion** — ensuring maps represent accessibility for everyone, regardless of location or mobility.  
-Think of it as **mapping fairness**: identifying who is closer, and who is left behind.
-
-
-**#30DayMapChallenge 2025 – Day 7: Accessibility**  
-_Data source: GHS, WorldPop, OSM | Analysis in R using `{terra}` and `{tmap}`_
-
-
 
 ```{r}
 # Day 7: Accessibility — #30DayMapChallenge 2025
@@ -146,7 +138,7 @@ tmap_save(
 )
 
 # Optional: also view interactively
-tmap_mode("view")
-map_access
+# tmap_mode("view")
+# map_access
 ```
 
