@@ -24,6 +24,10 @@ source: <https://ghdx.healthdata.org/record/ihme-data/global-life-expectancy-all
 library(tidyverse)
 library(stringr)
 library(readxl)
+library(sf)
+library(ggspatial)
+library(rnaturalearth)
+library(cowplot)
 ```
 
 
@@ -117,7 +121,6 @@ hale2022 <- data.frame(location_name,hale2022) %>%
   drop_na()%>%
   distinct()
 
-hale2022
 ```
 
 
@@ -156,50 +159,97 @@ index_data2022 <- le2022_data %>%
   drop_na()
 ```
 
-the dimension index is calculated as:
+
 
 $$
-\text{dimension index} = \frac{\alpha\text{le} + (1-\alpha)\text{hale}}{(1-\hat{yll}) + (1-\hat{yld})} * 100
+health_dim_index = (LE_scaled + HALE_scaled + (1 - YLL_scaled) + (1 - YLD_scaled)) / 4
 $$
-where scaled yll and scaled yld are the standardized values of yll and yld respectively.
-
-In literature a dimension index is used to measure the quality of life in a location, taking into account not only life expectancy but also the burden of disease and disability.
-
-In particular, the dimension index combines life expectancy at birth (le_avg2022) and healthy life expectancy (hale) in the numerator, reflecting both the quantity and quality of life. The denominator incorporates the scaled values of years of life lost (yll) and years lived with disability (yld), which represent the burden of disease and disability in the population.
-
-Particular attention is put on the values of yll and yld, which are scaled to ensure comparability across different locations. The scaling process standardizes these values, allowing for a more accurate assessment of the overall health status of the population.
-
-for reference see:
-
-- <https://www.frontiersin.org/journals/public-health/articles/10.3389/fpubh.2025.1566469/full>
-- <https://pmc.ncbi.nlm.nih.gov/articles/PMC4140376/>
-
-
-scale between 0 and 1
 
 ```{r}
-# scale <- function(x){
-#   (x - min(x)) / (max(x) - min(x))
-# }
-# 
-```
-
-```{r}
-index_data2022%>%summary()
-```
-
-```{r}
-index_data2022%>%
-  filter(is.na(yll) | is.na(yld))
-```
-?scale
-
-
-```{r}
-index_data2022%>%
-  mutate(yll_scaled=scale(yll,center = F),
-         yld_scaled=scale(yld,center = F)) %>%
-  mutate(dimension_index = round((le_avg2022 + hale)/((1-yll_scaled) + (1-yld_scaled))*100,2),
+dimension_index <- index_data2022 %>%
+  mutate(across(where(is.numeric), ~ as.numeric(scale(.x, center = F)),
+                .names = "{.col}_scaled")) %>%
+  mutate(dimension_index = round((le_avg2022_scaled + hale_scaled + (1-yll_scaled) + (1-yld_scaled))/4,2),
          .after=location_name) 
+
+dimension_index
+```
+
+
+```{r}
+library(hmsidwR)
+data("idDALY_map_data")
+```
+
+```{r}
+location_name <- idDALY_map_data$location_name
+geometry <- idDALY_map_data$geometry
+
+map_data <- data.frame(location_name,geometry) %>%
+  right_join(dimension_index,by="location_name")
+```
+
+```{r}
+main_map <- ggplot() +
+  geom_sf(data = idDALY_map_data) +
+  geom_sf(data = map_data, aes(fill=dimension_index,geometry=geometry))+
+  ggthemes::scale_fill_continuous_tableau(palette = "Green-Gold") +
+  # add a dimension scale
+    annotation_scale(
+    location = "bl",      # bottom left corner
+    width_hint = 0.1,     # relative width of scale bar
+    text_cex = 0.4,       # text size
+    line_width = 0.3,     # bar line thickness
+    style = "bar"         # "ticks" for tick marks, "bar" for solid bar
+  ) +
+  annotation_north_arrow(
+    location = "tl",      # top left corner
+    which_north = "true",
+    style = north_arrow_fancy_orienteering,
+    height = unit(0.5, "cm"),
+    width = unit(0.5, "cm")
+  ) +
+  theme_minimal() +
+  labs(
+    title = "",
+    caption = "Data: IHME and {hmsidwR} | Visualization: Federica Gazzelloni",
+    fill="Health Dimension Index"
+  ) +
+  theme(
+    panel.background = element_rect(fill = "aliceblue"),
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    axis.title = element_blank()
+  )
+  
+main_map
+```
+
+
+```{r}
+# --- Main map (e.g. Europe or world) ---
+world <- ne_countries(scale = "medium", returnclass = "sf")
+```
+
+
+
+```{r}
+# --- Little map: Central Africa ---
+central_africa <- ggplot(data = world %>%
+                           filter(admin=="Central African Republic")) +
+  geom_sf(fill = "gold", color = "white") +
+  coord_sf() +
+  theme_void()
+
+# --- Combine using cowplot ---
+final_map <- ggdraw() +
+  draw_plot(main_map) +
+  draw_plot(central_africa, x = 0.65, y = 0.05, width = 0.25, height = 0.25)
+
+final_map
+```
+
+```{r}
+ggsave("day6_dimensions.png", plot = final_map, width = 6, height = 4, dpi = 300)
 ```
 
