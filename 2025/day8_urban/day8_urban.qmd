@@ -13,16 +13,7 @@ execute:
 
 ## Overview
 
-### Set the fonts
-```{r}
-library(showtext)
-library(sysfonts)
-library(extrafont)
-showtext::showtext_auto()
-showtext::showtext_opts(dpi=320)
-font_add_google(name="Gideon Roman",
-                family="Gideon Roman")
-```
+
 
 ### Load libraries for data manipulation
 
@@ -33,35 +24,55 @@ library(osmdata)
 ```
 
 ### Some important functions are:
+
+    getbb() Get bounding box
+    opq() Build an Overpass query
+    add_osm_feature() Add a feature
+    osmdata_sf() Return an object in sf format
+
+
 ```{r}
-getbb() Get bounding box
-opq() Build an Overpass query
-add_osm_feature() Add a feature
-osmdata_sf() Return an object in sf format
-location <- "Milan"
-getbb(location)
-# min      max
-# x  9.040887  9.27811
-# y 45.386738 45.53585
+# Get bounding box for Central Park, New York
+central_park_bb <- getbb("Central Park, New York, USA")
+
+central_park_bb
+
+#         min       max
+# x -73.98141 -73.94961
+# y  40.76473  40.80031
 ```
 
 
 ```{r}
 available_features()
-feature <- "religion"
-available_tags(feature)
-
-ms <- opq(c(9.040887,45.386738,9.27811,45.53585)) %>% 
-  add_osm_feature (key = feature) %>%
-  osmdata_sf (quiet = FALSE)
-
-# save(ms,file="data/ms.RData")
-load("ms.RData")
 ```
 
+```{r}
+# Buildings
+buildings <- central_park_bb |>
+  opq() |>
+  add_osm_feature(key = "building") |>
+  osmdata_sf()
 
+# Roads
+roads <- central_park_bb |>
+  opq() |>
+  add_osm_feature(key = "highway") |>
+  osmdata_sf()
 
-ms
+# Green areas
+green <- central_park_bb |>
+  opq() |>
+  add_osm_feature(key = "leisure", value = "park") |>
+  osmdata_sf()
+```
+
+```{r}
+saveRDS(buildings,"data/buildings.rds")
+saveRDS(roads,"data/roads.rds")
+saveRDS(green,"data/green.rds")
+```
+
 
 Tutorials:
 
@@ -69,79 +80,44 @@ https://ggplot2tutor.com/tutorials/streetmaps
 https://joshuamccrain.com/tutorials/maps/streets_tutorial.html
 https://taraskaduk.com/posts/2021-01-18-print-street-maps/
 
-```{r}
-streets <- opq(c(9.040887,45.386738,9.27811,45.53585)) %>% 
-  add_osm_feature(key = "highway", 
-                  value = c("motorway", "primary", 
-                            "secondary", "tertiary")) %>%
-  osmdata_sf()
-# save(streets,file="data/streets.RData")
-load("data/streets.RData")
-streets
-```
 
-
-```{r}
-small_streets <-  opq(c(9.040887,45.386738,9.27811,45.53585)) %>% 
-  add_osm_feature(key = "highway", 
-                  value = c("residential", "living_street",
-                            "unclassified",
-                            "service", "footway")) %>%
-  osmdata_sf()
-# save(small_streets,file="data/small_streets.RData")
-load("small_streets.RData")
-small_streets
-```
-
-
-```{r}
-river <- opq(c(9.040887,45.386738,9.27811,45.53585)) %>% 
-  add_osm_feature(key = "waterway", value = "river") %>%
-  osmdata_sf()
-
-# save(river,file="data/river.RData")
-load("river.RData")
-river
-```
 
 ### Make the map
 ```{r}
-ggplot() +
-  geom_sf(data = streets$osm_lines,
-          inherit.aes = FALSE,
-          color = "#7b9aca",
-          linewidth = .04,
+base_map <- ggplot() +
+  geom_sf(data =green$osm_polygons,
+          fill = "#38a269",
+          color = "white",
+          linewidth = 0.5,
           alpha = .8) +
-geom_sf(data = small_streets$osm_lines,
-          inherit.aes = FALSE,
-          color = "navy",
-          linewidth = .03,
-          alpha = .8) +
-  geom_sf(data = river$osm_lines,
-          inherit.aes = FALSE,
-          color = "#bfd0dd",# "#33dbe7",
-          linewidth = 1.5,
-          alpha = .8) +
-  geom_sf(data = ms$osm_points,
-          inherit.aes = FALSE,
+  geom_sf(data = roads$osm_lines,
+          color = "#ffb366",
+          linewidth = .2,
+          alpha = .9) +
+  # buildings
+  geom_sf(data = buildings$osm_points,
           color = "grey40",
           shape=21,
           stroke=0.1,
-          size = 1,
-          alpha = .8) +
-  geom_sf(data = ms$osm_points,
-          inherit.aes = FALSE,
-          color = "#043c6e",
           size = 0.05,
           alpha = .8) +
-    # (9.040887,45.386738,9.27811,45.53585)
-  coord_sf(xlim=c(9.040887,9.27811),
-           ylim=c(45.386738,45.53585),
-           expand = FALSE) +
+  #   x -73.98141 -73.94961,
+  #   y  40.76473  40.80031
+  coord_sf(xlim=c(-73.98141,-73.94961),
+           ylim=c( 40.76473, 40.80031),
+          expand = T) 
+base_map
+```
+
+
+```{r}
+base_map +
   theme_void()+
-  theme(text=element_text(family="Gideon Roman"),
-        plot.background = element_rect(fill="white",color="#043c6e",linewidth=0.5),
-        panel.background = element_rect(fill="white",color="#043c6e",linewidth=1),
+  theme(text=element_text(family="Delius"),
+        plot.background = element_rect(fill="white",color=NA,
+                                       linewidth=0.5),
+        panel.background = element_rect(fill="white",color=NA,
+                                        linewidth=1),
         plot.margin = margin(10,10,40,10,unit = "pt"))
 ```
 
@@ -151,6 +127,16 @@ geom_sf(data = small_streets$osm_lines,
 ggsave("base_map.png", width = 6, height = 6)
 ```
 
+### Set the fonts
+```{r}
+library(showtext)
+library(sysfonts)
+library(extrafont)
+showtext::showtext_auto()
+showtext::showtext_opts(dpi=320)
+font_add_google(name="Delius",
+                family="Delius")
+```
 
 ```{r}
 # draw the map-viz
@@ -159,39 +145,39 @@ library(cowplot)
 ggdraw()+
   draw_image("base_map.png")+
   draw_line(x=c(0.03,0.97),y=c(0.169,0.169),
-            size=20,color="#bfd0dd",alpha=0.5)+
+            linewidth=20,color="#bfd0dd",alpha=0.5)+
   draw_line(x=c(0.3,0.7),y=c(0.22,0.22),
-            size=1,color="#043c6e")+
-  draw_label("Milan",
+            linewidth=1,color="#043c6e")+
+  draw_label("Central Park, New York, USA",
              x=0.5,y=0.19,
              size=14.5,
-             color="#043c6e",
+             color="#317256",
              fontface = "bold",
-             fontfamily = "Gideon Roman")+
-  draw_label("45°27'52.7904''N / 9°11'18.7440''E",
+             fontfamily = "Delius")+
+  draw_label("40.7826° N, 73.9656° W",
              x=0.5,y=0.149,
-             color="#043c6e",
+             color="#317256",
              size=5,
-             fontfamily = "Gideon Roman") +
-  draw_label("OSM key: Religion",
+             fontfamily = "Delius") +
+  draw_label("OSM key: Green",
              x=0.5,y=0.125,
-             color="#043c6e",
+             color="#317256",
              size=4,
-             fontfamily = "Gideon Roman") +
-  draw_label("#30DayMapChallenge 2022 Day 18: Color Friday Blue\nDataSource: {osmdata}: Milan, Italy | Map: Federica Gazzelloni (@fgazzelloni)",
+             fontfamily = "Delius") +
+  draw_label("#30DayMapChallenge 2025 Day 8: Urban\nDataSource: {osmdata}: Central Park, New York, USA | Map: Federica Gazzelloni (@fgazzelloni)",
              x=0.5,y=0.07,
              size=4,
              color="#043c6e",
              lineheight = 1.8,
-             fontfamily = "Gideon Roman")
+             fontfamily = "Delius")
 
 # save final version
-ggsave("day8_openstreetmap.png", 
+ggsave("day8_urban.png", 
        dpi=180,
        width = 5.6, 
        height = 5.6,
-       bg="white")
+       bg="#efeeea")
 
-Copyright © 2025 Federica Gazzelloni
+# Copyright © 2025 Federica Gazzelloni
 ```
 
