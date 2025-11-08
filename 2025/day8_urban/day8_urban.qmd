@@ -114,9 +114,9 @@ base_map
 base_map +
   theme_void()+
   theme(text=element_text(family="Delius"),
-        plot.background = element_rect(fill="white",color=NA,
+        plot.background = element_rect(fill=NA,color=NA,
                                        linewidth=0.5),
-        panel.background = element_rect(fill="white",color=NA,
+        panel.background = element_rect(fill=NA,color=NA,
                                         linewidth=1),
         plot.margin = margin(10,10,40,10,unit = "pt"))
 ```
@@ -124,7 +124,9 @@ base_map +
 
 ```{r}
 # save the base map
-ggsave("base_map.png", width = 6, height = 6)
+ggsave("base_map.png", 
+       bg = "#efeeea",
+       width = 6, height = 6)
 ```
 
 ### Set the fonts
