@@ -12,7 +12,7 @@ execute:
 
 
 
-![](day9_analog.png)
+![Scenographia Systematis Copernicani](day9_analog.png)
 
 
 
