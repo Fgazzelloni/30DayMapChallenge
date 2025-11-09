@@ -3,9 +3,16 @@ title: 'Analog'
 subtitle: 'Welcome to #30DayMapChallenge 2025 day 9'
 date: '2025-11-09'
 image: 'day9_analog.png'
-image-alt: ''
-description: ''
+image-alt: 'image of the Copernican Universe'
+description: '“Scenographia Systematis Copernicani” — a scenographic representation of the Copernican World System. The heliocentric theory of Nicolaus Copernicus, published in 1543, placed the Sun near the center of the Universe, marking a turning point in our understanding of the cosmos.'
 output: html_document
 execute: 
    eval: false
 ---
+
+
+
+![](day9_analog.png)
+
+
+
