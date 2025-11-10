@@ -9,3 +9,79 @@ output: html_document
 execute: 
    eval: false
 ---
+
+
+
+```{r}
+library(tidyverse)
+library(gganimate)
+library(terra)
+library(geodata)
+# ?geodata::worldclim_global
+wind <- worldclim_global(var = "wind", 
+                        res = 2.5)
+# saveRDS(wind,"data/wind.rds")
+```
+
+
+```{r}
+plot(wind$wc2.1_2.5m_wind_01)
+plot(wind)
+```
+
+```{r}
+nlyr(wind)
+```
+
+
+```{r}
+# 1. Downsample & subset for speed
+wind_small <- aggregate(wind, fact = 10)
+names(wind_small) <- sprintf("month_%02d", 1:nlyr(wind_small))
+```
+
+
+
+```{r}
+# 2. Convert safely
+wind_df <- as.data.frame(wind_small, xy = TRUE) %>%
+  pivot_longer(cols = starts_with("month_"), 
+               names_to = "month", values_to = "wind")
+
+wind_df
+```
+
+
+```{r}
+# 3. Plot + animate
+p <- ggplot(wind_df) +
+  geom_tile(aes(x, y, fill = wind)) +
+  coord_fixed() +
+  scale_fill_gradient(low = "white",high = "purple")+
+  ggthemes::theme_map() +
+  labs(title = "Monthly mean wind speed — {closest_state}",
+       caption = "#30DayMapChallenge Day10 Air\nData: geodata::worldclim_global | Map: Federica Gazzelloni",
+       fill="Wind m/s-1") +
+  theme(text =element_text(color = "grey15"),
+        plot.title = element_text(size=16, face="bold"),
+        plot.background = element_rect(fill="grey10"))
+p
+```
+
+
+```{r}
+p_transition <- p +
+  transition_states(month, transition_length = 1, 
+                    state_length = 1) 
+  
+
+animate(p_transition,
+        nframes = 12, 
+        fps = 10, 
+        width = 800, height = 400)
+
+# anim_save("wind_months.gif")
+```
+
+
+
