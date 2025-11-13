@@ -1,5 +1,5 @@
 ---
-title: 'Map'
+title: 'Minimal'
 subtitle: 'Welcome to #30DayMapChallenge 2025 day 11'
 date: '2025-11-11'
 image: 'day11_minimal_map.png'
