@@ -9,3 +9,56 @@ output: html_document
 execute: 
    eval: false
 ---
+
+```{r}
+library(ggplot2)
+library(sf)
+library(rnaturalearth)
+
+world <- ne_countries(scale = "medium", returnclass = "sf")
+```
+
+
+```{r}
+library(ggfx)
+library(ggplot2)
+library(ggfx)
+library(rnaturalearth)
+library(sf)
+
+Italy <- rnaturalearth::ne_countries(country = "Italy",
+                                     scale = "small", 
+                                     returnclass = "sf")
+```
+
+```{r}
+rome <- st_sfc(st_point(c(12.4822, 41.8967)), crs = 4326) # WGS84
+```
+
+
+```{r}
+ggplot(Italy) +
+  with_shadow(
+    geom_sf(color = "black", fill = "white", linewidth = 0.5),
+    sigma = 2, x_offset = 1, y_offset = 1
+  ) +
+  geom_sf_label(data = rome, 
+          label="ROME",
+          fill="#f8f4e3", size = 3) +
+  coord_sf(crs = "ESRI:54052") +  # Goode Homolosine
+  theme_void() +
+  labs(title="ITALY",
+       caption = "#30DayMapChallenge 2025 Day11 Minimal\n Italy | Map: Federica Gazzelloni") +
+  theme(plot.background = element_rect(fill = "#f8f4e3", 
+                                       color = NA),
+        plot.title = element_text(hjust=0.5),
+        plot.title.position = "panel",
+        plot.caption = element_text(size=6,hjust=0.5))
+```
+
+```{r}
+ggsave("day11_minimal.png",
+       bg="#f8f4e3",
+       width = 6, height = 4)
+```
+

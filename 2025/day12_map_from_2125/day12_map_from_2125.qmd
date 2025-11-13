@@ -9,3 +9,285 @@ output: html_document
 execute: 
    eval: false
 ---
+
+## Overview
+
+```{r}
+# library(devtools)
+# options(timeout = 600)
+# install_github("PPgp/wpp2022")
+```
+
+
+```{r}
+options(scipen = 9999)
+library(wpp2022)
+library(tidyverse)
+library(forecast)
+library(rnaturalearth)
+library(sf)
+
+
+data(popproj) # popprojulation data by country and year
+```
+
+
+
+```{r}
+names(popproj)
+```
+
+```{r}
+italy_popproj <- popproj %>%
+  filter(name == "Italy") %>%
+  pivot_longer(cols =3:18,
+               names_to = "year", values_to = "popproj")%>%
+   mutate(year = as.numeric(as.character(year))) %>%
+  select(year, popproj) %>%
+  tidyr::drop_na()
+```
+
+```{r}
+summary(italy_popproj$popproj)
+```
+
+```{r}
+# Create a yearly series by interpolating
+italy_ts <- ts(italy_popproj$popproj, 
+               start = min(italy_popproj$year), 
+               end = max(italy_popproj$year),
+               frequency = 1/5)
+italy_ts
+```
+
+```{r}
+model <- auto.arima(italy_ts)
+forecast_2125 <- forecast(model, h = 5)
+```
+
+
+
+```{r}
+autoplot(forecast_2125) +
+  labs(title = "Forecasted Population of Italy to 2125",
+       y = "Population (thousands)", x = "Year")
+```
+
+```{r}
+forecast_2125$mean%>%tail()
+```
+
+
+```{r}
+countries <- unique(popproj$name)
+
+future_proj <- lapply(countries, function(cty) {
+  
+  df <- popproj %>% 
+    filter(name == cty) %>% 
+    pivot_longer(cols =3:18,
+                 names_to = "year", values_to = "popproj")%>%
+    mutate(year = as.numeric(as.character(year))) %>%
+    tidyr::drop_na()
+  
+  ts_data <- ts(df$popproj, 
+                start = min(df$year),
+                end = max(df$year),
+                frequency = 1/5)
+  model <- tryCatch(auto.arima(ts_data), 
+                    error = function(e) NULL)
+  if (is.null(model)) return(NULL)
+  pred <- forecast(model, h = 5)
+  data.frame(name = cty, year = 2125, 
+             popproj2125 = as.numeric(head(pred$mean, 1)))}) %>%
+  bind_rows()
+```
+
+```{r}
+future_proj$popproj2125%>%summary()
+```
+
+```{r}
+my_countries <- unique(future_proj$name)
+
+world <- ne_countries(scale = "medium", returnclass = "sf")%>%
+  filter(!name=="Antarctica")
+
+world_countries <- unique(world$name)
+
+setdiff(my_countries,world_countries)
+```
+```{r}
+setdiff(world_countries,my_countries)
+```
+```{r}
+name_fix <- c(
+  "Viet Nam"                        = "Vietnam",
+  "Venezuela (Bolivarian Republic of)" = "Venezuela",
+  "Holy See"                        = "Vatican",
+  "Marshall Islands"                = "Marshall Is.",
+  "Northern Mariana Islands"        = "N. Mariana Is.",
+  "United States Virgin Islands"    = "U.S. Virgin Is.",
+  "South Georgia and the South Sandwich Islands" = "S. Geo. and the Is.",
+  "British Indian Ocean Territory"  = "Br. Indian Ocean Ter.",
+  "Pitcairn Islands"                = "Pitcairn Is.",
+  "Falkland Islands (Malvinas)"     = "Falkland Is.",
+  "Cayman Islands"                  = "Cayman Is.",
+  "British Virgin Islands"          = "British Virgin Is.",
+  "Turks and Caicos Islands"        = "Turks and Caicos Is.",
+  "Turkiye"                         = "Turkey",
+  "United Republic of Tanzania"     = "Tanzania",
+  "China, Taiwan Province of China" = "Taiwan",
+  "Syrian Arab Republic"            = "Syria",
+  "Eswatini"                        = "eSwatini",
+  "South Sudan"                     = "S. Sudan",
+  "Republic of Korea"               = "South Korea",
+  "Solomon Islands"                 = "Solomon Is.",
+  "Sao Tome and Principe"           = "São Tomé and Principe",
+  "Saint Vincent and the Grenadines"= "St. Vin. and Gren.",
+  "Saint Kitts and Nevis"           = "St. Kitts and Nevis",
+  "Russian Federation"              = "Russia",
+  "Dem. People's Republic of Korea" = "North Korea",
+  "Cook Islands"                    = "Cook Is.",
+  "Curacao"                         = "Curaçao",
+  "Western Sahara"                  = "W. Sahara",
+  "Republic of Moldova"             = "Moldova",
+  "Lao People's Democratic Republic"= "Laos",
+  "Kosovo (under UNSC res. 1244)"   = "Kosovo",
+  "State of Palestine"              = "Palestine",
+  "Iran (Islamic Republic of)"      = "Iran",
+  "Saint Pierre and Miquelon"       = "St. Pierre and Miquelon",
+  "Wallis and Futuna Islands"       = "Wallis and Futuna Is.",
+  "Saint Martin (French part)"      = "St-Martin",
+  "Saint-Barthelemy"                = "St-Barthélemy",
+  "French Polynesia"                = "Fr. Polynesia",
+  "Equatorial Guinea"               = "Eq. Guinea",
+  "Dominican Republic"              = "Dominican Rep.",
+  "Faroe Islands"                   = "Faeroe Is.",
+  "Cote d'Ivoire"                   = "Côte d'Ivoire",
+  "Democratic Republic of the Congo"= "Dem. Rep. Congo",
+  "China, Macao SAR"                = "Macao",
+  "China, Hong Kong SAR"            = "Hong Kong",
+  "Central African Republic"        = "Central African Rep.",
+  "Brunei Darussalam"               = "Brunei",
+  "Bosnia and Herzegovina"          = "Bosnia and Herz.",
+  "Bolivia (Plurinational State of)"= "Bolivia",
+  "Antigua and Barbuda"             = "Antigua and Barb.",
+  "Sint Maarten (Dutch part)"       = "Sint Maarten"
+)
+
+```
+
+```{r}
+future_proj <- future_proj %>%
+  mutate(name = recode(name, !!!name_fix))
+```
+
+```{r}
+my_countries <- unique(future_proj$name)
+setdiff(my_countries,world_countries)
+setdiff(world_countries,my_countries)
+```
+
+
+
+```{r}
+world_proj <- world %>%
+  select(name) %>%
+  left_join(future_proj, by = "name")
+```
+
+```{r}
+summary(world_proj$popproj2125)
+```
+
+
+```{r}
+rng <- range(world_proj$popproj2125, na.rm = TRUE)
+rng
+```
+
+```{r}
+library(showtext)
+font_add_google(name = 'Cormorant Garamond', 
+                family = 'Garamond')
+showtext_auto()
+showtext_opts(dpi = 300)
+```
+
+
+
+```{r}
+base_map <- ggplot(world_proj) +
+  geom_sf(aes(fill = popproj2125))+
+  scale_fill_gradient(low="white",high = "black")
+
+base_map
+```
+
+```{r}
+library(RColorBrewer)
+palette <- rev(brewer.pal(9, "YlOrBr"))
+```
+
+```{r}
+summary(world_proj$popproj2125)
+```
+```{r}
+world_proj <- world_proj%>%
+  mutate(popproj2125_class =cut_interval(popproj2125,8))
+```
+
+
+```{r}
+ggplot(world_proj) +
+  geom_sf(aes(fill = popproj2125)) +
+  geom_sf_text(
+    aes(label = scales::label_number(
+      suffix = "M",accuracy = 1
+    )(popproj2125)),
+    size = 2,
+    check_overlap = TRUE)+
+  scale_fill_gradient(low="#a3c9c4",
+                      high = "black",
+                      na.value = "red",
+                      label = scales::label_number(suffix = "M"),
+    name = "Population (Millions)",
+    guide = guide_colorbar(
+      ticks = TRUE,
+      nbin = 40,alpha = 0.5,
+      reverse = T,
+      ticks.colour = "black",
+      frame.colour = "black",
+      barwidth = 0.8,
+      barheight = 10
+    ))+
+  coord_sf(crs = "+proj=eqearth")+
+  labs(title = "Projected World Population in 2125 (ARIMA-based)",
+       caption = "#30DayMapChallenge Day 12 – Map from 2125\nData: {wpp2022} - proj=eqearth - in red missing values\nMap: Federica Gazzelloni") +
+  ggthemes::theme_map() +
+  theme(text = element_text(family = "Garamond"),
+        plot.title.position = "panel",
+        plot.title = element_text(face="bold"),
+        legend.background = element_rect(fill=NA,color=NA))
+```
+
+
+```{r}
+ggplot(world_proj) +
+  geom_sf(aes(fill = popproj2125))+
+  scale_fill_gradient(low="white",high = "black")+
+  coord_sf(crs = "+proj=eqearth")+
+  labs(title = "Projected World Population in 2125 (ARIMA-based)",
+       caption = "#30DayMapChallenge Day 12 – Map from 2125\nData: {wpp2022} - proj=eqearth - in red missing values\nMap: Federica Gazzelloni",
+       fill="PopProj 2125") +
+  ggthemes::theme_map() +
+  theme(text = element_text(family = "Garamond"),
+        plot.title.position = "panel",
+        plot.title = element_text(face="bold"),
+        legend.background = element_rect(fill=NA,color=NA))
+```
+
+```{r}
+ggsave("day12_map_from_2125.png",width = 6, height = 4,bg="#dae0e0")
+```
