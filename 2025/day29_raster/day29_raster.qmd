@@ -9,3 +9,46 @@ output: html_document
 execute: 
    eval: false
 ---
+
+## Overview
+
+```{r}
+library(elevatr)
+library(terra)
+library(sf)
+library(ggplot2)
+
+# Define bounding box as sf polygon with CRS
+bbox <- st_as_sf(st_as_sfc(st_bbox(c(
+  xmin = 13.45,
+  xmax = 13.75,
+  ymin = 42.4,
+  ymax = 42.6
+), crs = 4326)))
+
+# Download elevation data (clip to bbox)
+dem <- get_elev_raster(
+  locations = bbox,
+  z = 10,
+  clip = "bbox"
+)
+
+# Convert to terra object
+dem_t <- rast(dem)
+
+# Create hillshade for visual effect
+hillshade <- shade(terrain(dem_t, "slope"), 
+                   terrain(dem_t, "aspect"))
+
+# Plot with ggplot
+df <- as.data.frame(dem_t, xy = TRUE)
+names(df)[3] <- "elevation"
+
+ggplot(df) +
+  geom_raster(aes(x = x, y = y, fill = elevation)) +
+  scale_fill_viridis_c(option = "B") +
+  theme_void() +
+  coord_equal() +
+  labs(title = "Gran Sasso Elevation (10-minute map)",
+       caption = "Data source: elevatr / USGS")
+```
