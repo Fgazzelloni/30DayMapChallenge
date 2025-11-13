@@ -278,7 +278,9 @@ ggplot(world_proj) +
 ```{r}
 ggplot(world_proj) +
   geom_sf(aes(fill = popproj2125))+
-  scale_fill_gradient(low="white",high = "black")+
+  scale_fill_gradient(low="white",
+                      high = "black",
+                      na.value = "red")+
   coord_sf(crs = "+proj=eqearth")+
   labs(title = "Projected World Population in 2125 (ARIMA-based)",
        caption = "#30DayMapChallenge Day 12 – Map from 2125\nData: {wpp2022} - proj=eqearth - in red missing values\nMap: Federica Gazzelloni",
@@ -291,5 +293,6 @@ ggplot(world_proj) +
 ```
 
 ```{r}
-ggsave("day12_map_from_2125.png",width = 6, height = 4,bg="#dae0e0")
+ggsave("day12_map_from_2125.png",
+       width = 6, height = 4,bg="#dae0e0")
 ```
