@@ -9,3 +9,170 @@ output: html_document
 execute: 
    eval: false
 ---
+
+## Overview
+
+Climate Change – Refrigerated Storage Costs
+
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(osmdata)
+library(sf)
+```
+
+
+```{r}
+data_raw <- read_excel("data/09_2023-1_model-solution.xlsx")
+head(data_raw)
+```
+
+```{r}
+names(data_raw) <- data_raw[1,]
+data <- data_raw[-1,]
+```
+
+
+```{r}
+elev_data <- data %>%
+  janitor::clean_names() %>%
+  filter(check_versus_expected_range=="Ok",
+         check_versus_expected_range_2=="Ok",
+         check_versus_expected_range_3=="Ok") %>%
+  select(latitude,longitude,elevation,country,continent)%>%
+  drop_na() %>%
+  mutate(latitude =as.numeric(latitude),
+         longitude =as.numeric(longitude),
+         elevation =as.numeric(elevation),
+         country=str_to_title(country),
+         continent=str_to_title(continent))
+
+elev_data %>% 
+  group_by(country)%>%
+  count(sort = TRUE)
+```
+
+
+```{r}
+world <- map_data("world")
+```
+
+```{r}
+ggplot(elev_data)+
+  geom_map(map = world,
+           aes(map_id=country,
+               fill= elevation))+
+  expand_limits(x = world$long, y = world$lat)
+```
+```{r}
+elev_data_sf <- elev_data %>%
+  st_as_sf(coords = c("longitude","latitude"),crs=4326)
+```
+
+```{r}
+crsuggest::suggest_crs(elev_data_sf)
+```
+```{r}
+elev_data_sf_3832 <- elev_data_sf %>%
+  st_transform(crs=3832)
+```
+
+```{r}
+world <- rnaturalearth::ne_countries(returnclass = "sf",
+                                     scale = "medium")%>%
+  filter(!name=="Antarctica")
+```
+
+
+```{r}
+ggplot(elev_data)+
+  geom_sf(data = world, 
+          aes(fill=name),
+          alpha=0.5,
+          show.legend = F,
+          inherit.aes = F) +
+  geom_point(aes(x=longitude,y=latitude,
+                 color=elevation),
+          size=0.9,shape=21,stroke=0.5,
+          fill=alpha("black",0.5),
+          show.legend = F)+
+  scale_color_gradient(low="white",high="red")
+```
+
+```{r}
+bb <- getbb("Rome, Italy")
+```
+
+
+```{r}
+primary <- opq(bb) %>%
+  add_osm_feature("highway", c("motorway", "primary", "secondary", "tertiary")) %>%
+  osmdata_sf()
+# saveRDS(primary,"data/primary.rds")
+
+secondary <- opq(bb) %>%
+  add_osm_feature(key = "highway", value = c("residential", "living_street", "unclassified", "service", "footway")) %>%
+  osmdata_sf()
+# saveRDS(secondary,"data/secondary.rds")
+```
+
+```{r}
+rivers <- opq(bb) %>%
+  add_osm_feature(key = "waterway", value = "river") %>%
+  osmdata_sf()
+# saveRDS(rivers,"data/rivers.rds")
+```
+
+
+```{r}
+# retrieving data of hospitals
+hospitals <- opq(bb) %>%
+  add_osm_feature("amenity", "hospital") %>%
+  osmdata_sf()
+# saveRDS(hospitals,"data/hospitals.rds")
+```
+
+
+```{r}
+# Define the bounding box of the area we want to search
+bus_stops <- opq(bb) |> 
+  add_osm_feature(key = "highway", value = "bus_stop") |> 
+  osmdata_sf()
+# saveRDS(bus_stops,"data/bus_stops.rds")
+```
+
+```{r}
+bb
+```
+
+
+
+```{r}
+streets <- ggplot()+
+  # Add base map
+  # annotation_map_tile(type = "cartolight", zoomin = 0, progress = "none") +
+  geom_sf(data = primary$osm_lines,color="grey30",linewidth=0.3) +
+  geom_sf(data = secondary$osm_lines,color="grey50",linewidth=0.1)
+streets
+```
+
+
+```{r}
+streets +
+  geom_sf(data = rivers$osm_lines, color="#7fc0ff") +
+  geom_sf(data = hospitals$osm_polygons,color="red",fill=alpha("red",0.5)) +
+  geom_sf(data= bus_stops$osm_points,shape=".", color=alpha("#3e5d8b",0.8))+
+  coord_sf(xlim = c(12.4, 12.6), 
+           ylim = c(41.84, 41.95), 
+           expand = FALSE) +
+  ggthemes::theme_map()
+```
+```{r}
+ggsave("base_map.png", 
+       width = 6, height = 4,
+       dpi =320,
+       bg=alpha("#e3e4bb",0.5))
+```
+
+
