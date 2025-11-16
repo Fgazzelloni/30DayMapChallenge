@@ -4,8 +4,130 @@ subtitle: 'Welcome to #30DayMapChallenge 2025 day 15'
 date: '2025-11-15'
 image: 'day15_fire.png'
 image-alt: ''
-description: ''
+description: 'Mapping GBD 2021 Environmental Heat & Fire DALYs + FIRMS hotspots'
 output: html_document
 execute: 
    eval: false
 ---
+
+## Overview
+
+
+### Download FIRMS wildfire data (VIIRS 375m, year 2023)
+```{r}
+# Create temp files
+temp <- tempfile()
+temp2 <- tempfile()
+
+url <-"https://firms.modaps.eosdis.nasa.gov/data/download/DL_FIRE_J1V-C2_686477.zip"
+download.file(URL, temp)
+# Unzip the contents of the temp and save unzipped content in 'temp2'
+unzip(zipfile = temp, exdir = temp2)
+# Read the shapefile. 
+fire_shp <- sf::read_sf(temp2)
+```
+
+
+
+```{r}
+# saveRDS(fire_shp,"data/fire_shp.rds")
+```
+
+
+```{r}
+library(data.table)
+# 2. Extract coordinates as data.table (very fast)
+coords_dt <- as.data.table(st_coordinates(fire_shp))
+setnames(coords_dt, c("X","Y"), c("longitude","latitude"))
+
+# 3. Optional: Save coordinates only for later use
+fwrite(coords_dt, "data/VIIRS_2023_coords.csv")
+```
+
+```{r}
+coords_dt%>%head
+```
+
+
+```{r}
+coords_dt%>%dim
+```
+
+
+```{r}
+library(rnaturalearth)
+world <- ne_countries(scale = "medium", returnclass = "sf") %>%
+  filter(!name=="Antarctica")%>%
+  st_as_sf() %>%
+  select(iso_a3, name, geometry) 
+```
+
+```{r}
+base_map <- ggplot() +
+  geom_sf(data = world, color="grey",fill=NA)
+```
+
+
+```{r}
+base_map +
+  geom_point(data = coords_dt,
+             aes(x=longitude,y=latitude),
+    color = "red",
+    shape=".")
+```
+
+
+```{r}
+library(data.table)
+
+unique_coords_dt <- distinct(coords_dt)
+
+# coords_dt is already a data.table:
+n <- nrow(unique_coords_dt)
+s <- sample.int(n, size = floor(0.001 * n))   # 1% sample
+
+sample_dt <- coords_dt[s]
+```
+
+
+```{r}
+base_map +
+  geom_point(data = sample_dt,
+             aes(x=longitude,y=latitude),
+    color = "red",
+    shape=".")
+```
+
+
+```{r}
+library(spatstat)
+pp <- ppp(coords_dt$longitude, coords_dt$latitude, window=owin(c(-180,180),c(-90,90)))
+# saveRDS(pp,"data/pp.rds")
+sample_pp <- rthin(pp, P = 0.001)    # keep 1%
+```
+
+```{r}
+sample_coords2 <- as.data.frame(cbind(
+  x = sample_pp$x,
+  y = sample_pp$y
+))
+
+sample_sf <- st_as_sf(sample_coords2,
+                      coords = c("x", "y"),
+                      crs = 4326)
+```
+
+
+
+```{r}
+ggplot() +
+  geom_sf(data = world) +
+  geom_sf(data = sample_sf,
+          fill = "darkred",
+          color="grey40",
+          shape=21,stroke=0.03,
+          size=1, alpha=0.9)  +
+  geom_sf(data = world, color="black", fill = NA) 
+```
+
+
