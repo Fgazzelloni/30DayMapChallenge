@@ -3,9 +3,124 @@ title: 'Tool'
 subtitle: 'Welcome to #30DayMapChallenge 2025 day 17'
 date: '2025-11-17'
 image: 'day17_a_new_tool.png'
-image-alt: ''
-description: ''
+image-alt: 'Climate Change Data - Yearly AVG Temp at Weather Stations'
+description: 'Climate Change Data - Yearly AVG Temp at Weather Stations'
 output: html_document
 execute: 
    eval: false
 ---
+
+
+## Overview
+
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(sf)
+```
+
+
+```{r}
+stations_raw <- read_excel("data/09_2023-1_model-solution.xlsx",sheet = 1) 
+head(stations_raw)
+```
+
+
+```{r}
+names(data_raw) <- data_raw[1,]
+data <- data_raw[-1,]
+```
+
+
+```{r}
+elev_data <- data %>%
+  janitor::clean_names() %>%
+  filter(check_versus_expected_range=="Ok",
+         check_versus_expected_range_2=="Ok",
+         check_versus_expected_range_3=="Ok") %>%
+  select(id,latitude,longitude,elevation,country,continent)%>%
+  drop_na() %>%
+  mutate(latitude =as.numeric(latitude),
+         longitude =as.numeric(longitude),
+         elevation =as.numeric(elevation),
+         country=str_to_title(country),
+         continent=str_to_title(continent))%>%
+  filter(elevation>=0)
+
+elev_data%>%summary()
+```
+
+### Temperature Data
+
+```{r}
+temperature_raw <- read_excel("data/09_2023-1_model-solution.xlsx",sheet = 3)
+head(temperature_raw)
+```
+```{r}
+temperature <- temperature_raw %>%
+  janitor::clean_names() %>%
+  select(1:14) %>%
+  pivot_longer(cols = -c(id,year),
+               names_to = "month",values_to = "temp")%>%
+  group_by(id,year)%>%
+  reframe(avg_yr_temp=mean(temp))%>%
+  group_by(id)%>%
+  reframe(avg_tem=round(mean(avg_yr_temp),3))
+
+temperature
+```
+```{r}
+climate_data <- elev_data%>%
+  inner_join(temperature,by="id")
+```
+
+
+```{r}
+climate_data%>%summary()
+```
+
+
+```{r}
+library(openxlsx)
+write.xlsx(climate_data, file = "data/climate_data.xlsx")
+```
+
+
+
+
+```{r}
+world <- map_data("world")
+```
+
+```{r}
+ggplot(climate_data)+
+  geom_map(map = world,
+           aes(map_id=country,
+               fill= avg_tem))+
+  expand_limits(x = world$long, y = world$lat)
+```
+
+
+```{r}
+world <- rnaturalearth::ne_countries(returnclass = "sf",
+                                     scale = "medium")%>%
+  filter(!name=="Antarctica")
+```
+
+
+```{r}
+ggplot(climate_data)+
+  geom_sf(data = world, 
+          aes(fill=name),
+          alpha=0.5,
+          show.legend = F,
+          inherit.aes = F) +
+  geom_point(aes(x=longitude,y=latitude,
+                 color=avg_tem,size=avg_tem),
+          shape=21,stroke=0.5,
+          fill=alpha("black",0.5),
+          show.legend = F)+
+  scale_color_gradient(low="white",high="red")
+```
+
