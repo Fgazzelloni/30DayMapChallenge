@@ -4,7 +4,7 @@ subtitle: 'Welcome to #30DayMapChallenge 2025 day 15'
 date: '2025-11-15'
 image: 'day15_fire.png'
 image-alt: ''
-description: 'Mapping GBD 2021 Environmental Heat & Fire DALYs + FIRMS hotspots'
+description: 'FIRMS hotspots'
 output: html_document
 execute: 
    eval: false
