@@ -3,11 +3,64 @@ title: 'World'
 subtitle: 'Welcome to #30DayMapChallenge 2025 day 18'
 date: '2025-11-18'
 image: 'day18_out_of_this_world.png'
-image-alt: ''
-description: ''
+image-alt: 'Mapped Mars today using the Viking global mosaic from NASA/USGS.'
+description: 'Mapped Mars today using the Viking global mosaic from NASA/USGS. Rebuilt the extent in R and plotted the planet in a clean equirectangular view.'
 output: html_document
 execute: 
    eval: false
 ---
+
+## Overview
+
+```{r}
+library(tidyverse)
+library(terra)
+library(ggplot2)
+
+# Load JPG (Mars mosaic ~1 km)
+mars <- rast("data/mars_viking_mdim21_clrmosaic_global_1024.jpg")
+```
+
+```{r}
+ext(mars) <- c(-180, 180, -90, 90)
+crs(mars) <- "EPSG:4326"  # acceptable placeholder CRS
+```
+
+
+```{r}
+# Convert to dataframe for ggplot
+mars_df <- as.data.frame(mars, xy = TRUE) 
+
+names(mars_df) <- c("x","y","B","G","R")
+```
+
+```{r}
+library(showtext)
+font_add_google(name = 'Bad Script', 
+                family = 'Bad Script')
+showtext_auto()
+showtext_opts(dpi = 300)
+```
+
+```{r}
+ggplot(mars_df) +
+  geom_raster(aes(x, y, fill = rgb(R/255, G/255, B/255))) +
+  scale_fill_identity() +
+  coord_equal() +
+  theme_void() +
+  labs(title = "Mars",
+       subtitle = "Rasterized - Viking Color Mosaic - 1 km",
+       caption = "#30DayMapChallenge 2025 | Day 18 | Out of the World\nData: astrogeology.usgs.gov database | Federica Gazzelloni") +
+  ggthemes::theme_map() +
+  theme(text = element_text(face="bold",color="#5d352a",family="Bad Script"),
+        plot.title = element_text(size=18, hjust=0.5),
+        plot.subtitle = element_text(size=12,hjust=0.5),
+        plot.caption = element_text(size=8,hjust=0.5))
+
+```
+
+```{r}
+ggsave("day18_out_of_this_world.png",width = 6,height =4,dpi=320,bg="#e2e2e2")
+```
 
 
