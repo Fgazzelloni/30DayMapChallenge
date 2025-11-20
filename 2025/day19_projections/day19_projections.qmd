@@ -51,7 +51,7 @@ ggplot(world_goode) +
   labs(
     title = "Population Estimation in Goode Homolosine Projection",
     subtitle = "CRS: ESRI 54052",
-    caption = "#30DayMapChallenge 2025 | Day19 Projection\nData: {rnaturalearth} | Map: Federica Gazzelloni"
+    caption = "#30DayMapChallenge 2025 | Day19 Projections\nData: {rnaturalearth} | Map: Federica Gazzelloni"
   ) +
   theme_void() +
   theme(
@@ -69,7 +69,7 @@ ggplot(world_goode) +
 
 
 ```{r}
-ggsave("day19_projection.png",
+ggsave("day19_projections.png",
        width=6,height = 4,dpi=320,bg="white")
 ```
 
