@@ -9,3 +9,48 @@ output: html_document
 execute: 
    eval: false
 ---
+
+```{r}
+library(ggplot2)
+library(rnaturalearth)
+library(sf)
+```
+
+```{r}
+options("rnaturalearth.download_url" = "https://naturalearthdata.com/http//www.naturalearthdata.com/download/")
+
+land <- rnaturalearth::ne_download(
+  scale = 10,
+  type = "land",
+  category = "physical",
+  returnclass = "sf")
+
+```
+
+
+```{r}
+library(stringr)
+
+caption_text <- str_wrap(string = "This window frames Africa’s eastern rim through the Pacific region, highlighting coastlines and physical features in a vintage cartographic style.",
+  width = 80)
+```
+
+```{r}
+ggplot() +
+  geom_sf(data = land, fill="#f1e2c5", color="#5c4d3b", size=.2) +
+  labs(title="Natural Earth: Physical Land",
+       subtitle="Vintage Style",
+       caption=paste("#30DayMapChallenge 2025 | Day 22 | Map: Federica Gazzelloni","\n","Zoomed to the Eastern Hemisphere (60°E–180°E, 50°S–50°N)","\n",caption_text)) +
+  coord_sf(xlim = c(60,180),ylim = c(-50,50),expand = T) +
+  theme_void(base_family = "Helvetica") +
+  theme(
+    plot.title = element_text(face = "bold", size = 16),
+    plot.subtitle = element_text(size = 12),
+    plot.caption = element_text(size = 6, hjust = 0.5)
+  )
+```
+
+```{r}
+ggsave("day22_natural_earth.png",width=6,height=4,dpi=320,bg="#92c0e2")
+```
+

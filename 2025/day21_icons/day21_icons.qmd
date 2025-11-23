@@ -9,3 +9,107 @@ output: html_document
 execute: 
    eval: false
 ---
+
+
+source: Magnitude 6+ Earthquakes	All recorded earthquakes with a magnitude of 6 or greater from 1900–2013. Source: United States Geological Survey (USGS)
+
+- <https://public.tableau.com/app/learn/sample-data>
+- <https://earthquake.usgs.gov/earthquakes/search/>
+
+
+```{r}
+library(readxl)
+raw_data <- read_excel("data/Mag6PlusEarthquakes_1900-2013.xlsx")
+View(raw_data)
+```
+
+```{r}
+library(tidyverse)
+library(sf)
+library(rnaturalearth)
+library(ggflags)
+```
+
+
+```{r}
+data_sf <- raw_data %>%
+  janitor::clean_names()%>%
+  select(date,time=time_2, latitude,longitude,
+         depth,mag) %>%
+  drop_na() %>%
+  mutate(year =year(date),.after=date) %>% 
+  group_by(year, longitude, latitude) %>%
+  reframe(avg_mag=mean(mag)) %>%
+  st_as_sf(coords = c("longitude","latitude"),crs=4326)
+```
+
+
+```{r}
+world_coastline <- rnaturalearth::ne_coastline()
+```
+
+
+```{r}
+ggplot() +
+  geom_sf(data = world_coastline) +
+  geom_point(data = raw_data, aes(x=longitude,y=latitude), 
+             size = 2,
+             shape = 21, stroke=0.1, color="grey80") +
+  geom_sf(data = data_sf,shape=".",color="red") +
+  ggthemes::theme_map()
+```
+
+```{r}
+continents <- ne_download(scale = "medium",
+                          type = "geography_regions_polys",
+                          category = "physical",
+                          returnclass = "sf") %>%
+  janitor::clean_names() %>%
+  filter(featurecla == "Continent") %>%
+  select(name, geometry)
+
+# centroid
+continents_centroid <- continents %>%
+  mutate(centroid = st_centroid(geometry))
+
+coords <- st_coordinates(continents_centroid$centroid)
+continents_centroid$lon <- coords[,1]
+continents_centroid$lat <- coords[,2]
+```
+
+```{r}
+continents_centroid$flag <- c(
+  "SOUTH AMERICA" = "br",   # Brazil
+  "AUSTRALIA"     = "au",   # Australia
+  "AFRICA"        = "za",   # South Africa
+  "ANTARCTICA"    = "aq",   # Antarctica flag exists in ggflags
+  "ASIA"          = "jp",   # Japan
+  "EUROPE"        = "eu",   # EU flag
+  "NORTH AMERICA" = "ca"    # Canada
+)[continents_centroid$name]
+```
+
+
+```{r}
+ggplot() +
+  geom_sf(data = world_coastline) +
+  geom_point(data = raw_data, aes(x=longitude,y=latitude), 
+             size = 2,
+             shape = 21, stroke=0.1, color="grey80") +
+  geom_sf(data = data_sf,shape=".",color="red") +
+  geom_flag(data = continents_centroid,
+            aes(x = lon, y = lat, country = flag),
+            size = 10) +
+  labs(title = "Earthquakes Yearly Average Magnitude 6+ (1900–2013)",
+       subtitle = "Continents Centroid marked with Flag Icons",
+       caption = "#30DayMapChallenge 2025 | Day 21 Icons\nData: United States Geological Survey (USGS) | Map: Federica Gazzelloni") +
+  ggthemes::theme_map()
+```
+
+
+```{r}
+ggsave("day21_icons.png", width=6,height=4, dpi=320,bg="white")
+```
+
+
+
