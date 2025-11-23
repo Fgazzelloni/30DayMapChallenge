@@ -3,8 +3,8 @@ title: 'Projections'
 subtitle: 'Welcome to #30DayMapChallenge 2025 day 19'
 date: '2025-11-19'
 image: 'day19_projections.png'
-image-alt: ''
-description: ''
+image-alt: 'Population Estimation in Goode Homolosine Projection'
+description: 'Population Estimation in Goode Homolosine Projection'
 output: html_document
 execute: 
    eval: false
