@@ -21,23 +21,23 @@ The idea is to create maps based around different themes each day of November us
 | Day 1 - `01-11-2025 - Points` | Day 2 - `02-11-2025 - Lines` | Day 3 - `03-11-2025 - Polygons` |
 | ![day1](2025/day1_points/day1_points.png) | ![day2](2025/day2_lines/day2_lines.png) | ![day3](2025/day3_polygons/day3_polygons.png) |
 | Day 4 - `04-11-2025 - Data challenge: My Data` | Day 5 - `05-11-2025 - Earth` | Day 6 - `06-11-2025 - Dimensions` |
-| ![day4](2025/day4_my_data/day4_my_data.png) | ![day5](2025/day5_earth/day5.png) | ![day6](2025/day6_dimensions/day6.png) |
+| ![day4](2025/day4_my_data/day4_my_data.png) | ![day5](2025/day5_earth/day5_earth.png) | ![day6](2025/day6_dimensions/day6_dimensions.png) |
 | Day 7 - `07-11-2025 - Accessibility` | Day 8 - `08-11-2025 - Urban` | Day 9 - `09-11-2025 - Analog` |
-| ![day7](2025/day7_accessibility/day7.png) | ![day8](2025/day8_urban/day8.png) | ![day9](2025/day9_analog/day9.png) |
+| ![day7](2025/day7_accessibility/day7_accessibility.png) | ![day8](2025/day8_urban/day8_urban.png) | ![day9](2025/day9_analog/day9_analog.png) |
 | Day 10 - `10-11-2025 - Air` | Day 11 - `11-11-2025 - Minimal map` | Day 12 - `12-11-2025 - Map from 2125` |
-| ![day10](2025/day10_air/day10.png) | ![day11](2025/day11_minimal_map/day11.png) | ![day12](2025/day12_map_from_2125/day12.png) |
+| ![day10](2025/day10_air/day10_air.gif) | ![day11](2025/day11_minimal_map/day11_minimal_map.png) | ![day12](2025/day12_map_from_2125/day12_map_from_2125.png) |
 | Day 13 - `13-11-2025 - 10 minute map` | Day 14 - `14-11-2025 - Data challenge: OpenStreetMap` | Day 15 - `15-11-2025 - Fire` |
-| ![day13](2025/day13_10_minute_map/day13.png) | ![day14](2025/day14_osm/day14.png) | ![day15](2025/day15_fire/day15.png) |
+| ![day13](2025/day13_10_minute_map/day13_10_minute_map.png) | ![day14](2025/day14_openstreetmap/day14_openstreetmap.png) | ![day15](2025/day15_fire/day15_fire.png) |
 | Day 16 - `16-11-2025 - Cell` | Day 17 - `17-11-2025 - A new tool` | Day 18 - `18-11-2025 - Out of this world` |
-| ![day16](2025/day16_cell/day16.png) | ![day17](2025/day17_new_tool/day17.png) | ![day18](2025/day18_out_of_this_world/day18.png) |
+| ![day16](2025/day16_cell/day16_cell.png) | ![day17](2025/day17_new_tool/day17_new_tool.png) | ![day18](2025/day18_out_of_this_world/day18_out_of_this_world.png) |
 | Day 19 - `19-11-2025 - Projections` | Day 20 - `20-11-2025 - Water` | Day 21 - `21-11-2025 - Icons` |
-| ![day19](2025/day19_projections/day19.png) | ![day20](2025/day20_water/day20.png) | ![day21](2025/day21_icons/day21.png) |
+| ![day19](2025/day19_projections/day19_projections.png) | ![day20](2025/day20_water/day20_water.png) | ![day21](2025/day21_icons/day21_icons.png) |
 | Day 22 - `22-11-2025 - Data challenge: Natural Earth` | Day 23 - `23-11-2025 - Process` | Day 24 - `24-11-2025 - Places and their names` |
-| ![day22](2025/day22_natural_earth/day22.png) | ![day23](2025/day23_process/day23.png) | ![day24](2025/day24_places_names/day24.png) |
+| ![day22](2025/day22_natural_earth/day22_natural_earth.png) | ![day23](2025/day23_process/day23_process.png) | ![day24](2025/day24_places_names/day24_places_names.png) |
 | Day 25 - `25-11-2025 - Hexagons` | Day 26 - `26-11-2025 - Transport` | Day 27 - `27-11-2025 - Boundaries` |
-| ![day25](2025/day25_hexagons/day25.png) | ![day26](2025/day26_transport/day26.png) | ![day27](2025/day27_boundaries/day27.png) |
+| ![day25](2025/day25_hexagons/day25_hexagons.png) | ![day26](2025/day26_transport/day26_transport.png) | ![day27](2025/day27_boundaries/day27_boundaries.png) |
 | Day 28 - `28-11-2025 - Black` | Day 29 - `29-11-2025 - Raster` | Day 30 - `30-11-2025 - Makeover` |
-| ![day28](2025/day28_black/day28.png) | ![day29](2025/day29_raster/day29.png) | ![day30](2025/day30_makeover/day30.png) |
+| ![day28](2025/day28_black/day28_black.png) | ![day29](2025/day29_raster/day29_raster.png) | ![day30](2025/day30_makeover/day30_makeover.png) |
 
 <!-- TABLE END -->
 
