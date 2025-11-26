@@ -9,3 +9,155 @@ output: html_document
 execute: 
    eval: false
 ---
+
+
+## Overview
+
+
+```{r}
+###############################################################
+# Day 24 – Places and Their Names
+# Endonym vs Exonym Map (Robust Wikidata Query)
+###############################################################
+
+library(sf)
+library(rnaturalearth)
+library(ggplot2)
+library(dplyr)
+library(jsonlite)
+library(tibble)
+library(stringr)
+
+###############################################################
+# 1. LOAD NATURAL EARTH WORLD POLYGONS
+###############################################################
+
+world <- ne_countries(scale = 50, returnclass = "sf") %>%
+  select(iso_a2, name) %>%
+  rename(exonym_ne = name)
+
+
+###############################################################
+# 2. WIKIDATA — FETCH ENGLISH LABELS
+###############################################################
+
+query_en <- "
+SELECT ?iso ?en WHERE {
+  ?country wdt:P31 wd:Q6256 .
+  ?country wdt:P297 ?iso .
+  ?country rdfs:label ?en .
+  FILTER (lang(?en) = 'en')
+}
+"
+
+url_en <- paste0(
+  "https://query.wikidata.org/sparql?query=",
+  URLencode(query_en, reserved = TRUE),
+  "&format=json"
+)
+
+raw_en <- fromJSON(url_en)$results$bindings
+
+extract_value <- function(x) {
+  if (is.null(x)) return(NA_character_)       # missing cell
+  if (is.atomic(x)) return(as.character(x))   # already a string
+  if (!is.null(x$value)) return(as.character(x$value))   # usual case
+  return(NA_character_)
+}
+
+
+
+df_en <- tibble(
+  iso_a2 = sapply(raw_en$iso, extract_value),
+  exonym = sapply(raw_en$en, extract_value)
+)
+```
+
+
+```{r}
+###############################################################
+# 3. WIKIDATA — FETCH NATIVE LABELS (ANY LANGUAGE EXCEPT EN)
+###############################################################
+
+query_native <- "
+SELECT ?iso ?name WHERE {
+  ?country wdt:P31 wd:Q6256 .
+  ?country wdt:P297 ?iso .
+  ?country rdfs:label ?name .
+  FILTER (lang(?name) != 'en')
+}
+"
+
+url_native <- paste0(
+  "https://query.wikidata.org/sparql?query=",
+  URLencode(query_native, reserved = TRUE),
+  "&format=json"
+)
+
+raw_native <- fromJSON(url_native)$results$bindings
+
+
+
+df_native <- tibble(
+  iso_a2 = sapply(raw_native$iso, extract_value),
+  endonym = sapply(raw_native$name, extract_value)
+) %>%
+  group_by(iso_a2) %>%
+  slice(1) %>%     # keep only one native name for each country
+  ungroup()
+```
+
+
+```{r}
+###############################################################
+# 4. JOIN ENGLISH + NATIVE LABELS SAFELY
+###############################################################
+
+wd_clean <- df_en %>%
+  left_join(df_native, by = "iso_a2") %>%
+  mutate(
+    # if native name missing, fall back to English
+    endonym = ifelse(is.na(endonym), exonym, endonym)
+  )
+
+
+###############################################################
+# 5. JOIN WITH NATURAL EARTH SHAPES
+###############################################################
+
+world_names <- world %>%
+  left_join(wd_clean, by = "iso_a2") %>%
+  mutate(
+    label = paste0(endonym, "\n(", exonym, ")")
+  )
+```
+
+
+```{r}
+###############################################################
+# 6. PLOT THE MAP
+###############################################################
+
+ggplot(world_names) +
+  geom_sf(fill = "#f2e8d5", color = "#5c4d3b", size = 0.2) +
+  geom_sf_text(aes(label = label),
+               size = 2.5,
+               family = "Helvetica",
+               check_overlap = TRUE,
+               color = "#3a2f28") +
+  labs(
+    title = "Endonyms and Exonyms of Countries",
+    subtitle = "Local names (endonyms) with English names in parentheses",
+    caption = "#30DayMapChallenge 2025 | Day 24: Places and Their Names\nData: Wikidata, Natural Earth | Map: Federica Gazzelloni"
+  ) +
+  theme_minimal(base_family = "Helvetica") +
+  theme(
+    plot.background = element_rect(fill = "#f7f3ea", color = NA),
+    panel.background = element_rect(fill = "#f7f3ea", color = NA),
+    panel.grid = element_blank(),
+    plot.title = element_text(size = 18, face = "bold"),
+    plot.subtitle = element_text(size = 12)
+  )
+
+```
+
