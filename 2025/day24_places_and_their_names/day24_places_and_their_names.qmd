@@ -154,7 +154,7 @@ ggplot(world_names) +
   geom_sf(fill = "#f2e8d5", color = alpha("#5c4d3b",0.5), size = 0.2) +
   geom_sf_text(aes(label = exonym_ne),
                size = 2.5,
-               family = "Helvetica",
+               family = "Delius",
                check_overlap = TRUE,
                color = "#3a2f28") +
   labs(

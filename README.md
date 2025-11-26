@@ -33,7 +33,7 @@ The idea is to create maps based around different themes each day of November us
 | Day 19 - `19-11-2025 - Projections` | Day 20 - `20-11-2025 - Water` | Day 21 - `21-11-2025 - Icons` |
 | ![day19](2025/day19_projections/day19_projections.png) | ![day20](2025/day20_water/day20_water.png) | ![day21](2025/day21_icons/day21_icons.png) |
 | Day 22 - `22-11-2025 - Data challenge: Natural Earth` | Day 23 - `23-11-2025 - Process` | Day 24 - `24-11-2025 - Places and their names` |
-| ![day22](2025/day22_natural_earth/day22_natural_earth.png) | ![day23](2025/day23_process/day23_process.png) | ![day24](2025/day24_places_names/day24_places_names.png) |
+| ![day22](2025/day22_natural_earth/day22_natural_earth.png) | ![day23](2025/day23_process/day23_process.png) | ![day24](2025/day24_places_and_their_names/day24_places_and_their_names.png) |
 | Day 25 - `25-11-2025 - Hexagons` | Day 26 - `26-11-2025 - Transport` | Day 27 - `27-11-2025 - Boundaries` |
 | ![day25](2025/day25_hexagons/day25_hexagons.png) | ![day26](2025/day26_transport/day26_transport.png) | ![day27](2025/day27_boundaries/day27_boundaries.png) |
 | Day 28 - `28-11-2025 - Black` | Day 29 - `29-11-2025 - Raster` | Day 30 - `30-11-2025 - Makeover` |
