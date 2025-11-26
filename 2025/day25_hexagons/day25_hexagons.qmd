@@ -9,3 +9,76 @@ output: html_document
 execute: 
    eval: false
 ---
+
+
+## Overview
+
+Hexagonal grids with R. We use the {sf} package.
+Load Libraries
+```{r}
+library(sf)
+library(rnaturalearth)
+library(dplyr)
+library(ggplot2)
+library(stringr)
+
+```
+
+2. Get Italy boundaries
+```{r}
+# Natural Earth country boundaries
+world <- rnaturalearth::ne_countries(scale = 10, returnclass = "sf")
+
+italy <- world %>% 
+  filter(admin == "Italy") %>% 
+  st_transform(3857)   # good for equal-area cell grids
+
+
+```
+
+3. Create hexagonal grid (~200 km)
+
+In EPSG:3857, metres are units → 200,000 m ≈ 200 km
+
+square = FALSE gives hexagons
+```{r}
+cell <- st_make_grid(
+  italy,
+  cellsize = 200000,    # ~200 km
+  what = "polygons",
+  square = FALSE         # hexagons
+)
+
+cell_sf <- st_sf(geometry = cell)
+
+```
+
+4. Clip hexagons to Italy
+```{r}
+hex_it <- st_intersection(cell_sf, italy)
+
+
+```
+
+5. Plot hexagonal grid over Italy
+```{r}
+ggplot() +
+  geom_sf(data = hex_it, fill = "#7781a6", color = "white") +
+  geom_sf(data = italy, fill = NA, color = "black", size = 0.5) +
+  ggthemes::theme_map() +
+  labs(
+    title = "Hexagonal Grid over Italy",
+    subtitle = "Approximate cell size: 200 km",
+    caption = "#30DayMapChallenge 2025 | Day 25: Hexagons\nData source: Natural Earth | Map by Federica Gazzelloni"
+  ) +
+  ggthemes::theme_map()
+```
+
+
+```{r}
+ggsave("day24_places_and_their_names.png",
+       dpi = 320,
+       width = 6,
+       height = 4,
+       bg = "#1f2435")
+```

@@ -73,6 +73,9 @@ df_en <- tibble(
 )
 ```
 
+```{r}
+df_en%>%head()
+```
 
 ```{r}
 ###############################################################
@@ -119,17 +122,26 @@ wd_clean <- df_en %>%
     # if native name missing, fall back to English
     endonym = ifelse(is.na(endonym), exonym, endonym)
   )
+```
 
 
+```{r}
 ###############################################################
 # 5. JOIN WITH NATURAL EARTH SHAPES
 ###############################################################
 
 world_names <- world %>%
-  left_join(wd_clean, by = "iso_a2") %>%
-  mutate(
-    label = paste0(endonym, "\n(", exonym, ")")
-  )
+  left_join(wd_clean, by = "iso_a2") 
+```
+
+
+
+```{r}
+library(showtext)
+font_add_google(name = 'Delius', 
+                family = 'Delius')
+showtext_auto()
+showtext_opts(dpi = 300)
 ```
 
 
@@ -139,25 +151,35 @@ world_names <- world %>%
 ###############################################################
 
 ggplot(world_names) +
-  geom_sf(fill = "#f2e8d5", color = "#5c4d3b", size = 0.2) +
-  geom_sf_text(aes(label = label),
+  geom_sf(fill = "#f2e8d5", color = alpha("#5c4d3b",0.5), size = 0.2) +
+  geom_sf_text(aes(label = exonym_ne),
                size = 2.5,
                family = "Helvetica",
                check_overlap = TRUE,
                color = "#3a2f28") +
   labs(
-    title = "Endonyms and Exonyms of Countries",
-    subtitle = "Local names (endonyms) with English names in parentheses",
+    title = "Endonyms of Countries",
+    subtitle = "English Local names",
     caption = "#30DayMapChallenge 2025 | Day 24: Places and Their Names\nData: Wikidata, Natural Earth | Map: Federica Gazzelloni"
   ) +
-  theme_minimal(base_family = "Helvetica") +
+  ggthemes::theme_map(base_family = "Delius")+
   theme(
-    plot.background = element_rect(fill = "#f7f3ea", color = NA),
-    panel.background = element_rect(fill = "#f7f3ea", color = NA),
+    #plot.background = element_rect(fill = "#f7f3ea", color = NA),
+    panel.background = element_rect(fill = "#bfd0dd", color = NA),
     panel.grid = element_blank(),
     plot.title = element_text(size = 18, face = "bold"),
     plot.subtitle = element_text(size = 12)
   )
 
+```
+
+
+
+```{r}
+ggsave("day24_places_and_their_names.png",
+       dpi = 320,
+       width = 6,
+       height = 4,
+       bg = "transparent")
 ```
 
