@@ -9,3 +9,130 @@ output: html_document
 execute: 
    eval: false
 ---
+
+
+## Overview
+
+Transport networks visualized with R. I downloaded Portugal data from **Geofabrik** to download OSM-based shapefiles:
+
+- <https://download.geofabrik.de/>
+```{r}
+library(tidyverse)
+library(sf)
+```
+
+# select all files with "transport" type .shp in data folder
+```{r}
+# roads_files <- list.files("data/portugal-251127-free.shp",
+#            pattern="roads.*\\.shp$",
+#            full.names = TRUE)
+# 
+# roads_files
+```
+
+```{r}
+# roads <- read_sf(roads_files)
+# saveRDS(roads,"data/roads_portugal.rds")
+roads_portugal <- readRDS("data/gis_osm_roads_free_1.rds")
+```
+
+
+```{r}
+roads_portugal%>%names
+```
+
+```{r}
+unique(roads_portugal$fclass)
+```
+
+
+```{r}
+roads_portugal$fclass <- trimws(roads_portugal$fclass)
+roads_portugal$fclass <- tolower(roads_portugal$fclass)
+```
+
+
+```{r}
+residential <- roads_portugal %>%
+  filter(fclass=="residential")
+
+primary <- roads_portugal %>%
+  filter(fclass=="primary")
+```
+
+
+```{r}
+motorway <- roads_portugal %>%
+  filter(fclass=="motorway")
+```
+
+
+```{r}
+length(unique(motorway$name))
+length(unique(motorway$ref))
+length(unique(motorway$oneway))
+```
+```{r}
+length(unique(motorway$maxspeed))
+unique(motorway$maxspeed)
+```
+
+
+```{r}
+portugal <- rnaturalearth::ne_countries(country="Portugal",
+                                         scale = "large",
+                                         returnclass = "sf")
+```
+
+```{r}
+motorway$speed_cat <- cut(
+  motorway$maxspeed,
+  breaks = c(0, 50, 80, 120),
+  labels = c("Slow", "Medium", "Fast"),
+  include.lowest = TRUE
+)
+
+
+
+```
+
+
+```{r}
+ggplot()+
+  geom_sf(data=portugal,
+          fill="#e6edf2",
+          color="grey40")+
+  geom_sf(data=motorway,
+          aes(color=(speed_cat)),
+          show.legend = T,
+          size=0.5) +
+scale_color_manual(values = c(
+  "Slow"   = "#4575b4",
+  "Medium" = "#fee090",
+  "Fast"   = "#d73027"
+))+
+  labs(title="Transport Networks",
+       subtitle="#30DayMapChallenge 2025 Day 26 Transport",
+       caption="DataSource: Open Data | Map: Federica Gazzelloni",
+       color="Speed")+
+  coord_sf(xlim=c(-10.5,-5.5),
+           ylim=c(36,42),
+           clip = "off") +
+  ggthemes::theme_map()+
+  theme(plot.background = element_rect(fill=NA,color=NA),
+        panel.background = element_rect(fill=NA,color=NA),
+        text=element_text(size=14),
+        plot.title = element_text(face="bold",hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5),
+        plot.caption = element_text(hjust = 0.5),
+        legend.background = element_rect(fill=NA,color=NA),
+        legend.position = "right")
+```
+
+```{r}
+ggsave("day26_transport.png",bg="#f2f2f2")
+```
+
+
+
+
