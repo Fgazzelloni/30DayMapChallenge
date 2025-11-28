@@ -38,6 +38,15 @@ labelled_counties <- sample(boundaries%>%
                               filter(admin=="Brazil"), 10)
 data_subset <- function(df) df[df$name %in% labelled_counties,]
 ```
+```{r}
+library(stringr)
+
+caption_text <- str_wrap(
+  "A closer look at political boundaries within Brazil, highlighted through a small inset on the northern state of Roraima. While global coastlines set the physical frame, administrative divisions reveal the complex internal structure of the territory.",
+  width = 90,
+)
+
+```
 
 
 ```{r}
@@ -55,21 +64,17 @@ ggplot(boundaries) +
     aes(label = name),
     data = data_subset
   ) +
-  coord_sf_inset(inset_cfg)
-```
-
-
-```{r}
-ggplot() +
-  geom_sf(data = world, 
-          color="#222222", fill="#dddddd", size=.1) +
-  geom_sf(data = boundaries, aes(fill=admin),
-          color="#444444", size=.15) +
-  theme_void() +
+  coord_sf_inset(inset_cfg)+ 
+  ggthemes::theme_map() +
   labs(
     title="Administrative Boundaries",
     subtitle="Level 1 subdivisions",
-    caption="#30DayMapChallenge 2025 | Day 27 Boundaries\nDataSource: {rnaturalearth} | Map: Federica Gazzelloni"
+    caption=paste(caption_text,"\n#30DayMapChallenge 2025 | Day 27 Boundaries | DataSource: {rnaturalearth} | Map: Federica Gazzelloni")
   )
+```
+```{r}
+
+ggsave("day27_boundaries.png",bg="white")
 
 ```
+
