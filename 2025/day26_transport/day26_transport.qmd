@@ -112,8 +112,8 @@ scale_color_manual(values = c(
   "Fast"   = "#d73027"
 ))+
   labs(title="Transport Networks",
-       subtitle="#30DayMapChallenge 2025 Day 26 Transport",
-       caption="DataSource: Open Data | Map: Federica Gazzelloni",
+       subtitle="Portugal motorways by speed categories",
+       caption="DataSource: Portugal Geofabrik Open Data\n#30DayMapChallenge 2025 Day 26: Transport | Map: Federica Gazzelloni",
        color="Speed")+
   coord_sf(xlim=c(-10.5,-5.5),
            ylim=c(36,42),
@@ -124,7 +124,7 @@ scale_color_manual(values = c(
         text=element_text(size=14),
         plot.title = element_text(face="bold",hjust = 0.5),
         plot.subtitle = element_text(hjust = 0.5),
-        plot.caption = element_text(hjust = 0.5),
+        plot.caption = element_text(hjust = 0.5,size=9),
         legend.background = element_rect(fill=NA,color=NA),
         legend.position = "right")
 ```

@@ -9,3 +9,67 @@ output: html_document
 execute: 
    eval: false
 ---
+
+```{r}
+world <- rnaturalearth::ne_coastline()
+boundaries <- ne_download(scale=50, type="admin_1_states_provinces", returnclass="sf")
+```
+
+```{r}
+boundaries$name
+```
+
+
+```{r}
+library(ggmapinset)
+
+inset_cfg <- configure_inset(
+  shape_circle(
+    centre =  sf::st_centroid(boundaries[boundaries$name %in% c("Roraima"),]),
+    radius = 500
+  ),
+  scale = 2,
+  units = "mi",
+  translation = c(-5000, -5000)
+)
+
+# pick some counties to label
+labelled_counties <- sample(boundaries%>%
+                              filter(admin=="Brazil"), 10)
+data_subset <- function(df) df[df$name %in% labelled_counties,]
+```
+
+
+```{r}
+# with inset added
+ggplot(boundaries) +
+  geom_sf(data = world, 
+          inherit.aes = F,
+          color="#222222", fill="#dddddd", size=.1) +
+  geom_sf_inset(aes(fill = admin),
+                color="grey90",
+                show.legend = F) +
+  scale_fill_viridis_d() +
+  geom_inset_frame() +
+  geom_sf_label_inset(
+    aes(label = name),
+    data = data_subset
+  ) +
+  coord_sf_inset(inset_cfg)
+```
+
+
+```{r}
+ggplot() +
+  geom_sf(data = world, 
+          color="#222222", fill="#dddddd", size=.1) +
+  geom_sf(data = boundaries, aes(fill=admin),
+          color="#444444", size=.15) +
+  theme_void() +
+  labs(
+    title="Administrative Boundaries",
+    subtitle="Level 1 subdivisions",
+    caption="#30DayMapChallenge 2025 | Day 27 Boundaries\nDataSource: {rnaturalearth} | Map: Federica Gazzelloni"
+  )
+
+```
