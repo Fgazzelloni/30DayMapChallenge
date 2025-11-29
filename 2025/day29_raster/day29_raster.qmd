@@ -17,79 +17,265 @@ library(elevatr)
 library(terra)
 library(sf)
 library(ggplot2)
+```
 
-# Define bounding box as sf polygon with CRS
+```{r}
+library(rnaturalearth)
+library(rnaturalearthdata)
+
+# Download admin level-1 boundaries
+admin1 <- ne_states(country = "Italy", returnclass = "sf")
+
+# Filter a broader area around Abruzzo
+region_bg <- admin1[
+  admin1$region %in% c("Abruzzo", "Lazio", "Marche", "Umbria", "Molise", "Toscana"),
+]
+```
+
+```{r}
+ggplot() +
+  geom_sf(data = admin1) +
+  geom_sf(data = region_bg, 
+          fill = "lightblue", color = "darkblue", size = 0.5) +
+  theme_minimal()
+```
+
+
+
+```{r}
+# -----------------------------
+# Font Setup (Elegant Title)
+# -----------------------------
+library(showtext)
+library(sysfonts)
+font_add_google("Ubuntu", "ubuntu")
+showtext_auto()
+showtext_opts(dpi = 320)
+```
+
+
+```{r}
+# -----------------------------
+# 1) Bounding box
+# -----------------------------
+# ~30 km around Gran Sasso
 bbox <- st_as_sf(st_as_sfc(st_bbox(c(
-  xmin = 13.45,
-  xmax = 13.75,
-  ymin = 42.4,
-  ymax = 42.6
+  xmin = 13.30,
+  xmax = 14.00,
+  ymin = 42.25,
+  ymax = 42.80
 ), crs = 4326)))
+```
 
-# Download elevation data (clip to bbox)
+
+```{r}
+# -----------------------------
+# 2) High-resolution elevation
+# -----------------------------
 dem <- get_elev_raster(
   locations = bbox,
-  z = 10,
+  z = 10,         # resolution
   clip = "bbox"
 )
 
-# Convert to terra object
 dem_t <- rast(dem)
-
-# Create hillshade for visual effect
-hillshade <- shade(terrain(dem_t, "slope"), 
-                   terrain(dem_t, "aspect"))
-
-# Plot with ggplot
-df <- as.data.frame(dem_t, xy = TRUE)
-names(df)[3] <- "elevation"
-
-ggplot(df) +
-  geom_raster(aes(x = x, y = y, fill = elevation)) +
-  scale_fill_viridis_c(option = "B") +
-  theme_void() +
-  coord_equal() +
-  labs(title = "Gran Sasso Elevation (10-minute map)",
-       caption = "Data source: elevatr / USGS")
 ```
 
 
+```{r}
+# -----------------------------
+# 3) Shading Layers
+# -----------------------------
+# Terrain derivatives
+slope  <- terrain(dem_t, "slope",  unit = "radians")
+aspect <- terrain(dem_t, "aspect", unit = "radians")
 
-## option 2
+# Hillshade - multi-directional effect for “3D” look
+hs1 <- shade(slope, aspect, angle = 40, direction = 315)
+hs2 <- shade(slope, aspect, angle = 60, direction = 45)
+hillshade <- (hs1 * 0.6 + hs2 * 0.4)
+
+# Curvature shading (adds fine texture)
+curve <- terrain(dem_t, "flowdir")
+curve <- (curve - min(curve[], na.rm=TRUE)) /
+         (max(curve[], na.rm=TRUE) - min(curve[], na.rm=TRUE))
+```
+
 
 ```{r}
-library(terra)
-library(ggplot2)
-library(sf)
-library(geodata)
-library(stars)
+# -----------------------------
+# 4) Convert to df for ggplot
+# -----------------------------
+df_dem <- as.data.frame(dem_t, xy = TRUE, na.rm = TRUE)
+names(df_dem)[3] <- "elevation"
 
-# Download DEM
-dem <- elevation_30s(country = "ITA", path = tempdir())
+df_hs <- as.data.frame(hillshade, xy = TRUE, na.rm = TRUE)
+names(df_hs)[3] <- "hs"
 
-# Crop to Etna extent
-etna <- ext(14.7, 15.25, 37.55, 37.9)
-dem_etna <- crop(dem, etna)
+df_curve <- as.data.frame(curve, xy = TRUE, na.rm = TRUE)
+names(df_curve)[3] <- "curve"
 
-# Create hillshade
-slope  <- terrain(dem_etna, v = "slope",  unit = "radians")
-aspect <- terrain(dem_etna, v = "aspect", unit = "radians")
-hill   <- shade(slope, aspect, angle = 40, direction = 300)
+# Merge rasters
+df <- Reduce(function(a, b) merge(a, b, by = c("x", "y"), all = TRUE),
+             list(df_dem, df_hs, df_curve))
+# saveRDS(df, "data/day29_raster_df.rds")
+```
 
-hill_st <- st_as_stars(hill)
 
-ggplot() +
-  geom_stars(data = hill_st) +
-  scale_fill_gradient(low = "black", high = "white", guide = "none") +
+```{r}
+# -----------------------------
+# 5) Astonishing Map
+# -----------------------------
+ggplot(df) +
+  geom_raster(aes(x, y, fill = elevation)) +
+  geom_raster(aes(x, y, alpha = hs * 1.2)) +
+  geom_raster(aes(x, y, alpha = curve * 0.3)) +
+  
+  # Gold elevation palette
+scale_fill_gradientn(
+  colours = c("#e8f8ff",   # pale blue (low)
+              "#b4e2d2",   # mint
+              "#9ccfa1",   # soft green
+              "#d8c59a",   # sand
+              "#f2e9d8",   # warm light
+              "#ffffff"),  # snow
+  name = "Elevation (m)"
+) +
+  
+  scale_alpha(range = c(0, 0.7), guide = "none") +
+  
   coord_equal() +
-  theme_void() +
-  theme(
-    plot.background = element_rect(fill = "black", color = "black"),
-    panel.background = element_rect(fill = "black", color = "black")
-  ) +
-  labs(
-    title = "Mount Etna — Hillshade",
-    caption = "#30DayMapChallenge 2025 • Day 28: Black | Data: SRTM / geodata | Map: Federica Gazzelloni"
+  theme_void(base_family = "ubuntu") +
+  
+  theme(plot.title = element_text(size = 20, color = "white",
+                                   hjust = 0.95, vjust = 1),
+        plot.caption = element_text(size = 8, color = "grey70",
+                                   hjust = 0.95, vjust = -1),
+        legend.position = "none") +
+  labs(title   = "GRAN SASSO MASSIF — CENTRAL ITALY",
+       caption = "#30DayMapChallenge 2025 – Raster\nData: USGS | elevatr | Map by Federica Gazzelloni"
   )
 
 ```
+
+
+```{r}
+ggsave("day29_raster.png", width = 8, height = 6, dpi = 320)
+```
+
+
+```{r}
+base_map <- ggplot() +
+  # ------------------------------------------
+  # BASE MAP (POLYGONS) — placed first
+  # ------------------------------------------
+  geom_sf(
+    data = admin1,
+    fill = "#9ccfa1",
+    color = "grey60",
+    linewidth = 0.3,
+  ) +
+
+  # ------------------------------------------
+  # RASTER LAYERS (on top)
+  # ------------------------------------------
+  geom_raster(data = df, aes(x, y, fill = elevation)) +
+  geom_raster(data = df, aes(x, y, alpha = hs * 1.2)) +
+  geom_raster(data = df, aes(x, y, alpha = curve * 0.3)) +
+  
+  # Palettes
+  scale_fill_gradientn(
+    colours = c("#e8f8ff","#b4e2d2","#9ccfa1",
+                "#d8c59a","#f2e9d8","#ffffff"),
+    name = "Elevation (m)"
+  ) +
+  scale_alpha(range = c(0, 0.75), guide = "none") +
+  
+  # ------------------------------------------
+  # COORDINATE SYSTEM 
+  # ------------------------------------------
+  coord_sf(
+    xlim = c(13.3, 14),
+    ylim = c(42, 43),
+    expand = TRUE,
+    clip = "off")
+
+base_map
+```
+
+
+```{r}
+# ------------------------------------------
+  # 5) THEME
+  # ------------------------------------------
+main_map <- base_map +
+    labs(title   = "GRAN SASSO MASSIF — CENTRAL ITALY",
+         caption = "#30DayMapChallenge 2025 – Raster\nData: USGS | elevatr | Natural Earth | Map by Federica Gazzelloni\n")+
+  theme_void(base_family = "ubuntu") +
+  theme(plot.title = element_text(size = 18, 
+                                  color = "grey10",hjust = 0.5),
+        plot.caption = element_text(size = 8, color = "grey10",
+                                    hjust = 0.5),
+    legend.background = element_blank())
+
+main_map
+```
+
+
+## Add an insect map
+```{r}
+library(rnaturalearth)
+library(rnaturalearthdata)
+library(ggplot2)
+library(sf)
+
+# -----------------------------
+# Gran Sasso centroid to plot on inset
+# -----------------------------
+gran_sasso_pt <- st_centroid(bbox)  # use your main bbox centroid
+
+```
+
+
+```{r}
+inset_map <- ggplot() +
+  geom_sf(data = admin1, fill = "grey95", color = "grey40", linewidth = 0.1) +
+  geom_sf(data = gran_sasso_pt, 
+          color = "black", size = 5, shape = 21, stroke=0.2,
+          fill = "#d8c59a") +
+  theme_void() +
+  theme(plot.background = element_rect(fill=NA, color=NA))
+inset_map
+```
+
+```{r}
+library(cowplot)
+inset_grob <- ggdraw(inset_map)
+inset_grob
+```
+
+```{r}
+bbox
+# xlim = c(13.3, 14),
+# ylim = c(42, 43),
+```
+
+
+```{r}
+main_map +
+  annotation_custom(
+    ggplotGrob(inset_map),
+    xmin = 14.5, xmax = 15.2,   # adjust position
+    ymin = 42.2, ymax = 43.2
+  )
+
+```
+
+
+```{r}
+ggsave("day29_raster.png", 
+       width = 6, height = 4, 
+       bg = "#e8f8ff",
+       dpi = 320)
+```
+
