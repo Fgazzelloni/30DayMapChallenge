@@ -21,37 +21,42 @@ library(tidyverse)
 library(sf)
 ```
 
-# select all files with "transport" type .shp in data folder
+## Set the fonts
 ```{r}
-# roads_files <- list.files("data/portugal-251127-free.shp",
-#            pattern="roads.*\\.shp$",
-#            full.names = TRUE)
-# 
-# roads_files
+library(showtext)
+library(sysfonts)
+font_add_google("EB Garamond","Garamond")
+showtext_auto()
+showtext_opts(dpi = 320)
 ```
 
+## Load the data
+
 ```{r}
-# roads <- read_sf(roads_files)
+# roads_files <- list.files("data/portugal-251127-free.shp", pattern="roads.*\\.shp$",full.names = TRUE)
+# roads <- read_sf(roads_files) 
 # saveRDS(roads,"data/roads_portugal.rds")
-roads_portugal <- readRDS("data/gis_osm_roads_free_1.rds")
+roads_portugal <- readRDS("data/roads_portugal.rds")
 ```
 
-
+## Explore the data
 ```{r}
 roads_portugal%>%names
 ```
 
+
+## Check the unique values in the `fclass` column
 ```{r}
 unique(roads_portugal$fclass)
 ```
 
-
+## Clean the `fclass` column
 ```{r}
 roads_portugal$fclass <- trimws(roads_portugal$fclass)
 roads_portugal$fclass <- tolower(roads_portugal$fclass)
 ```
 
-
+## Filter different road types
 ```{r}
 residential <- roads_portugal %>%
   filter(fclass=="residential")
@@ -60,30 +65,31 @@ primary <- roads_portugal %>%
   filter(fclass=="primary")
 ```
 
-
+## Filter motorways
 ```{r}
 motorway <- roads_portugal %>%
   filter(fclass=="motorway")
 ```
 
-
+## Explore motorway attributes
 ```{r}
 length(unique(motorway$name))
 length(unique(motorway$ref))
 length(unique(motorway$oneway))
-```
-```{r}
+
 length(unique(motorway$maxspeed))
 unique(motorway$maxspeed)
 ```
 
-
+## Load Portugal boundaries
 ```{r}
 portugal <- rnaturalearth::ne_countries(country="Portugal",
                                          scale = "large",
                                          returnclass = "sf")
 ```
 
+
+## Create speed categories
 ```{r}
 motorway$speed_cat <- cut(
   motorway$maxspeed,
@@ -91,12 +97,9 @@ motorway$speed_cat <- cut(
   labels = c("Slow", "Medium", "Fast"),
   include.lowest = TRUE
 )
-
-
-
 ```
 
-
+## Plot the map
 ```{r}
 ggplot()+
   geom_sf(data=portugal,
@@ -119,7 +122,8 @@ scale_color_manual(values = c(
            ylim=c(36,42),
            clip = "off") +
   ggthemes::theme_map()+
-  theme(plot.background = element_rect(fill=NA,color=NA),
+  theme(text =element_text(family="Garamond"),
+        plot.background = element_rect(fill=NA,color=NA),
         panel.background = element_rect(fill=NA,color=NA),
         text=element_text(size=14),
         plot.title = element_text(face="bold",hjust = 0.5),
@@ -129,8 +133,15 @@ scale_color_manual(values = c(
         legend.position = "right")
 ```
 
+
+
+## Save the map
 ```{r}
-ggsave("day26_transport.png",bg="#f2f2f2")
+ggsave("day26_transport.png",
+       width = 6,
+       height = 4,
+       dpi = 320,
+       bg="#fe9c64")
 ```
 
 
