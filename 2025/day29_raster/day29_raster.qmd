@@ -52,3 +52,44 @@ ggplot(df) +
   labs(title = "Gran Sasso Elevation (10-minute map)",
        caption = "Data source: elevatr / USGS")
 ```
+
+
+
+## option 2
+
+```{r}
+library(terra)
+library(ggplot2)
+library(sf)
+library(geodata)
+library(stars)
+
+# Download DEM
+dem <- elevation_30s(country = "ITA", path = tempdir())
+
+# Crop to Etna extent
+etna <- ext(14.7, 15.25, 37.55, 37.9)
+dem_etna <- crop(dem, etna)
+
+# Create hillshade
+slope  <- terrain(dem_etna, v = "slope",  unit = "radians")
+aspect <- terrain(dem_etna, v = "aspect", unit = "radians")
+hill   <- shade(slope, aspect, angle = 40, direction = 300)
+
+hill_st <- st_as_stars(hill)
+
+ggplot() +
+  geom_stars(data = hill_st) +
+  scale_fill_gradient(low = "black", high = "white", guide = "none") +
+  coord_equal() +
+  theme_void() +
+  theme(
+    plot.background = element_rect(fill = "black", color = "black"),
+    panel.background = element_rect(fill = "black", color = "black")
+  ) +
+  labs(
+    title = "Mount Etna — Hillshade",
+    caption = "#30DayMapChallenge 2025 • Day 28: Black | Data: SRTM / geodata | Map: Federica Gazzelloni"
+  )
+
+```
