@@ -9,3 +9,69 @@ output: html_document
 execute: 
    eval: false
 ---
+
+
+# Overview
+
+This Black Themed Map is built using R and various geospatial libraries. The map showcases a specific region with a dark aesthetic, highlighting key geographical features.
+
+Load necessary libraries
+```{r}
+library(tidyverse)
+library(sf)
+library(ggspatial)
+```
+```{r}
+library(showtext)
+library(sysfonts)
+```
+```{r}
+library(maps)
+library(DescTools)
+```
+```{r}
+font_add_google(name = "Ubuntu", family = "Ubuntu")
+showtext_auto()
+showtext_opts(dpi = 320)
+```
+Load the Belgium boundaries with  `map_data()` function from the {ggplot2} package.
+```{r}
+world <- map_data('world')
+belgium<- world%>%
+  filter(str_detect(region,"Belgium"))
+```
+Transform the Belgium dataset containing the longitude and latitude into a simple feature object with the `st_as
+_sf()` function from the {sf} package, and visualize the polygon. In this case is a POINT polygon.
+```{r}
+bg_sf <- belgium%>%
+  st_as_sf(coords = c("long","lat"))%>%
+  st_make_valid()
+```
+```{r}
+ggplot()+
+  geom_sf(data=bg_sf,
+          color="white",size=0.3)+
+  coord_sf()+
+  labs(title="Belgium",
+       subtitle="#30DayMapChallenge 2025 Day 28 Black",
+       caption="DataSource: {maps} | Map: @fgazzelloni")+
+  theme(text=element_text(family="Ubuntu",size=20,face="bold",
+                     color="white"),
+        plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5),
+        plot.caption  = element_text(hjust = 0.5),
+        plot.background = element_rect(color="black",fill="black"),
+        panel.background = element_rect(color="black",fill="black"),
+        panel.grid = element_line(color="black"))+
+  ggspatial::annotation_scale(
+    location = "bl",
+    width_hint = 0.3,
+    line_col = "white",
+    text_col = "white"
+  )
+```
+```{r}
+ggsave("day28_black.png",bg="black",height = 4)
+```
+
+

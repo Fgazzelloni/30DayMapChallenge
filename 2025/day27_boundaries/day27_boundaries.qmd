@@ -10,13 +10,24 @@ execute:
    eval: false
 ---
 
+## Load Libraries
+```{r}
+library(tidyverse)
+library(rnaturalearth)
+library(sf)
+library(ggthemes)
+library(ggmapinset)
+library(stringr)
+```
+
 ```{r}
 world <- rnaturalearth::ne_coastline()
+
 boundaries <- ne_download(scale=50, type="admin_1_states_provinces", returnclass="sf")
 ```
 
 ```{r}
-boundaries$name
+# boundaries$name
 ```
 
 
@@ -43,9 +54,19 @@ library(stringr)
 
 caption_text <- str_wrap(
   "A closer look at political boundaries within Brazil, highlighted through a small inset on the northern state of Roraima. While global coastlines set the physical frame, administrative divisions reveal the complex internal structure of the territory.",
-  width = 90,
+  width = 100,
 )
 
+```
+
+
+## Set the fonts
+```{r}
+library(showtext)
+library(sysfonts)
+font_add_google(name = "Roboto Condensed", family = "Roboto Condensed")
+showtext_auto()
+showtext_opts(dpi = 320)
 ```
 
 
@@ -65,16 +86,28 @@ ggplot(boundaries) +
     data = data_subset
   ) +
   coord_sf_inset(inset_cfg)+ 
-  ggthemes::theme_map() +
   labs(
     title="Administrative Boundaries",
     subtitle="Level 1 subdivisions",
-    caption=paste(caption_text,"\n#30DayMapChallenge 2025 | Day 27 Boundaries | DataSource: {rnaturalearth} | Map: Federica Gazzelloni")
-  )
+    caption=paste(caption_text,"\n#30DayMapChallenge 2025 | Day 27 Boundaries | DataSource: {rnaturalearth} | Map: Federica Gazzelloni")) +
+  ggthemes::theme_map() +
+  theme(
+    text = element_text(family="Roboto Condensed", size=12),
+    plot.title = element_text(face="bold", size=16),
+    plot.subtitle = element_text(size=12),
+    plot.caption = element_text(size=8, 
+                                hjust = 0.5))
 ```
+
+
+
+## Save the plot
 ```{r}
 
-ggsave("day27_boundaries.png",bg="white")
+ggsave("day27_boundaries.png",
+       width = 6,height = 4,
+       dpi=320,
+       bg="white")
 
 ```
 
